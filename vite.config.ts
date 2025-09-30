@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
-import { fileURLToPath, URL } from 'node:url';
+import { fileURLToPath } from "url";
+import { URL } from "url";
 import react from '@vitejs/plugin-react-swc';
 import { VitePWA } from 'vite-plugin-pwa';
 

@@ -3,7 +3,11 @@
   "compilerOptions": {
     "composite": true,
     "noEmit": false,
-    "outDir": "./dist/node"
+    "outDir": "./dist/node",
+
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "types": ["node"]
   },
   "include": ["vite.config.ts"]
 }
