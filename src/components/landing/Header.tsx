@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Dialog, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
-import LanguageSwitcher from '@components/common/LanguageSwitcher.tsx';
-import ThemeToggle from '@components/common/ThemeToggle.tsx';
+import LanguageSwitcher from '@components/common/LanguageSwitcher';
+import ThemeToggle from '@components/common/ThemeToggle';
 
 const NAV_ITEMS = [
   { key: 'overview', href: '#hero' },

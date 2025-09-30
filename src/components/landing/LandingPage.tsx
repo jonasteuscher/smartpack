@@ -1,12 +1,12 @@
-import Header from './Header.tsx';
-import HeroSection from './sections/HeroSection.tsx';
-import FeatureSection from './sections/FeatureSection.tsx';
-import ProcessSection from './sections/ProcessSection.tsx';
-import MetricsSection from './sections/MetricsSection.tsx';
-import TestimonialsSection from './sections/TestimonialsSection.tsx';
-import FAQSection from './sections/FAQSection.tsx';
-import CallToActionSection from './sections/CallToActionSection.tsx';
-import FooterSection from './sections/FooterSection.tsx';
+import Header from './Header';
+import HeroSection from './sections/HeroSection';
+import FeatureSection from './sections/FeatureSection';
+import ProcessSection from './sections/ProcessSection';
+import MetricsSection from './sections/MetricsSection';
+import TestimonialsSection from './sections/TestimonialsSection';
+import FAQSection from './sections/FAQSection';
+import CallToActionSection from './sections/CallToActionSection';
+import FooterSection from './sections/FooterSection';
 
 const LandingPage = () => {
   return (

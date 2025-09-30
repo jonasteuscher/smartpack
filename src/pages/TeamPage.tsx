@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import Header from '@/components/landing/Header.tsx';
-import FooterSection from '@/components/landing/sections/FooterSection.tsx';
+import Header from '@/components/landing/Header';
+import FooterSection from '@/components/landing/sections/FooterSection';
 
 type TeamMember = {
   name: string;
