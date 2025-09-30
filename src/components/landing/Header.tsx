@@ -2,7 +2,7 @@ import { useState, Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import LanguageSwitcher from '@components/common/LanguageSwitcher';
 import ThemeToggle from '@components/common/ThemeToggle';
 
@@ -21,8 +21,28 @@ interface HeaderProps {
 const Header = ({ showNavigation = true }: HeaderProps) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const closeMenu = () => setIsOpen(false);
+
+  const handleNavClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+    shouldClose = false
+  ) => {
+    if (shouldClose) {
+      closeMenu();
+    }
+
+    if (location.pathname === '/') {
+      // allow default anchor behaviour for smooth scrolling
+      return;
+    }
+
+    event.preventDefault();
+    navigate({ pathname: '/', hash: href });
+  };
 
   return (
     <header className="pointer-events-auto">
@@ -44,6 +64,7 @@ const Header = ({ showNavigation = true }: HeaderProps) => {
                 <a
                   key={key}
                   href={href}
+                  onClick={(event) => handleNavClick(event, href)}
                   className="relative transition hover:text-brand-secondary focus:outline-none focus-visible:text-brand-secondary"
                 >
                   {t(`header.nav.${key}`)}
@@ -115,12 +136,17 @@ const Header = ({ showNavigation = true }: HeaderProps) => {
                     <XMarkIcon className="h-5 w-5" />
                   </button>
                   <nav className="flex flex-col gap-4 text-lg font-medium text-slate-700 dark:text-slate-200">
-                    {NAV_ITEMS.map(({ key, href }) => (
-                      <a key={key} href={href} onClick={closeMenu} className="transition hover:text-brand-secondary">
-                        {t(`header.nav.${key}`)}
-                      </a>
-                    ))}
-                  </nav>
+                  {NAV_ITEMS.map(({ key, href }) => (
+                    <a
+                      key={key}
+                      href={href}
+                      onClick={(event) => handleNavClick(event, href, true)}
+                      className="transition hover:text-brand-secondary"
+                    >
+                      {t(`header.nav.${key}`)}
+                    </a>
+                  ))}
+                </nav>
                   <div className="mt-auto flex flex-col gap-4">
                     <LanguageSwitcher />
                     <ThemeToggle />
