@@ -48,7 +48,7 @@ const Header = ({ showNavigation = true }: HeaderProps) => {
     <header className="pointer-events-auto">
       <div className="container-responsive">
         <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/80 px-6 py-4 shadow-sm backdrop-blur-md transition dark:border-slate-800/80 dark:bg-slate-900/60">
-          <Link to="/" className="flex items-center gap-3 font-semibold text-slate-900 dark:text-white">
+          <Link to="/" className="flex items-center gap-3 font-semibold text-slate-900 dark:text-white" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <img
               src="/img/logo/Logo_500x350_Emblem.PNG"
               alt="SmartPack Logo"
