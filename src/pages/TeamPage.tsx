@@ -36,7 +36,7 @@ const TeamPage = () => {
   return (
     <div className="relative flex min-h-screen flex-col gap-16 pb-20">
       <div className="sticky top-4 z-30 pt-6">
-        <Header showNavigation={false} />
+        <Header />
       </div>
 
       <section className="pt-8">
