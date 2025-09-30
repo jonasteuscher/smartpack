@@ -1,9 +1,6 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "types": ["node"],
-    "moduleResolution": "node",
-    "esModuleInterop": true,
     "composite": true,
     "noEmit": false,
     "outDir": "./dist/node"
