@@ -5,8 +5,8 @@ const ScrollToTop = () => {
   const { pathname, hash } = useLocation();
 
   useEffect(() => {
-    const HEADER_OFFSET_MOBILE = 102;
-    const HEADER_OFFSET_DESKTOP = 100;
+    const HEADER_OFFSET_MOBILE = 50;
+    const HEADER_OFFSET_DESKTOP = 70;
     const HEADER_OFFSET = window.innerWidth < 768 ? HEADER_OFFSET_MOBILE : HEADER_OFFSET_DESKTOP;
 
     if (hash) {
