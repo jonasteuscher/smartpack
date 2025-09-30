@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title">
+  <title id="title">Jonas placeholder portrait</title>
+  <rect width="160" height="160" rx="28" fill="#FFEFE2" />
+  <circle cx="80" cy="62" r="38" fill="#FFC89A" />
+  <path d="M32 138c6-26 30-46 48-46s42 20 48 46" fill="#8A3B0F" fill-opacity="0.08" />
+  <text x="80" y="94" text-anchor="middle" font-family="'Inter', sans-serif" font-size="44" fill="#8B3D10">J</text>
+</svg>

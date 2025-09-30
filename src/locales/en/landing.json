@@ -1,0 +1,529 @@
+{
+  "header": {
+    "brand": {
+      "title": "SmartPack",
+      "tagline": "Pack smart. Travel relaxed."
+    },
+    "nav": {
+      "overview": "Overview",
+      "features": "Features",
+      "workflow": "Workflow",
+      "feedback": "Feedback",
+      "faq": "FAQ"
+    },
+    "cta": "Try now",
+    "menu": {
+      "open": "Open menu",
+      "close": "Close menu"
+    }
+  },
+  "themeToggle": {
+    "activateLight": "Switch to light mode",
+    "activateDark": "Switch to dark mode"
+  },
+  "languageSwitcher": {
+    "label": "Change language",
+    "languages": {
+      "de": "German",
+      "en": "English",
+      "fr": "French",
+      "it": "Italian"
+    }
+  },
+  "hero": {
+    "badge": "SmartPack V2 Preview",
+    "headline": "Pack clever. Travel calm.",
+    "description": "SmartPack builds your perfect packing list in seconds – tailored to destination, weather, activities, and your personal travel style. Never forget something essential again.",
+    "points": [
+      "Personalised packing lists for every trip",
+      "Destination, weather, and activity intelligence",
+      "Offline ready and synced across devices"
+    ],
+    "ctaPrimary": "Launch free demo",
+    "ctaSecondary": "Watch the interactive preview",
+    "stats": {
+      "travelers": {
+        "label": "Travellers",
+        "value": "45k+"
+      },
+      "checklists": {
+        "label": "Checklists",
+        "value": "320k"
+      },
+      "support": {
+        "label": "Support",
+        "value": "24/7"
+      }
+    },
+    "livePreview": {
+      "label": "Live preview",
+      "scenario": "Backpacking Southeast Asia",
+      "efficiency": "+38% efficiency"
+    },
+    "insights": [
+      {
+        "label": "Climate",
+        "value": "Tropical · 31°C · Monsoon alerts"
+      },
+      {
+        "label": "Focus",
+        "value": "Minimalist · Sustainable · Smart packing cubes"
+      },
+      {
+        "label": "Activities",
+        "value": "Diving, street food, night markets"
+      }
+    ],
+    "progress": {
+      "label": "Packing status",
+      "completion": "84% complete",
+      "categories": [
+        "Essentials",
+        "Documents",
+        "Tech",
+        "Wellness"
+      ]
+    },
+    "reminder": {
+      "title": "Reminder",
+      "message": "Visa arranged? · Travel insurance active?"
+    }
+  },
+  "features": {
+    "tagline": "Your travel co-pilot",
+    "headline": "Total control of every detail – zero stress",
+    "description": "SmartPack blends intelligent capabilities into one seamless experience. From planning to the final reminder – all in one app.",
+    "items": [
+      {
+        "title": "AI-powered suggestions",
+        "description": "Get curated packing advice that respects your destination, local weather, and cultural nuances."
+      },
+      {
+        "title": "Smart packing cubes",
+        "description": "Visualise every piece of luggage and optimise volume and weight with automated cube and case guidance."
+      },
+      {
+        "title": "Offline & in sync",
+        "description": "Use SmartPack offline on the road. Progress and checklists stay synchronised across all devices."
+      },
+      {
+        "title": "Safety first",
+        "description": "Dedicated checklists for documents, visas, and insurance – with reminders for deadlines and expiries."
+      },
+      {
+        "title": "Geo intelligence",
+        "description": "Real-time data on climate, events, and seasonal requirements for every region worldwide."
+      },
+      {
+        "title": "Travel as a crew",
+        "description": "Share lists, assign tasks, and keep every teammate on top of the essentials."
+      }
+    ]
+  },
+  "process": {
+    "tagline": "Workflow",
+    "headline": "From inspiration to boarding in four steps",
+    "description": "A setup that makes complex journeys simple. Business trip, world tour, or family holiday – SmartPack guides you end to end.",
+    "stepLabel": "Step",
+    "steps": [
+      {
+        "title": "Share your trip",
+        "description": "Select destination, duration, fellow travellers, and special requirements – multiple stops welcome.",
+        "stat": "60s"
+      },
+      {
+        "title": "Fine-tune smartly",
+        "description": "Receive tailored clothing, gear, and document suggestions based on weather data and expert insights.",
+        "stat": "4× faster"
+      },
+      {
+        "title": "Sync your lists",
+        "description": "Tick items across devices, prioritise categories, and set reminders for upcoming deadlines.",
+        "stat": "100% focus"
+      },
+      {
+        "title": "Onboard the crew",
+        "description": "Invite fellow travellers, assign responsibilities, and pack together in real time.",
+        "stat": "Team ready"
+      }
+    ]
+  },
+  "metrics": {
+    "headline": "Numbers that earn trust",
+    "description": "SmartPack evolves with a global community of frequent flyers, globetrotters, and travel creators. Our data foundation grows with every journey.",
+    "quote": {
+      "text": "SmartPack saved our remote team. Every offsite now feels like we hired a personal travel concierge.",
+      "author": "Leonie · Chief of Staff"
+    },
+    "items": [
+      {
+        "label": "Checklists generated",
+        "value": "320k",
+        "caption": "+38% year over year"
+      },
+      {
+        "label": "Essentials forgotten",
+        "value": "−92%",
+        "caption": "Based on community data"
+      },
+      {
+        "label": "Top destinations",
+        "value": "189",
+        "caption": "Continuously updated data sets"
+      },
+      {
+        "label": "Satisfaction",
+        "value": "4.9/5",
+        "caption": "Ratings from 18 countries"
+      }
+    ]
+  },
+  "testimonials": {
+    "tagline": "Community voices",
+    "headline": "Journeys that stay with you",
+    "description": "SmartPack already powers thousands of trips – from micro adventures to expeditions. Our community tells the story best.",
+    "items": [
+      {
+        "quote": "SmartPack is my go-to tool for every on-location shoot. No spreadsheets, no chaos emails – we pack systematically and miss nothing.",
+        "author": "Marius · Creative Producer",
+        "initials": "MA"
+      },
+      {
+        "quote": "Weather insights, family profiles, and reminders for kid essentials are invaluable. Travelling with three kids without stress is suddenly real.",
+        "author": "Franziska · Family Travel Creator",
+        "initials": "FR"
+      },
+      {
+        "quote": "I spent six months travelling the world – SmartPack was with me daily. The offline mode in remote regions was a total game changer.",
+        "author": "Luca · Digital Nomad",
+        "initials": "LU"
+      }
+    ]
+  },
+  "faq": {
+    "tagline": "FAQ",
+    "headline": "Answers to your key questions",
+    "description": "Still unsure? We co-build SmartPack with you. Reach out anytime and join the beta community.",
+    "items": [
+      {
+        "question": "Can I use SmartPack without internet?",
+        "answer": "Yes. Your checklists are cached locally. As soon as you're back online we sync with your account so everything stays current."
+      },
+      {
+        "question": "How personalised are the packing lists?",
+        "answer": "We blend your inputs on destination, time frame, activities, and travel style with weather data, community knowledge, and expert experience."
+      },
+      {
+        "question": "Is SmartPack built for teams?",
+        "answer": "Absolutely. Invite travel partners, share categories and tasks, and monitor progress in real time. Ideal for remote teams and group travel."
+      },
+      {
+        "question": "Which devices are supported?",
+        "answer": "SmartPack is a Progressive Web App. Install it on iOS, Android, macOS, Windows, and Linux – the experience stays consistent everywhere."
+      }
+    ]
+  },
+  "cta": {
+    "badge": "Ready for take-off",
+    "headline": "Get your beta access",
+    "description": "Install SmartPack as a PWA, be first to receive new feature drops, and help shape the future of travel. We'll send your invite within minutes.",
+    "inputPlaceholder": "Your email address",
+    "submit": "Send invite link",
+    "success": "Thank you! Your invitation is on its way to your inbox.",
+    "footnote": "GDPR compliant · No spam · Beta magazine included",
+    "checklist": {
+      "title": "Today in your flow",
+      "status": "Packing status: 8 items open",
+      "items": [
+        "Pack passport",
+        "Adapters & chargers",
+        "Check vaccination record",
+        "Activate travel insurance"
+      ],
+      "offline": "Offline mode",
+      "active": "Active",
+      "vip": "VIP access granted"
+    }
+  },
+  "teamPage": {
+    "labels": {
+      "funFact": "Fun fact",
+      "location": "Based in"
+    },
+    "hero": {
+      "badge": "SmartPack Collective",
+      "headline": "Meet the crew behind the packs",
+      "intro": "We build SmartPack as a boutique travel lab. Four humans, one shared obsession: make packing effortless for explorers everywhere.",
+      "description": "We split our week between co-creating with travelers, prototyping with our beta community, and pressure-testing new features on real trips.",
+      "cta": "See how we hire",
+      "back": "Back to landing page"
+    },
+    "culture": {
+      "snapshot": {
+        "title": "Team snapshot",
+        "items": [
+          "5 languages spoken daily and counting",
+          "Quarterly field trips to stress-test the product IRL",
+          "We catalogue every packing fail so you never repeat it"
+        ]
+      },
+      "headline": "The rituals that keep us in flow",
+      "subheadline": "We work remote-first with deep focus blocks and intentional in-person jams. The more we travel, the better SmartPack becomes.",
+      "rituals": [
+        "Monday postcards: async video updates recorded from wherever we are in the world.",
+        "Design lab Wednesdays where Catalina and Marcus remix fresh travel inspiration into the product system.",
+        "Friday teardown of our favourite travel tools and gear hacks from the community.",
+        "Monthly immersion trip to shadow travelers and collect new packing heuristics."
+      ],
+      "stats": [
+        {
+          "value": "12",
+          "label": "Time zones bridged",
+          "detail": "We collaborate across Europe, South America, and Asia partners."
+        },
+        {
+          "value": "68",
+          "label": "Beta testers",
+          "detail": "Frequent travelers feeding us feedback every week."
+        },
+        {
+          "value": "2.5kg",
+          "label": "Average luggage saved",
+          "detail": "Per trip after switching to SmartPack workflows."
+        }
+      ],
+      "quote": {
+        "text": "We treat packing like a design system—iterative, collaborative, and full of tiny moments of delight.",
+        "author": "Catalina – Head of Product Experience"
+      }
+    },
+    "members": [
+      {
+        "name": "Catalina",
+        "role": "Head of Product Experience",
+        "bio": "Leads discovery, synthesises customer stories, and turns them into intuitive flows that feel like a travel concierge in your pocket.",
+        "funFact": "Keeps a color-coded archive of ticket stubs that inspires SmartPack’s seasonal palettes.",
+        "location": "St. Gallen, Switzerland",
+        "image": "/img/team/catalina-placeholder.svg",
+        "photoAlt": "Catalina smiling with sketchbook in hand"
+      },
+      {
+        "name": "Marcus",
+        "role": "Brand & Motion Designer",
+        "bio": "Crafts the visual language, motion cues, and tactile UI moments so every checklist feels calm and cinematic.",
+        "funFact": "Collects vintage luggage tags and recreates them as limited-edition wallpapers for beta members.",
+        "location": "St. Gallen, Switzerland",
+        "image": "/img/team/marcus-placeholder.svg",
+        "photoAlt": "Marcus reviewing motion frames on his tablet"
+      },
+      {
+        "name": "Jonas",
+        "role": "Lead Fullstack Engineer",
+        "bio": "Owns the technical roadmap, stitches together AI recommendations, and keeps the PWA blazing fast online and offline.",
+        "funFact": "Documents Wi-Fi speeds from co-working spaces around the globe—yes, there’s a leaderboard.",
+        "location": "Bern, Switzerland",
+        "image": "/img/team/jonas-placeholder.svg",
+        "photoAlt": "Jonas coding from a bright coworking space"
+      },
+      {
+        "name": "Simon",
+        "role": "Operations & People Lead",
+        "bio": "Runs our go-to-market ops, community partnerships, and keeps the whole crew aligned on the SmartPack mission.",
+        "funFact": "Can pack a 10-day trip in under 20 minutes and invented our ‘two-zipper rule’.",
+        "location": "Zurich, Switzerland",
+        "image": "/img/team/simon-placeholder.svg",
+        "photoAlt": "Simon planning a community meetup"
+      }
+    ]
+  },
+  "jobsPage": {
+    "hero": {
+      "badge": "Hiring @ SmartPack",
+      "headline": "We’re currently not hiring—but the journey continues",
+      "description": "Our compact crew is fully staffed right now. We’re using this season to ship core product experiences and nurture our beta community.",
+      "status": {
+        "title": "Current status",
+        "message": "No open roles for 2025. We expect the next hiring wave in early 2026."
+      },
+      "followUp": "Want to hear when things change? We share updates via our newsletter and personal replies to thoughtful introductions.",
+      "cta": {
+        "team": "Meet the team",
+        "contact": "Send us an intro"
+      }
+    },
+    "values": {
+      "title": "How we work",
+      "items": [
+        {
+          "title": "Travel-first research",
+          "description": "Every feature ships with insights gathered on real trips—train tables, mountain huts, and airport floors included."
+        },
+        {
+          "title": "Craft over speed",
+          "description": "We care about details that make packing joyful, even if it means iterating longer with our beta community."
+        },
+        {
+          "title": "Radical transparency",
+          "description": "We share roadmaps, learnings, and experiments openly with users and future teammates."
+        }
+      ]
+    },
+    "perks": {
+      "headline": "What teammates love when positions open",
+      "description": "SmartPack is still boutique, so we shape benefits together. These are the staples people stay for.",
+      "items": [
+        {
+          "title": "Global remote setup",
+          "description": "Work from anywhere within ±2h CET. We sponsor coworking passes and slow-travel residencies twice per year."
+        },
+        {
+          "title": "Annual field expeditions",
+          "description": "Join research trips to test SmartPack in new climates while collecting stories for the community."
+        },
+        {
+          "title": "Creative growth budget",
+          "description": "€1,500 per year for courses, mentors, or gear that expands your craft and curiosity."
+        },
+        {
+          "title": "Wellbeing by design",
+          "description": "Four-day focused work cycles, async deep-work blocks, and dedicated recharge weeks after each launch."
+        }
+      ]
+    },
+    "keepInTouch": {
+      "title": "Stay in the loop",
+      "description": "Subscribers get quarterly product notes, early beta invites, and the first word when we reopen roles.",
+      "newsletter": "Join the newsletter",
+      "frequency": "Quarterly updates · zero spam"
+    },
+    "future": {
+      "title": "Building your future seat",
+      "message": "Tell us who you are, what you’d love to build, and the kind of adventure you want at SmartPack. We’ll reach out when the timing is right."
+    }
+  },
+  "footer": {
+    "headline": "Travel perfected.",
+    "description": "SmartPack is your intelligent travel assistant. We craft tools that support you before, during, and after every journey.",
+    "copyright": "© {{year}} SmartPack Collective. All rights reserved.",
+    "columns": [
+      {
+        "title": "Product",
+        "links": [
+          {
+            "label": "Roadmap",
+            "href": "#roadmap"
+          },
+          {
+            "label": "Security briefing",
+            "href": "#security"
+          },
+          {
+            "label": "Early access",
+            "href": "#demo"
+          }
+        ]
+      },
+      {
+        "title": "Resources",
+        "links": [
+          {
+            "label": "Help center",
+            "href": "#faq"
+          },
+          {
+            "label": "Travel playbooks",
+            "href": "#playbooks"
+          },
+          {
+            "label": "Press",
+            "href": "#press"
+          }
+        ]
+      },
+      {
+        "title": "Company",
+        "links": [
+          {
+            "label": "Team",
+            "href": "/team"
+          },
+          {
+            "label": "Careers",
+            "href": "/jobs"
+          },
+          {
+            "label": "Contact",
+            "href": "/contact"
+          }
+        ]
+      }
+    ]
+  },
+  "contactPage": {
+    "hero": {
+      "badge": "Talk to SmartPack",
+      "headline": "We’re travellers building for travellers",
+      "intro": "Questions, partnership ideas, feature requests or media enquiries – reach the crew directly and we’ll get back within 48 hours.",
+      "description": "Pick a channel that fits your request. We route every message to the teammate best suited to respond.",
+      "cta": {
+        "team": "Meet the crew",
+        "jobs": "See open roles"
+      }
+    },
+    "slots": {
+      "title": "How we respond",
+      "items": [
+        "Average response time: under 48 hours on weekdays",
+        "We reply in English or German (FR/IT coming soon)",
+        "Press requests receive dedicated media kits"
+      ]
+    },
+    "labels": {
+      "channel": "Channel"
+    },
+    "channels": [
+      {
+        "label": "Support & Feedback",
+        "description": "Running into friction or have an idea? Our product triage keeps SmartPack’s roadmap aligned with traveller needs.",
+        "action": {
+          "label": "support@smartpack.app",
+          "href": "mailto:support@smartpack.app"
+        }
+      },
+      {
+        "label": "Partnerships",
+        "description": "For travel brands, creators, or gear makers who want to collaborate on smart packing experiences.",
+        "action": {
+          "label": "Partner with us",
+          "href": "mailto:partnerships@smartpack.app"
+        }
+      },
+      {
+        "label": "Media & Press",
+        "description": "Need a quote, press kit, or interview? Reach Simon directly for media coordination.",
+        "action": {
+          "label": "press@smartpack.app",
+          "href": "mailto:press@smartpack.app"
+        }
+      }
+    ],
+    "faq": {
+      "title": "Contact FAQ",
+      "description": "Popular questions from our community and partners.",
+      "items": [
+        {
+          "question": "How fast do you reply?",
+          "answer": "During the week we aim for < 48h. For urgent issues mention 'urgent' in the subject line."
+        },
+        {
+          "question": "Do you offer live demos?",
+          "answer": "Yes – once a month we host a community session. Drop us a note and we’ll share the next date."
+        },
+        {
+          "question": "Can I pitch a feature idea?",
+          "answer": "Absolutely. Share context about your trip and pain point so we can explore it in discovery."
+        }
+      ]
+    }
+  }
+}

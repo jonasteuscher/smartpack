@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title">
+  <title id="title">Marcus placeholder portrait</title>
+  <rect width="160" height="160" rx="28" fill="#E0E7FF" />
+  <circle cx="80" cy="62" r="38" fill="#ADB8FF" />
+  <path d="M32 138c6-28 30-48 48-48s42 20 48 48" fill="#1A2560" fill-opacity="0.08" />
+  <text x="80" y="94" text-anchor="middle" font-family="'Inter', sans-serif" font-size="44" fill="#1C2A63">M</text>
+</svg>

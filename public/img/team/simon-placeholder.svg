@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title">
+  <title id="title">Simon placeholder portrait</title>
+  <rect width="160" height="160" rx="28" fill="#E9F2FF" />
+  <circle cx="80" cy="62" r="38" fill="#9FC4FF" />
+  <path d="M32 138c6-29 30-50 48-50s42 21 48 50" fill="#12345C" fill-opacity="0.08" />
+  <text x="80" y="94" text-anchor="middle" font-family="'Inter', sans-serif" font-size="44" fill="#13365F">S</text>
+</svg>

@@ -1,0 +1,147 @@
+import { useState, Fragment } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Dialog, Transition } from '@headlessui/react';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Link } from 'react-router-dom';
+import LanguageSwitcher from '@components/common/LanguageSwitcher.tsx';
+import ThemeToggle from '@components/common/ThemeToggle.tsx';
+
+const NAV_ITEMS = [
+  { key: 'overview', href: '#hero' },
+  { key: 'features', href: '#features' },
+  { key: 'workflow', href: '#workflow' },
+  { key: 'feedback', href: '#testimonials' },
+  { key: 'faq', href: '#faq' }
+] as const;
+
+interface HeaderProps {
+  showNavigation?: boolean;
+}
+
+const Header = ({ showNavigation = true }: HeaderProps) => {
+  const { t } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const closeMenu = () => setIsOpen(false);
+
+  return (
+    <header className="pointer-events-auto">
+      <div className="container-responsive">
+        <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/80 px-6 py-4 shadow-sm backdrop-blur-md transition dark:border-slate-800/80 dark:bg-slate-900/60">
+          <Link to="/" className="flex items-center gap-3 font-semibold text-slate-900 dark:text-white">
+            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-secondary to-brand-primary text-2xl font-bold text-white shadow-lg">
+              SP
+            </span>
+            <div className="flex flex-col leading-tight">
+              <span className="text-sm uppercase tracking-[0.35em] text-slate-500 dark:text-slate-300">
+                {t('header.brand.title')}
+              </span>
+              <span className="text-base font-semibold">{t('header.brand.tagline')}</span>
+            </div>
+          </Link>
+
+          {showNavigation ? (
+            <nav className="hidden items-center gap-10 text-sm font-medium text-slate-600 md:flex dark:text-slate-200">
+              {NAV_ITEMS.map(({ key, href }) => (
+                <a
+                  key={key}
+                  href={href}
+                  className="relative transition hover:text-brand-secondary focus:outline-none focus-visible:text-brand-secondary"
+                >
+                  {t(`header.nav.${key}`)}
+                </a>
+              ))}
+            </nav>
+          ) : (
+            <span className="hidden text-sm font-medium text-slate-400 md:block dark:text-slate-500">
+              {t('header.brand.tagline')}
+            </span>
+          )}
+
+          <div className="hidden items-center gap-3 md:flex">
+            <LanguageSwitcher />
+            <ThemeToggle />
+            <a
+              href="#demo"
+              className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-secondary/30 transition hover:-translate-y-0.5 hover:bg-brand-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary dark:bg-white dark:text-slate-900"
+            >
+              {t('header.cta')}
+            </a>
+          </div>
+
+          {showNavigation && (
+            <button
+              type="button"
+              onClick={() => setIsOpen(true)}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg md:hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+              aria-label={t('header.menu.open')}
+            >
+              <Bars3Icon className="h-6 w-6" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {showNavigation && (
+        <Transition show={isOpen} as={Fragment}>
+          <Dialog as="div" className="relative z-40 md:hidden" onClose={closeMenu}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-200"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-150"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-slate-900/60 backdrop-blur" />
+            </Transition.Child>
+
+            <div className="fixed inset-0 z-50 flex justify-end">
+              <Transition.Child
+                as={Fragment}
+                enter="transform transition ease-out duration-200"
+                enterFrom="translate-x-full"
+                enterTo="translate-x-0"
+                leave="transform transition ease-in duration-150"
+                leaveFrom="translate-x-0"
+                leaveTo="translate-x-full"
+              >
+                <Dialog.Panel className="flex h-full w-80 flex-col gap-6 bg-white px-6 py-10 shadow-2xl dark:bg-slate-900">
+                  <button
+                    type="button"
+                    onClick={closeMenu}
+                    className="self-end rounded-full border border-slate-200 p-2 text-slate-500 transition hover:text-slate-900 dark:border-slate-700 dark:text-slate-300 dark:hover:text-white"
+                    aria-label={t('header.menu.close')}
+                  >
+                    <XMarkIcon className="h-5 w-5" />
+                  </button>
+                  <nav className="flex flex-col gap-4 text-lg font-medium text-slate-700 dark:text-slate-200">
+                    {NAV_ITEMS.map(({ key, href }) => (
+                      <a key={key} href={href} onClick={closeMenu} className="transition hover:text-brand-secondary">
+                        {t(`header.nav.${key}`)}
+                      </a>
+                    ))}
+                  </nav>
+                  <div className="mt-auto flex flex-col gap-4">
+                    <LanguageSwitcher />
+                    <ThemeToggle />
+                    <a
+                      href="#demo"
+                      onClick={closeMenu}
+                      className="rounded-full bg-slate-900 px-4 py-3 text-center text-sm font-semibold text-white shadow-lg transition hover:bg-brand-secondary dark:bg-white dark:text-slate-900"
+                    >
+                      {t('header.cta')}
+                    </a>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </Dialog>
+        </Transition>
+      )}
+    </header>
+  );
+};
+
+export default Header;
