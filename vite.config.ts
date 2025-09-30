@@ -13,7 +13,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['icons/icon.svg', 'icons/icon-192x192.png', 'icons/icon-512x512.png'],
+      includeAssets: ['img/logo/Logo_500x350_Emblem.PNG', 'img/logo/Logo_500x300.PNG'],
       manifest: {
         name: APP_NAME,
         short_name: APP_SHORT_NAME,

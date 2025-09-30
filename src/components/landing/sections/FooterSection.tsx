@@ -28,9 +28,12 @@ const FooterSection = () => {
         <div className="grid gap-10 rounded-3xl bg-slate-100/50 p-10 dark:bg-slate-900/30 lg:grid-cols-[minmax(0,1.2fr),minmax(0,1fr)]">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-secondary to-brand-primary text-2xl font-semibold text-white shadow-lg">
-                SP
-              </span>
+              <img
+                src="/img/logo/Logo_500x350_Emblem.PNG"
+                alt="SmartPack Logo"
+                className="h-11 w-auto select-none"
+                loading="lazy"
+              />
               <div>
                 <p className="text-sm uppercase tracking-[0.3em] text-slate-500 dark:text-slate-300">{t('header.brand.title')}</p>
                 <p className="text-lg font-semibold text-slate-900 dark:text-white">{t('footer.headline')}</p>

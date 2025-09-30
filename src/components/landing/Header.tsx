@@ -29,15 +29,13 @@ const Header = ({ showNavigation = true }: HeaderProps) => {
       <div className="container-responsive">
         <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/80 px-6 py-4 shadow-sm backdrop-blur-md transition dark:border-slate-800/80 dark:bg-slate-900/60">
           <Link to="/" className="flex items-center gap-3 font-semibold text-slate-900 dark:text-white">
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-secondary to-brand-primary text-2xl font-bold text-white shadow-lg">
-              SP
-            </span>
-            <div className="flex flex-col leading-tight">
-              <span className="text-sm uppercase tracking-[0.35em] text-slate-500 dark:text-slate-300">
-                {t('header.brand.title')}
-              </span>
-              <span className="text-base font-semibold">{t('header.brand.tagline')}</span>
-            </div>
+            <img
+              src="/img/logo/Logo_500x350_Emblem.PNG"
+              alt="SmartPack Logo"
+              className="h-11 w-auto select-none"
+              loading="lazy"
+            />
+            <span className="sr-only">{t('header.brand.title')} – {t('header.brand.tagline')}</span>
           </Link>
 
           {showNavigation ? (
