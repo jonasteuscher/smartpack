@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": "v23.9.0"
+    "node": "v22.x"
   },
   "type": "module",
   "scripts": {
