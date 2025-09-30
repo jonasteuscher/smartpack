@@ -30,6 +30,13 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 7.5rem;
+}
+
+@media (min-width: 768px) {
+  html {
+    scroll-padding-top: 9.5rem;
+  }
 }
 
 body {
@@ -37,6 +44,17 @@ body {
   background-color: var(--surface-primary);
   color: var(--text-primary);
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+
+section[id] {
+  scroll-margin-top: 7.5rem;
+}
+
+@media (min-width: 768px) {
+  section[id] {
+    scroll-margin-top: 9.5rem;
+  }
 }
 
 body.dark {

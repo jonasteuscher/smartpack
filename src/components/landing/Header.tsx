@@ -55,7 +55,10 @@ const Header = ({ showNavigation = true }: HeaderProps) => {
               className="h-11 w-auto select-none"
               loading="lazy"
             />
-            <span className="sr-only">{t('header.brand.title')} – {t('header.brand.tagline')}</span>
+            <span className="text-sm font-semibold uppercase tracking-[0.35em] text-slate-600 md:hidden dark:text-slate-300">
+              {t('header.brand.title')}
+            </span>
+            <span className="sr-only">{t('header.brand.tagline')}</span>
           </Link>
 
           {showNavigation ? (
