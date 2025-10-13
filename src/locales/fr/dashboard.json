@@ -1,0 +1,81 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "packlists": "Listes",
+    "profile": "Profil",
+    "openMenu": "Ouvrir la navigation",
+    "closeMenu": "Fermer la navigation",
+    "signOut": "Se deconnecter",
+    "signingOut": "Deconnexion..."
+  },
+  "home": {
+    "heading": "Votre prochain voyage",
+    "subheading": "Nous afficherons ici votre itineraire a venir et les packlists suggerees.",
+    "signedInAs": "Vous etes connecte en tant que {{name}}",
+    "actions": {
+      "signOut": "Se deconnecter"
+    },
+    "placeholder": "Cette zone mettra bientot en avant votre itineraire actuel, la meteo et les elements a surveiller."
+  },
+  "packlists": {
+    "heading": "Listes",
+    "subheading": "Gerez vos listes passees, en cours et a venir.",
+    "placeholder": "Des que vous planifierez des voyages, vos packlists apparaitront ici."
+  },
+  "profile": {
+    "heading": "Profil",
+    "subheading": "Consultez et mettez a jour vos informations personnelles.",
+    "actions": {
+      "refresh": "Actualiser"
+    },
+    "sections": {
+      "details": "Details du profil",
+      "core": "Informations principales",
+      "travel": "Habitudes de voyage",
+      "transport": "Transport",
+      "accommodation": "Hebergement",
+      "activities": "Activites",
+      "sustainability": "Durabilite",
+      "budget": "Budget",
+      "meta": "Metadonnees du compte"
+    },
+    "fields": {
+      "firstname": "Prenom",
+      "lastname": "Nom",
+      "email": "E-mail",
+      "country": "Pays de residence",
+      "homeAirport": "Aeroport de reference",
+      "languages": "Langues",
+      "travelFrequency": "Voyages par an",
+      "tripDuration": "Duree moyenne (jours)",
+      "countriesVisited": "Pays visites",
+      "regionsVisited": "Regions frequentees",
+      "travelStyles": "Styles de voyage",
+      "travelSeasonality": "Preference saisonniere",
+      "transportModes": "Modes de transport",
+      "luggageTypes": "Bagages preferes",
+      "accommodationTypes": "Types d'hebergement",
+      "laundryAccess": "Acces a une buanderie",
+      "workspaceNeeded": "Espace de travail",
+      "activitiesSports": "Sports & plein air",
+      "activitiesAdventure": "Activites d'aventure",
+      "activitiesCultural": "Activites culturelles",
+      "sustainabilityFocus": "Focus durabilite",
+      "sustainabilityWeight": "Priorite au poids",
+      "budgetLevel": "Niveau de budget",
+      "buyAtDestination": "Achats sur place",
+      "souvenirSpace": "Espace souvenirs",
+      "createdAt": "Cree",
+      "updatedAt": "Mis a jour"
+    },
+    "state": {
+      "loading": "Chargement du profil...",
+      "error": "Impossible de charger votre profil. Veuillez reessayer.",
+      "empty": "Aucune information de profil pour le moment."
+    },
+    "fallback": {
+      "notSet": "Non defini",
+      "notAvailable": "Non disponible"
+    }
+  }
+}

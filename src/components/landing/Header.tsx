@@ -84,7 +84,7 @@ const Header = ({ showNavigation = true }: HeaderProps) => {
             <LanguageSwitcher />
             <ThemeToggle />
             <Link
-              to="/auth"
+              to="/dashboard"
               className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-secondary/30 transition hover:-translate-y-0.5 hover:bg-brand-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary dark:bg-white dark:text-slate-900"
             >
               {t('header.cta')}
@@ -154,7 +154,7 @@ const Header = ({ showNavigation = true }: HeaderProps) => {
                     <LanguageSwitcher />
                     <ThemeToggle />
                     <Link
-                      to="/auth"
+                      to="/dashboard"
                       onClick={closeMenu}
                       className="rounded-full bg-slate-900 px-4 py-3 text-center text-sm font-semibold text-white shadow-lg transition hover:bg-brand-secondary dark:bg-white dark:text-slate-900"
                     >

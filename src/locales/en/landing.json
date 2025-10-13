@@ -11,7 +11,7 @@
       "feedback": "Feedback",
       "faq": "FAQ"
     },
-    "cta": "Login / Signup",
+    "cta": "Go to app",
     "menu": {
       "open": "Open menu",
       "close": "Close menu"
@@ -31,7 +31,7 @@
     }
   },
   "hero": {
-    "badge": "SmartPack V2 Preview",
+    "badge": "SmartPack V2",
     "headline": "Pack clever. Travel calm.",
     "description": "SmartPack builds your perfect packing list in seconds – tailored to destination, weather, activities, and your personal travel style. Never forget something essential again.",
     "points": [

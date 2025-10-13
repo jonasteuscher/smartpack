@@ -10,12 +10,16 @@ import deAuth from './locales/de/auth.json';
 import enAuth from './locales/en/auth.json';
 import frAuth from './locales/fr/auth.json';
 import itAuth from './locales/it/auth.json';
+import deDashboard from './locales/de/dashboard.json';
+import enDashboard from './locales/en/dashboard.json';
+import frDashboard from './locales/fr/dashboard.json';
+import itDashboard from './locales/it/dashboard.json';
 
 const resources = {
-  de: { landing: deLanding, auth: deAuth },
-  en: { landing: enLanding, auth: enAuth },
-  fr: { landing: frLanding, auth: frAuth },
-  it: { landing: itLanding, auth: itAuth }
+  de: { landing: deLanding, auth: deAuth, dashboard: deDashboard },
+  en: { landing: enLanding, auth: enAuth, dashboard: enDashboard },
+  fr: { landing: frLanding, auth: frAuth, dashboard: frDashboard },
+  it: { landing: itLanding, auth: itAuth, dashboard: itDashboard }
 } as const;
 
 i18n
@@ -26,7 +30,7 @@ i18n
     fallbackLng: 'en',
     supportedLngs: ['de', 'en', 'fr', 'it'],
     defaultNS: 'landing',
-    ns: ['landing', 'auth'],
+    ns: ['landing', 'auth', 'dashboard'],
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],

@@ -1,0 +1,81 @@
+{
+  "nav": {
+    "home": "Home",
+    "packlists": "Packlists",
+    "profile": "Profile",
+    "openMenu": "Open navigation",
+    "closeMenu": "Close navigation",
+    "signOut": "Sign out",
+    "signingOut": "Signing out..."
+  },
+  "home": {
+    "heading": "Your next trip",
+    "subheading": "We'll surface your upcoming journey and suggested packlists here.",
+    "signedInAs": "You are logged in as {{name}}",
+    "actions": {
+      "signOut": "Sign out"
+    },
+    "placeholder": "This area will highlight your current itinerary, weather insights, and items that need attention."
+  },
+  "packlists": {
+    "heading": "Packlists",
+    "subheading": "Review and manage your past, current, and future trip checklists.",
+    "placeholder": "Packlist content will appear here once you start planning trips."
+  },
+  "profile": {
+    "heading": "Profile",
+    "subheading": "View and update your personal information.",
+    "actions": {
+      "refresh": "Refresh"
+    },
+    "sections": {
+      "details": "Profile details",
+      "core": "Core information",
+      "travel": "Travel patterns",
+      "transport": "Transport",
+      "accommodation": "Accommodation",
+      "activities": "Activities",
+      "sustainability": "Sustainability",
+      "budget": "Budget",
+      "meta": "Account metadata"
+    },
+    "fields": {
+      "firstname": "Firstname",
+      "lastname": "Lastname",
+      "email": "Email",
+      "country": "Country of residence",
+      "homeAirport": "Home airport / hub",
+      "languages": "Languages",
+      "travelFrequency": "Trips per year",
+      "tripDuration": "Average trip duration (days)",
+      "countriesVisited": "Countries visited",
+      "regionsVisited": "Regions often visited",
+      "travelStyles": "Travel styles",
+      "travelSeasonality": "Seasonality preference",
+      "transportModes": "Transport modes",
+      "luggageTypes": "Preferred luggage",
+      "accommodationTypes": "Accommodation types",
+      "laundryAccess": "Laundry expectation",
+      "workspaceNeeded": "Workspace needed",
+      "activitiesSports": "Sports & outdoor",
+      "activitiesAdventure": "Adventure activities",
+      "activitiesCultural": "Cultural activities",
+      "sustainabilityFocus": "Sustainability focus",
+      "sustainabilityWeight": "Weight priority",
+      "budgetLevel": "Budget level",
+      "buyAtDestination": "Buy-on-destination preference",
+      "souvenirSpace": "Souvenir space preference",
+      "createdAt": "Created",
+      "updatedAt": "Updated"
+    },
+    "state": {
+      "loading": "Loading profile...",
+      "error": "We couldn't load your profile. Please try again.",
+      "empty": "We couldn't find any profile information yet."
+    },
+    "fallback": {
+      "notSet": "Not set",
+      "notAvailable": "Not available"
+    }
+  }
+}

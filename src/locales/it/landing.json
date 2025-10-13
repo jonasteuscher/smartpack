@@ -11,7 +11,7 @@
       "feedback": "Feedback",
       "faq": "FAQ"
     },
-    "cta": "Accedi / Registrati",
+    "cta": "Vai all'app",
     "menu": {
       "open": "Apri menu",
       "close": "Chiudi menu"
@@ -31,7 +31,7 @@
     }
   },
   "hero": {
-    "badge": "SmartPack V2 Preview",
+    "badge": "SmartPack V2",
     "headline": "Prepara con intelligenza. Viaggia rilassato.",
     "description": "SmartPack crea in pochi secondi la lista perfetta per la tua valigia – su misura per destinazione, meteo, attività e stile di viaggio. Non dimenticherai più nulla di importante.",
     "points": [

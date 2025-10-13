@@ -11,7 +11,7 @@
       "feedback": "Feedback",
       "faq": "FAQ"
     },
-    "cta": "Login / Registrieren",
+    "cta": "Zur App",
     "menu": {
       "open": "Menü öffnen",
       "close": "Menü schließen"
@@ -31,7 +31,7 @@
     }
   },
   "hero": {
-    "badge": "SmartPack V2 Preview",
+    "badge": "SmartPack V2",
     "headline": "Clever packen. Entspannt reisen.",
     "description": "SmartPack baut dir in Sekunden deine perfekte Packliste – zugeschnitten auf Destination, Wetter, Aktivitäten und deinen persönlichen Reisestil. Nie wieder etwas Wichtiges vergessen.",
     "points": [

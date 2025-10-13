@@ -1,0 +1,81 @@
+{
+  "nav": {
+    "home": "Start",
+    "packlists": "Packlisten",
+    "profile": "Profil",
+    "openMenu": "Navigation öffnen",
+    "closeMenu": "Navigation schliessen",
+    "signOut": "Abmelden",
+    "signingOut": "Melde ab..."
+  },
+  "home": {
+    "heading": "Deine nächste Reise",
+    "subheading": "Hier erscheint deine bevorstehende Reise mit empfohlenen Packlisten.",
+    "signedInAs": "Du bist angemeldet als {{name}}",
+    "actions": {
+      "signOut": "Abmelden"
+    },
+    "placeholder": "Dieser Bereich zeigt bald deine aktuelle Route, Wetter-Insights und offene Aufgaben."
+  },
+  "packlists": {
+    "heading": "Packlisten",
+    "subheading": "Verwalte vergangene, aktuelle und kommende Reise-Checklisten.",
+    "placeholder": "Sobald du Reisen planst, erscheinen hier deine Packlisten."
+  },
+  "profile": {
+    "heading": "Profil",
+    "subheading": "Sieh dir deine Daten an und aktualisiere sie.",
+    "actions": {
+      "refresh": "Aktualisieren"
+    },
+    "sections": {
+      "details": "Profildetails",
+      "core": "Stammdaten",
+      "travel": "Reisemuster",
+      "transport": "Transport",
+      "accommodation": "Unterkunft",
+      "activities": "Aktivitäten",
+      "sustainability": "Nachhaltigkeit",
+      "budget": "Budget",
+      "meta": "Kontometadaten"
+    },
+    "fields": {
+      "firstname": "Vorname",
+      "lastname": "Nachname",
+      "email": "E-Mail",
+      "country": "Wohnsitzland",
+      "homeAirport": "Heimatflughafen",
+      "languages": "Sprachen",
+      "travelFrequency": "Reisen pro Jahr",
+      "tripDuration": "Durchschnittliche Reisedauer (Tage)",
+      "countriesVisited": "Bereiste Länder",
+      "regionsVisited": "Häufig besuchte Regionen",
+      "travelStyles": "Reisestile",
+      "travelSeasonality": "Präferenz Saison",
+      "transportModes": "Verkehrsmittel",
+      "luggageTypes": "Bevorzugtes Gepäck",
+      "accommodationTypes": "Unterkunftsarten",
+      "laundryAccess": "Waschmöglichkeit erwartet",
+      "workspaceNeeded": "Arbeitsplatz benötigt",
+      "activitiesSports": "Sport & Outdoor",
+      "activitiesAdventure": "Abenteueraktivitäten",
+      "activitiesCultural": "Kulturelle Aktivitäten",
+      "sustainabilityFocus": "Nachhaltigkeitsfokus",
+      "sustainabilityWeight": "Gewichtspriorität",
+      "budgetLevel": "Budgetniveau",
+      "buyAtDestination": "Kauf vor Ort",
+      "souvenirSpace": "Souvenir-Platz",
+      "createdAt": "Erstellt",
+      "updatedAt": "Aktualisiert"
+    },
+    "state": {
+      "loading": "Profil wird geladen...",
+      "error": "Profil konnte nicht geladen werden. Bitte versuche es erneut.",
+      "empty": "Noch keine Profildaten vorhanden."
+    },
+    "fallback": {
+      "notSet": "Nicht hinterlegt",
+      "notAvailable": "Nicht verfügbar"
+    }
+  }
+}

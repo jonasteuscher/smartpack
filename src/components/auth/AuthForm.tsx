@@ -5,13 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 
 const AuthForm = () => {
   const { t } = useTranslation('auth');
-  const {
-    signInWithEmail,
-    signUpWithEmail,
-    signInWithGoogle,
-    signInWithFacebook,
-    loading,
-  } = useAuth();
+  const { signInWithEmail, signUpWithEmail, signInWithGoogle, loading } = useAuth();
 
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
@@ -87,12 +81,11 @@ const AuthForm = () => {
     setSubmitting(false);
   };
 
-  const handleOAuth = async (provider: 'google' | 'facebook') => {
+  const handleOAuth = async () => {
     setError(null);
     setFeedback(null);
 
-    const { error: oauthError } =
-      provider === 'google' ? await signInWithGoogle() : await signInWithFacebook();
+    const { error: oauthError } = await signInWithGoogle();
 
     if (oauthError) {
       setError(translateErrorMessage(oauthError.message));
@@ -176,7 +169,7 @@ const AuthForm = () => {
 
       <div className="flex flex-col gap-2">
         <button
-          onClick={() => handleOAuth('google')}
+          onClick={handleOAuth}
           className="flex items-center justify-center gap-3 rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-primary hover:shadow disabled:cursor-not-allowed disabled:opacity-60"
           disabled={loading}
           type="button"
@@ -204,26 +197,6 @@ const AuthForm = () => {
           <span className="flex items-center gap-1">
             {t('form.oauth.google')}
             <ArrowRightIcon className="h-4 w-4 text-slate-400" aria-hidden />
-          </span>
-        </button>
-
-        <button
-          onClick={() => handleOAuth('facebook')}
-          className="flex items-center justify-center gap-3 rounded-md border border-[#1877F2] bg-[#1877F2] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[#0f67d0] hover:shadow disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={loading}
-          type="button"
-        >
-          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/15">
-            <svg aria-hidden viewBox="0 0 24 24" className="h-3.5 w-3.5">
-              <path
-                fill="currentColor"
-                d="M13.5 22v-8.21h2.75l.41-3.2H13.5V8.07c0-.93.26-1.56 1.63-1.56h1.74V3.66c-.3-.04-1.32-.13-2.51-.13-2.48 0-4.18 1.5-4.18 4.26v2.38H8v3.2h2.18V22h3.32z"
-              />
-            </svg>
-          </span>
-          <span className="flex items-center gap-1">
-            {t('form.oauth.facebook')}
-            <ArrowRightIcon className="h-4 w-4 text-white/80" aria-hidden />
           </span>
         </button>
 

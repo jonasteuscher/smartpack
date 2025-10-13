@@ -6,8 +6,11 @@ import TeamPage from './pages/TeamPage';
 import JobsPage from './pages/JobsPage';
 import ContactPage from './pages/ContactPage';
 import AuthPage from './pages/AuthPage';
-import Dashboard from './pages/Dashboard';
 import AuthCallbackPage from './pages/AuthCallbackPage';
+import DashboardLayout from './components/dashboard/DashboardLayout';
+import DashboardHomePage from './pages/DashboardHomePage';
+import PacklistsPage from './pages/PacklistsPage';
+import ProfilePage from './pages/ProfilePage';
 
 const App = () => {
   return (
@@ -24,10 +27,14 @@ const App = () => {
           path="/dashboard"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <DashboardLayout />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element={<DashboardHomePage />} />
+          <Route path="packlists" element={<PacklistsPage />} />
+          <Route path="profile" element={<ProfilePage />} />
+        </Route>
       </Routes>
     </main>
   );

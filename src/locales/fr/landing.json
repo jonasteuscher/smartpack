@@ -11,7 +11,7 @@
       "feedback": "Retours",
       "faq": "FAQ"
     },
-    "cta": "Connexion / Inscription",
+    "cta": "Aller a l'application",
     "menu": {
       "open": "Ouvrir le menu",
       "close": "Fermer le menu"
@@ -31,7 +31,7 @@
     }
   },
   "hero": {
-    "badge": "SmartPack V2 Preview",
+    "badge": "SmartPack V2",
     "headline": "Préparez malin. Voyagez serein.",
     "description": "SmartPack compose en quelques secondes la liste de bagages idéale – adaptée à votre destination, à la météo, aux activités et à votre style de voyage. N’oubliez plus jamais l’essentiel.",
     "points": [
