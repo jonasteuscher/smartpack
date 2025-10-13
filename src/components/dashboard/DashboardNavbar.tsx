@@ -5,6 +5,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import LanguageSwitcher from '@components/common/LanguageSwitcher';
 import ThemeToggle from '@components/common/ThemeToggle';
+import { useAuth } from '../../context/AuthContext';
 
 const NAV_ITEMS = [
   { to: '/dashboard', key: 'home', end: true },
@@ -15,8 +16,27 @@ const NAV_ITEMS = [
 const DashboardNavbar = () => {
   const { t } = useTranslation('dashboard');
   const [isOpen, setIsOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+  const { signOut } = useAuth();
 
   const closeMenu = () => setIsOpen(false);
+
+  const handleSignOut = async () => {
+    if (signingOut) {
+      return;
+    }
+
+    try {
+      setSigningOut(true);
+      const error = await signOut();
+      if (error) {
+        console.error('Failed to sign out', error);
+      }
+    } finally {
+      setSigningOut(false);
+      setIsOpen(false);
+    }
+  };
 
   return (
     <header className="pointer-events-auto">
@@ -55,6 +75,14 @@ const DashboardNavbar = () => {
           <div className="hidden items-center gap-3 md:flex">
             <LanguageSwitcher />
             <ThemeToggle />
+            <button
+              type="button"
+              onClick={handleSignOut}
+              disabled={signingOut}
+              className="rounded-full border border-red-500 px-4 py-2 text-xs font-semibold text-red-500 transition hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {t(`nav.${signingOut ? 'signingOut' : 'signOut'}`)}
+            </button>
           </div>
 
           <button
@@ -121,6 +149,14 @@ const DashboardNavbar = () => {
                 <div className="mt-auto flex flex-col gap-4">
                   <LanguageSwitcher />
                   <ThemeToggle />
+                  <button
+                    type="button"
+                    onClick={handleSignOut}
+                    disabled={signingOut}
+                    className="rounded-full border border-red-500 px-4 py-3 text-sm font-semibold text-red-500 transition hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {t(`nav.${signingOut ? 'signingOut' : 'signOut'}`)}
+                  </button>
                 </div>
               </Dialog.Panel>
             </Transition.Child>

@@ -17,7 +17,7 @@ const DashboardHomeContent = () => {
       .map((value) => (typeof value === 'string' ? value.trim() : ''))
       .filter(Boolean)
       .join(' ');
-
+  console.log(JSON.stringify(user.user_metadata.full_name))
   const handleSignOut = async () => {
     setError(null);
     const signOutError = await signOut();
@@ -32,7 +32,7 @@ const DashboardHomeContent = () => {
         <h1 className="text-3xl font-semibold">{t('home.heading')}</h1>
         <p className="text-sm text-[var(--text-secondary)]">
           {t('home.signedInAs', {
-            name: displayName || (user.email ?? 'SmartPack traveller'),
+            name: displayName || (user.user_metadata.full_name ?? 'SmartPack traveller'),
           })}
         </p>
       </header>

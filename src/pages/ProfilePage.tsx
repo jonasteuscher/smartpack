@@ -34,7 +34,8 @@ const ProfilePage = () => {
       {
         title: t('profile.sections.details'),
         fields: [
-          { label: t('profile.fields.name'), value: resolvedName },
+          { label: t('profile.fields.firstname'), value: profile?.user_firstname ?? null },
+          { label: t('profile.fields.lastname'), value: profile?.user_lastname ?? null },
           { label: t('profile.fields.email'), value: user?.email ?? null },
         ],
       },
