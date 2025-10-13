@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 type CTAStatus = 'idle' | 'success';
 
-type CTAChecklist = {
+interface CTAChecklist {
   title: string;
   status: string;
   items: string[];

@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
 
-type MetricItem = {
+interface MetricItem {
   label: string;
   value: string;
   caption: string;
 };
 
-type MetricsQuote = {
+interface MetricsQuote {
   text: string;
   author: string;
 };

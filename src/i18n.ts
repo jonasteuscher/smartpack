@@ -6,12 +6,16 @@ import deLanding from './locales/de/landing.json';
 import enLanding from './locales/en/landing.json';
 import frLanding from './locales/fr/landing.json';
 import itLanding from './locales/it/landing.json';
+import deAuth from './locales/de/auth.json';
+import enAuth from './locales/en/auth.json';
+import frAuth from './locales/fr/auth.json';
+import itAuth from './locales/it/auth.json';
 
 const resources = {
-  de: { landing: deLanding },
-  en: { landing: enLanding },
-  fr: { landing: frLanding },
-  it: { landing: itLanding }
+  de: { landing: deLanding, auth: deAuth },
+  en: { landing: enLanding, auth: enAuth },
+  fr: { landing: frLanding, auth: frAuth },
+  it: { landing: itLanding, auth: itAuth }
 } as const;
 
 i18n
@@ -22,7 +26,7 @@ i18n
     fallbackLng: 'en',
     supportedLngs: ['de', 'en', 'fr', 'it'],
     defaultNS: 'landing',
-    ns: ['landing'],
+    ns: ['landing', 'auth'],
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],

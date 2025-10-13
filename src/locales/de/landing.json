@@ -11,7 +11,7 @@
       "feedback": "Feedback",
       "faq": "FAQ"
     },
-    "cta": "Jetzt testen",
+    "cta": "Login / Registrieren",
     "menu": {
       "open": "Menü öffnen",
       "close": "Menü schließen"
@@ -39,7 +39,7 @@
       "Wetter-, Aktivitäts- und Dauer-Intelligenz",
       "Offline verfügbar & geräteübergreifend synchron"
     ],
-    "ctaPrimary": "Kostenlose Demo starten",
+    "ctaPrimary": "Jetzt ausprobieren",
     "ctaSecondary": "Interaktive Vorschau ansehen",
     "stats": {
       "travelers": {

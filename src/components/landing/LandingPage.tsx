@@ -5,7 +5,6 @@ import ProcessSection from './sections/ProcessSection';
 import MetricsSection from './sections/MetricsSection';
 import TestimonialsSection from './sections/TestimonialsSection';
 import FAQSection from './sections/FAQSection';
-import CallToActionSection from './sections/CallToActionSection';
 import FooterSection from './sections/FooterSection';
 
 const LandingPage = () => {
@@ -20,7 +19,6 @@ const LandingPage = () => {
       <MetricsSection />
       <TestimonialsSection />
       <FAQSection />
-      <CallToActionSection />
       <FooterSection />
     </div>
   );

@@ -2,7 +2,7 @@ import { Disclosure } from '@headlessui/react';
 import { MinusSmallIcon, PlusSmallIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 
-type FAQItem = {
+interface FAQItem {
   question: string;
   answer: string;
 };

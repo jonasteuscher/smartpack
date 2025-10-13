@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-type FooterLink = {
+interface FooterLink {
   label: string;
   href: string;
 };
 
-type FooterColumn = {
+interface FooterColumn {
   title: string;
   links: FooterLink[];
 };

@@ -11,7 +11,7 @@
       "feedback": "Retours",
       "faq": "FAQ"
     },
-    "cta": "Essayer maintenant",
+    "cta": "Connexion / Inscription",
     "menu": {
       "open": "Ouvrir le menu",
       "close": "Fermer le menu"
@@ -39,7 +39,7 @@
       "Intelligence météo, activités et durée",
       "Disponible hors ligne et synchronisé sur tous vos appareils"
     ],
-    "ctaPrimary": "Lancer la démo gratuite",
+    "ctaPrimary": "Essayer maintenant",
     "ctaSecondary": "Voir l’aperçu interactif",
     "stats": {
       "travelers": {

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import Header from '@/components/landing/Header';
 import FooterSection from '@/components/landing/sections/FooterSection';
 
-type ContactChannel = {
+interface ContactChannel {
   label: string;
   description: string;
   action: {
@@ -13,7 +13,7 @@ type ContactChannel = {
   };
 };
 
-type ContactFaq = {
+interface ContactFaq {
   question: string;
   answer: string;
 };

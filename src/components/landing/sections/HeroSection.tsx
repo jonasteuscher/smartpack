@@ -1,17 +1,18 @@
-import { ArrowRightIcon, PlayCircleIcon } from '@heroicons/react/24/outline';
+import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 const HERO_STATS_KEYS = ['travelers', 'checklists', 'support'] as const;
 const CATEGORY_COLORS = ['bg-brand-primary', 'bg-brand-secondary', 'bg-cyan-400', 'bg-amber-300'] as const;
 
 type HeroStatKey = (typeof HERO_STATS_KEYS)[number];
 
-type Insight = {
+interface Insight {
   label: string;
   value: string;
 };
 
-type HeroProgress = {
+interface HeroProgress {
   label: string;
   completion: string;
   categories: string[];
@@ -57,20 +58,13 @@ const HeroSection = () => {
               ))}
             </ul>
             <div className="flex flex-wrap items-center gap-4 pt-4">
-              <a
-                href="#demo"
+              <Link
+                to="/auth"
                 className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-brand-secondary to-brand-primary px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-secondary/30 transition hover:-translate-y-1"
               >
                 {t('hero.ctaPrimary')}
                 <ArrowRightIcon className="h-4 w-4" />
-              </a>
-              <a
-                href="#demo"
-                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-6 py-3 text-sm font-semibold text-slate-600 shadow-sm transition hover:border-brand-secondary hover:text-brand-secondary dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-200"
-              >
-                <PlayCircleIcon className="h-5 w-5" />
-                {t('hero.ctaSecondary')}
-              </a>
+              </Link>
             </div>
             <dl className="mt-6 grid w-full grid-cols-3 gap-4 text-left">
               {stats.map((stat) => (

@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 import Header from '@/components/landing/Header';
 import FooterSection from '@/components/landing/sections/FooterSection';
 
-type ValueItem = {
+interface ValueItem {
   title: string;
   description: string;
 };
 
-type PerkItem = {
+interface PerkItem {
   title: string;
   description: string;
 };

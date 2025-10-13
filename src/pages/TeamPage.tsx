@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import Header from '@/components/landing/Header';
 import FooterSection from '@/components/landing/sections/FooterSection';
 
-type TeamMember = {
+interface TeamMember {
   name: string;
   role: string;
   bio: string;
@@ -13,13 +13,13 @@ type TeamMember = {
   photoAlt: string;
 };
 
-type CultureStat = {
+interface CultureStat {
   value: string;
   label: string;
   detail: string;
 };
 
-type CultureQuote = {
+interface CultureQuote {
   text: string;
   author: string;
 };

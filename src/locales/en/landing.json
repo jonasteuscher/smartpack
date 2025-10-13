@@ -11,7 +11,7 @@
       "feedback": "Feedback",
       "faq": "FAQ"
     },
-    "cta": "Try now",
+    "cta": "Login / Signup",
     "menu": {
       "open": "Open menu",
       "close": "Close menu"
@@ -39,7 +39,7 @@
       "Destination, weather, and activity intelligence",
       "Offline ready and synced across devices"
     ],
-    "ctaPrimary": "Launch free demo",
+    "ctaPrimary": "Try out now",
     "ctaSecondary": "Watch the interactive preview",
     "stats": {
       "travelers": {

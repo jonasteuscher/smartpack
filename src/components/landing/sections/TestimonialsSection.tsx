@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-type Testimonial = {
+interface Testimonial {
   quote: string;
   author: string;
   initials: string;

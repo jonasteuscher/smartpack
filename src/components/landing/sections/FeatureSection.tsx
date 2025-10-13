@@ -17,7 +17,7 @@ const FEATURE_ICONS = [
   UserGroupIcon
 ] as const;
 
-type FeatureItem = {
+interface FeatureItem {
   title: string;
   description: string;
 };

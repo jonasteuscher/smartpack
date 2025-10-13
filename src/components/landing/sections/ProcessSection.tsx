@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 const STEP_ICONS = [GlobeAmericasIcon, SparklesIcon, ClipboardDocumentCheckIcon, UserPlusIcon] as const;
 
-type ProcessStep = {
+interface ProcessStep {
   title: string;
   description: string;
   stat: string;
