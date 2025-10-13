@@ -11,13 +11,8 @@
   "categories": ["travel", "productivity"],
   "icons": [
     {
-      "src": "/img/logo/Logo_500x350_Emblem.PNG",
-      "sizes": "500x350",
-      "type": "image/png"
-    },
-    {
-      "src": "/img/logo/Logo_500x350_Emblem.PNG",
-      "sizes": "500x350",
+      "src": "/img/logo/Logo_500x500.PNG",
+      "sizes": "500x500",
       "type": "image/png",
       "purpose": "any maskable"
     }

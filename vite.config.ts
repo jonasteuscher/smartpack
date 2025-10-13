@@ -13,7 +13,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['img/logo/Logo_500x350_Emblem.PNG', 'img/logo/Logo_500x300.PNG'],
+      includeAssets: ['img/logo/Logo_500x500.PNG', 'img/logo/Logo_500x350_Emblem.PNG', 'img/logo/Logo_500x300.PNG'],
       manifest: {
         name: APP_NAME,
         short_name: APP_SHORT_NAME,
@@ -25,24 +25,6 @@ export default defineConfig({
         scope: '/',
         lang: 'de',
         categories: ['travel', 'productivity'],
-        icons: [
-          {
-            src: 'icons/icon-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'icons/icon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          },
-          {
-            src: 'icons/icon.svg',
-            sizes: '512x512',
-            type: 'image/svg+xml',
-            purpose: 'any maskable'
-          }
-        ]
       },
       workbox: {
         navigateFallback: '/index.html',
