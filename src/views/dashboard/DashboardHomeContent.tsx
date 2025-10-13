@@ -17,7 +17,6 @@ const DashboardHomeContent = () => {
       .map((value) => (typeof value === 'string' ? value.trim() : ''))
       .filter(Boolean)
       .join(' ');
-  console.log(JSON.stringify(user.user_metadata.full_name))
   const handleSignOut = async () => {
     setError(null);
     const signOutError = await signOut();
