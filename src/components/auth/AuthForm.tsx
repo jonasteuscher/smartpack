@@ -12,6 +12,7 @@ const AuthForm = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [feedback, setFeedback] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -55,6 +56,12 @@ const AuthForm = () => {
     setFeedback(null);
     setError(null);
 
+    if (mode === 'signup' && password !== confirmPassword) {
+      setError(t('form.errors.passwordsMismatch'));
+      setSubmitting(false);
+      return;
+    }
+
     const authError =
       mode === 'signin'
         ? await signInWithEmail(email.trim(), password)
@@ -71,10 +78,12 @@ const AuthForm = () => {
       setMode('signin');
       setEmail('');
       setPassword('');
+      setConfirmPassword('');
       setFirstName('');
       setLastName('');
       setFeedback(t('form.feedback.signUp'));
     } else {
+      setConfirmPassword('');
       setFeedback(t('form.feedback.signIn'));
     }
 
@@ -156,6 +165,21 @@ const AuthForm = () => {
           />
         </label>
 
+        {mode === 'signup' && (
+          <label className="flex flex-col gap-2 text-sm font-medium">
+            {t('form.labels.confirmPassword')}
+            <input
+              type="password"
+              required
+              value={confirmPassword}
+              onChange={(event) => setConfirmPassword(event.target.value)}
+              className="rounded-md border border-gray-300 bg-[var(--surface-primary)] p-2 text-base"
+              disabled={submitting || loading}
+              placeholder={t('form.placeholders.confirmPassword')}
+            />
+          </label>
+        )}
+
         <button
           type="submit"
           className="rounded-md bg-blue-500 px-4 py-2 font-semibold text-white transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60"
@@ -208,6 +232,7 @@ const AuthForm = () => {
             setFirstName('');
             setLastName('');
             setPassword('');
+            setConfirmPassword('');
           }}
           className="text-sm font-medium text-blue-500 hover:underline"
           type="button"
