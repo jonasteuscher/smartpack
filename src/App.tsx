@@ -1,4 +1,5 @@
-import { Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import ScrollToTop from './components/common/ScrollToTop';
 import LandingPage from './components/landing/LandingPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -12,9 +13,29 @@ import DashboardHomePage from './pages/DashboardHomePage';
 import PacklistsPage from './pages/PacklistsPage';
 import ProfilePage from './pages/ProfilePage';
 
+const StandaloneRedirect = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone === true;
+
+    if (isStandalone && location.pathname === '/') {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [location.pathname, navigate]);
+
+  return null;
+};
+
 const App = () => {
   return (
     <main className="min-h-screen bg-[var(--surface-primary)] text-[var(--text-primary)]">
+      <StandaloneRedirect />
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<LandingPage />} />
