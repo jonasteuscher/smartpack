@@ -11,7 +11,26 @@ import type { Profile } from '../types/profile';
 interface CountryOption {
   name: string;
   code: string;
+  flag: string;
 }
+
+const toFlagEmoji = (countryCode: string) => {
+  if (!countryCode || countryCode.length !== 2) {
+    return '';
+  }
+
+  return countryCode
+    .toUpperCase()
+    .split('')
+    .map((char) => {
+      const codePoint = char.charCodeAt(0);
+      if (codePoint < 65 || codePoint > 90) {
+        return '';
+      }
+      return String.fromCodePoint(127397 + codePoint);
+    })
+    .join('');
+};
 
 const ProfilePage = () => {
   const { t } = useTranslation('dashboard');
@@ -72,7 +91,7 @@ const ProfilePage = () => {
     if (match) {
       setSelectedCountry(match);
     } else {
-      setSelectedCountry({ name: currentValue, code: currentValue });
+      setSelectedCountry({ name: currentValue, code: currentValue, flag: toFlagEmoji(currentValue) });
     }
 
     setCountryQuery('');
@@ -199,6 +218,7 @@ const ProfilePage = () => {
           .map((country) => ({
             name: country.name.common,
             code: country.cca2,
+            flag: toFlagEmoji(country.cca2),
           }))
           .filter((option) => option.name)
           .sort((a, b) => a.name.localeCompare(b.name));
@@ -546,66 +566,89 @@ const ProfilePage = () => {
                                 {countriesError}
                               </p>
                             )}
-                          <Combobox
-                            value={selectedCountry}
-                            onChange={handleCountryChange}
-                            disabled={countriesLoading || savingCountry || !!countriesError}
-                          >
-                            <div className="relative">
-                              <div className="relative w-full cursor-default overflow-hidden rounded-md border border-slate-300 bg-white text-left shadow-sm focus-within:border-brand-secondary focus-within:ring-1 focus-within:ring-brand-secondary dark:border-slate-600 dark:bg-slate-900">
-                                <Combobox.Input
-                                  className="w-full border-none bg-transparent py-2 pl-3 pr-10 text-sm text-slate-700 focus:outline-none dark:text-slate-100"
-                                  displayValue={(country: CountryOption | null) => country?.name ?? ''}
-                                  onChange={(event) => setCountryQuery(event.target.value)}
-                                  placeholder={
-                                    countriesLoading
-                                      ? t('profile.state.countriesLoading', {
-                                          defaultValue: 'Loading countries…',
-                                        })
-                                      : t('profile.actions.selectCountry', {
-                                          defaultValue: 'Select your country',
-                                        })
-                                  }
-                                />
-                                <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400">
-                                  <ChevronUpDownIcon className="h-5 w-5" aria-hidden="true" />
-                                </Combobox.Button>
-                              </div>
-                              <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-800">
-                                {countriesError ? (
-                                  <div className="cursor-default px-3 py-2 text-xs text-red-600 dark:text-red-400">
-                                    {countriesError}
-                                  </div>
-                                ) : filteredCountries.length === 0 ? (
-                                  <div className="cursor-default px-3 py-2 text-xs text-[var(--text-secondary)]">
-                                    {countriesLoading
-                                      ? t('profile.state.countriesLoading', {
-                                          defaultValue: 'Loading countries…',
-                                        })
-                                      : t('profile.state.noCountriesFound', {
-                                          defaultValue: 'No countries match your search.',
-                                        })}
-                                  </div>
-                                ) : (
-                                  filteredCountries.map((country) => (
-                                    <Combobox.Option
-                                      key={`${country.code}-${country.name}`}
-                                      value={country}
-                                      className={({ active }) =>
-                                        `cursor-pointer px-3 py-2 ${
-                                          active
-                                            ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-primary/20 dark:text-brand-primary'
-                                            : 'text-slate-700 dark:text-slate-100'
-                                        }`
+                            <Combobox
+                              value={selectedCountry}
+                              onChange={handleCountryChange}
+                              disabled={countriesLoading || savingCountry || !!countriesError}
+                            >
+                              <div className="relative">
+                                <div className="relative w-full cursor-default overflow-hidden rounded-md border border-slate-300 bg-white text-left shadow-sm focus-within:border-brand-secondary focus-within:ring-1 focus-within:ring-brand-secondary dark:border-slate-600 dark:bg-slate-900">
+                                  <Combobox.Input
+                                    className="w-full border-none bg-transparent py-2 pl-3 pr-10 text-sm text-slate-700 focus:outline-none dark:text-slate-100"
+                                    displayValue={(country: CountryOption | null) => {
+                                      if (!country) {
+                                        return '';
                                       }
-                                    >
-                                      {country.name}
-                                    </Combobox.Option>
-                                  ))
-                                )}
-                              </Combobox.Options>
-                            </div>
-                          </Combobox>
+                                      const parts = [country.flag, country.name].filter(
+                                        (part) => part && part.trim().length > 0
+                                      );
+                                      return parts.join(' ');
+                                    }}
+                                    onChange={(event) => setCountryQuery(event.target.value)}
+                                    placeholder={
+                                      countriesLoading
+                                        ? t('profile.state.countriesLoading', {
+                                            defaultValue: 'Loading countries…',
+                                          })
+                                        : t('profile.actions.selectCountry', {
+                                            defaultValue: 'Select your country',
+                                          })
+                                    }
+                                  />
+                                  <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400">
+                                    <ChevronUpDownIcon className="h-5 w-5" aria-hidden="true" />
+                                  </Combobox.Button>
+                                </div>
+                                <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-800">
+                                  {countriesError ? (
+                                    <div className="cursor-default px-3 py-2 text-xs text-red-600 dark:text-red-400">
+                                      {countriesError}
+                                    </div>
+                                  ) : filteredCountries.length === 0 ? (
+                                    <div className="cursor-default px-3 py-2 text-xs text-[var(--text-secondary)]">
+                                      {countriesLoading
+                                        ? t('profile.state.countriesLoading', {
+                                            defaultValue: 'Loading countries…',
+                                          })
+                                        : t('profile.state.noCountriesFound', {
+                                            defaultValue: 'No countries match your search.',
+                                          })}
+                                    </div>
+                                  ) : (
+                                    filteredCountries.map((country) => (
+                                      <Combobox.Option
+                                        key={`${country.code}-${country.name}`}
+                                        value={country}
+                                        className={({ active }) =>
+                                          `cursor-pointer px-3 py-2 ${
+                                            active
+                                              ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-primary/20 dark:text-brand-primary'
+                                              : 'text-slate-700 dark:text-slate-100'
+                                          }`
+                                        }
+                                      >
+                                        {({ selected }) => (
+                                          <div className="flex items-center gap-2">
+                                            {country.flag ? (
+                                              <span className="text-lg" aria-hidden="true">
+                                                {country.flag}
+                                              </span>
+                                            ) : null}
+                                            <span
+                                              className={`text-sm ${
+                                                selected ? 'font-semibold' : 'font-medium'
+                                              }`}
+                                            >
+                                              {country.name}
+                                            </span>
+                                          </div>
+                                        )}
+                                      </Combobox.Option>
+                                    ))
+                                  )}
+                                </Combobox.Options>
+                              </div>
+                            </Combobox>
                         </div>
                       ) : (
                         formatValue(value)
