@@ -13,7 +13,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['img/logo/Logo_500x500.PNG', 'img/logo/Logo_500x350_Emblem.PNG', 'img/logo/Logo_500x300.PNG'],
+      includeAssets: ['img/logo/Logo_500x500.PNG'],
       manifest: {
         name: APP_NAME,
         short_name: APP_SHORT_NAME,
@@ -21,8 +21,8 @@ export default defineConfig({
         theme_color: '#05FF88',
         background_color: '#111827',
         display: 'standalone',
-        start_url: '/',
-        scope: '/',
+        start_url: '/dashboard',
+        scope: '/dashboard',
         lang: 'de',
         categories: ['travel', 'productivity'],
       },
