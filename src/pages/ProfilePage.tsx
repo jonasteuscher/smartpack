@@ -6,9 +6,7 @@ import { useProfile } from '../hooks/useProfile';
 const ProfilePage = () => {
   const { t } = useTranslation('dashboard');
   const { user } = useAuth();
-  const { profile, displayName, loading, error, refresh } = useProfile();
-
-  const resolvedName = displayName ?? t('profile.fallback.notSet');
+  const { profile, loading, error, refresh } = useProfile();
 
   const formatValue = useCallback(
     (value: unknown) => {
@@ -97,7 +95,7 @@ const ProfilePage = () => {
         ],
       },
     ],
-    [profile, resolvedName, t, user?.email]
+    [profile, t, user?.email]
   );
 
   return (

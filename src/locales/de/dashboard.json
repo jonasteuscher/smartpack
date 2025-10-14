@@ -79,5 +79,10 @@
       "notSet": "Nicht hinterlegt",
       "notAvailable": "Nicht verfügbar"
     }
+  },
+  "settings": {
+    "heading": "Einstellungen",
+    "subheading": "Verwalte deine Anwendungseinstellungen.",
+    "placeholder": "Hier erscheinen bald deine Einstellungen."
   }
 }

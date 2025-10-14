@@ -1,14 +1,17 @@
 import { useCallback, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useSupabaseQuery } from './useSupabaseQuery';
+import type { QueryOptions } from '../services/supabaseCrud';
 import type { Profile } from '../types/profile';
 
 export const useProfile = () => {
   const { user } = useAuth();
   const userId = user?.id ?? null;
 
-  const filter = useCallback(
-    (query: any) => (userId ? query.eq('user_id', userId) : query),
+  type ProfileFilter = NonNullable<QueryOptions<Profile>['filter']>;
+
+  const filter = useCallback<ProfileFilter>(
+    (query) => (userId ? query.eq('user_id', userId) : query),
     [userId]
   );
 

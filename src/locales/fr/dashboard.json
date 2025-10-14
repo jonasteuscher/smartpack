@@ -79,5 +79,10 @@
       "notSet": "Non defini",
       "notAvailable": "Non disponible"
     }
+  },
+  "settings": {
+    "heading": "Parametres",
+    "subheading": "Gerez les preferences de l'application.",
+    "placeholder": "Les parametres seront bientot disponibles ici."
   }
 }

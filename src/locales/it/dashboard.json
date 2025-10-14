@@ -79,5 +79,10 @@
       "notSet": "Non impostato",
       "notAvailable": "Non disponibile"
     }
+  },
+  "settings": {
+    "heading": "Impostazioni",
+    "subheading": "Gestisci le preferenze dell'applicazione.",
+    "placeholder": "Le impostazioni saranno presto disponibili qui."
   }
 }

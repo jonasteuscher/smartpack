@@ -79,5 +79,10 @@
       "notSet": "Not set",
       "notAvailable": "Not available"
     }
+  },
+  "settings": {
+    "heading": "Settings",
+    "subheading": "Manage your application preferences.",
+    "placeholder": "Settings content will appear here soon."
   }
 }

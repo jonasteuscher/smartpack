@@ -18,7 +18,7 @@ const AuthPage = () => {
   if (user) {
     const target =
       ((location.state as { from?: { pathname?: string } } | null)?.from?.pathname) ??
-      '/dashboard';
+      '/app/dashboard';
     return <Navigate to={target} replace />;
   }
 

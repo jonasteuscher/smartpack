@@ -1,8 +1,30 @@
+import type { PostgrestError, PostgrestFilterBuilder } from '@supabase/postgrest-js';
+import type {
+  ClientServerOptions,
+  GenericSchema,
+} from '@supabase/postgrest-js/dist/cjs/types/common/common';
 import { supabase } from '../utils/supabaseClient';
+
+type BaseRow = Record<string, unknown>;
+
+type ParserError<Message extends string> = { error: true } & Message;
+type GenericStringError = ParserError<'Received a generic string'>;
+
+type SupabaseFilterBuilder = PostgrestFilterBuilder<
+  ClientServerOptions,
+  GenericSchema,
+  BaseRow,
+  GenericStringError[],
+  string,
+  unknown,
+  'GET'
+>;
+
+type FilterFn = <Builder extends SupabaseFilterBuilder>(builder: Builder) => Builder;
 
 export interface QueryOptions<T> {
   columns?: string;
-  filter?: (builder: any) => any;
+  filter?: FilterFn;
   order?: {
     column: keyof T | string;
     ascending?: boolean;
@@ -19,14 +41,16 @@ export interface MutationOptions<T> {
 
 export interface CrudResult<T> {
   data: T | null;
-  error: any | null;
+  error: PostgrestError | null;
 }
 
 export const fetchCollection = async <T = Record<string, unknown>>(
   table: string,
   options: QueryOptions<T> = {}
 ): Promise<CrudResult<T[]>> => {
-  let query: any = supabase.from(table).select(options.columns ?? '*');
+  let query = supabase
+    .from(table)
+    .select(options.columns ?? '*') as SupabaseFilterBuilder;
 
   if (options.filter) {
     query = options.filter(query);
@@ -44,15 +68,15 @@ export const fetchCollection = async <T = Record<string, unknown>>(
   }
 
   const { data, error } = await query;
-  return { data, error };
+  return { data: (data as T[] | null) ?? null, error };
 };
 
 export const fetchSingle = async <T = Record<string, unknown>>(
   table: string,
-  filter: (builder: any) => any,
+  filter: FilterFn,
   columns = '*'
 ): Promise<CrudResult<T>> => {
-  let query: any = supabase.from(table).select(columns).limit(1);
+  let query = supabase.from(table).select(columns).limit(1) as SupabaseFilterBuilder;
   query = filter(query);
 
   const { data, error } = await query.maybeSingle();
@@ -64,13 +88,14 @@ export const createRecord = async <T = Record<string, unknown>>(
   payload: T,
   options: MutationOptions<T> = {}
 ): Promise<CrudResult<T>> => {
-  let query: any = supabase.from(table).insert(payload);
+  const mutation = supabase.from(table).insert(payload);
 
-  if (options.returning !== false) {
-    query = query.select(options.select ?? '*').single();
+  if (options.returning === false) {
+    const { data, error } = await mutation;
+    return { data: (data as T | null) ?? null, error };
   }
 
-  const { data, error } = await query;
+  const { data, error } = await mutation.select(options.select ?? '*').single();
   return { data: (data as T) ?? null, error };
 };
 
@@ -85,13 +110,17 @@ export const updateRecord = async <T = Record<string, unknown>>(
     throw new Error('updateRecord requires a match criteria (e.g., { id: value }).');
   }
 
-  let query: any = supabase.from(table).update(payload).match(matchCriteria);
+  const mutation = supabase
+    .from(table)
+    .update(payload)
+    .match(matchCriteria);
 
-  if (options.returning !== false) {
-    query = query.select(options.select ?? '*').single();
+  if (options.returning === false) {
+    const { data, error } = await mutation;
+    return { data: (data as T | null) ?? null, error };
   }
 
-  const { data, error } = await query;
+  const { data, error } = await mutation.select(options.select ?? '*').single();
   return { data: (data as T) ?? null, error };
 };
 

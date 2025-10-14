@@ -8,9 +8,14 @@ import ThemeToggle from '@components/common/ThemeToggle';
 import { useAuth } from '../../context/AuthContext';
 
 const NAV_ITEMS = [
-  { to: '/dashboard', key: 'home', end: true },
-  { to: '/dashboard/packlists', key: 'packlists', end: false },
-  { to: '/dashboard/profile', key: 'profile', end: false },
+  { to: '/app/dashboard', key: 'home', end: true },
+  { to: '/app/packlists', key: 'packlists', end: false },
+  { to: '/app/profile', key: 'profile', end: false },
+] as const;
+
+const MOBILE_NAV_ITEMS = [
+  ...NAV_ITEMS,
+  { to: '/app/settings', key: 'settings', end: false as const },
 ] as const;
 
 const DashboardNavbar = () => {
@@ -43,7 +48,7 @@ const DashboardNavbar = () => {
       <div className="container-responsive pt-6">
         <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/80 px-6 py-4 shadow-sm backdrop-blur-md transition dark:border-slate-800/80 dark:bg-slate-900/70">
           <Link
-            to="/dashboard"
+            to="/app/dashboard"
             className="flex items-center gap-3 font-semibold text-slate-900 transition hover:text-brand-secondary dark:text-white"
           >
             <img
@@ -96,7 +101,7 @@ const DashboardNavbar = () => {
                   <Menu.Item>
                     {({ active }) => (
                       <NavLink
-                        to="/dashboard/profile"
+                        to="/app/profile"
                         className={({ isActive }) =>
                           `${
                             active
@@ -114,7 +119,7 @@ const DashboardNavbar = () => {
                   <Menu.Item>
                     {({ active }) => (
                       <NavLink
-                        to="/dashboard/settings"
+                        to="/app/settings"
                         className={({ isActive }) =>
                           `${
                             active
@@ -196,10 +201,7 @@ const DashboardNavbar = () => {
                 </button>
 
                 <nav className="flex flex-col gap-4 text-lg font-medium text-slate-700 dark:text-slate-200">
-                  {[
-                    ...NAV_ITEMS,
-                    { to: '/dashboard/settings', key: 'settings', end: false as const },
-                  ].map(({ to, key, end }) => (
+                  {MOBILE_NAV_ITEMS.map(({ to, key, end }) => (
                     <NavLink
                       key={to}
                       to={to}

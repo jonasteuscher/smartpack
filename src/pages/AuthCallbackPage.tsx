@@ -46,7 +46,7 @@ const AuthCallbackPage = () => {
               }
             } else if (isMounted) {
               window.history.replaceState(window.history.state, '', `${location.pathname}`);
-              window.location.replace('/dashboard');
+              window.location.replace('/app/dashboard');
               return;
             }
           }
@@ -65,7 +65,7 @@ const AuthCallbackPage = () => {
             }
           } else if (isMounted) {
             window.history.replaceState(window.history.state, '', `${location.pathname}`);
-            window.location.replace('/dashboard');
+            window.location.replace('/app/dashboard');
             return;
           }
         }

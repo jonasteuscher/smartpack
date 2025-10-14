@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import ScrollToTop from './components/common/ScrollToTop';
 import LandingPage from './components/landing/LandingPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -12,6 +12,7 @@ import DashboardLayout from './components/dashboard/DashboardLayout';
 import DashboardHomePage from './pages/DashboardHomePage';
 import PacklistsPage from './pages/PacklistsPage';
 import ProfilePage from './pages/ProfilePage';
+import SettingsPage from './pages/SettingsPage';
 
 const StandaloneRedirect = () => {
   const location = useLocation();
@@ -22,10 +23,15 @@ const StandaloneRedirect = () => {
       return;
     }
 
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone === true;
+    const navigatorWithStandalone = navigator as Navigator & {
+      standalone?: boolean;
+    };
+
+    const isStandalone =
+      window.matchMedia('(display-mode: standalone)').matches || navigatorWithStandalone.standalone === true;
 
     if (isStandalone && location.pathname === '/') {
-      navigate('/dashboard', { replace: true });
+      navigate('/app/dashboard', { replace: true });
     }
   }, [location.pathname, navigate]);
 
@@ -45,16 +51,18 @@ const App = () => {
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
         <Route
-          path="/dashboard"
+          path="/app"
           element={
             <ProtectedRoute>
               <DashboardLayout />
             </ProtectedRoute>
           }
         >
-          <Route index element={<DashboardHomePage />} />
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<DashboardHomePage />} />
           <Route path="packlists" element={<PacklistsPage />} />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="settings" element={<SettingsPage />} />
         </Route>
       </Routes>
     </main>
