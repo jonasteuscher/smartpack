@@ -22,7 +22,7 @@ export default defineConfig({
         background_color: '#111827',
         display: 'standalone',
         start_url: '/dashboard',
-        scope: '/dashboard',
+        scope: '/',
         lang: 'de',
         categories: ['travel', 'productivity'],
       },

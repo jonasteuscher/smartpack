@@ -3,7 +3,7 @@
   "short_name": "SmartPack",
   "description": "SmartPack creates your individual packing list – based on destination, weather, activities and travel details.",
   "start_url": "/dashboard",
-  "scope": "/dashboard",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#111827",
   "theme_color": "#05FF88",
