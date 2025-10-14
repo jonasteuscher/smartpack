@@ -21,7 +21,7 @@ export default defineConfig({
         theme_color: '#05FF88',
         background_color: '#111827',
         display: 'standalone',
-        start_url: '/dashboard',
+        start_url: '/',
         scope: '/',
         lang: 'de',
         categories: ['travel', 'productivity'],
