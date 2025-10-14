@@ -3,8 +3,10 @@
     "home": "Home",
     "packlists": "Packlists",
     "profile": "Profile",
+    "settings": "Settings",
     "openMenu": "Open navigation",
     "closeMenu": "Close navigation",
+    "openUserMenu": "Open user menu",
     "signOut": "Sign out",
     "signingOut": "Signing out..."
   },

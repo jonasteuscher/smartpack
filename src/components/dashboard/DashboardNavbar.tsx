@@ -1,8 +1,8 @@
 import { Fragment, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Dialog, Transition } from '@headlessui/react';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Dialog, Menu, Transition } from '@headlessui/react';
+import { Bars3Icon, UserCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import LanguageSwitcher from '@components/common/LanguageSwitcher';
 import ThemeToggle from '@components/common/ThemeToggle';
 import { useAuth } from '../../context/AuthContext';
@@ -58,7 +58,7 @@ const DashboardNavbar = () => {
           </Link>
 
           <nav className="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex dark:text-slate-200">
-            {NAV_ITEMS.map(({ to, key, end }) => (
+            {NAV_ITEMS.filter(({ key }) => key !== 'profile').map(({ to, key, end }) => (
               <NavLink
                 key={to}
                 to={to}
@@ -75,14 +75,79 @@ const DashboardNavbar = () => {
           <div className="hidden items-center gap-3 md:flex">
             <LanguageSwitcher />
             <ThemeToggle />
-            <button
-              type="button"
-              onClick={handleSignOut}
-              disabled={signingOut}
-              className="rounded-full border border-red-500 px-4 py-2 text-xs font-semibold text-red-500 transition hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {t(`nav.${signingOut ? 'signingOut' : 'signOut'}`)}
-            </button>
+            <Menu as="div" className="relative">
+              <Menu.Button
+                className="flex items-center rounded-full border border-slate-200 bg-white p-1 text-slate-600 shadow-sm transition hover:text-brand-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                aria-label={t('nav.openUserMenu')}
+              >
+                <UserCircleIcon className="h-8 w-8" />
+              </Menu.Button>
+
+              <Transition
+                as={Fragment}
+                enter="transition ease-out duration-100"
+                enterFrom="transform opacity-0 scale-95"
+                enterTo="transform opacity-100 scale-100"
+                leave="transition ease-in duration-75"
+                leaveFrom="transform opacity-100 scale-100"
+                leaveTo="transform opacity-0 scale-95"
+              >
+                <Menu.Items className="absolute right-0 z-50 mt-3 w-48 origin-top-right rounded-xl border border-slate-200 bg-white py-2 shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-800">
+                  <Menu.Item>
+                    {({ active }) => (
+                      <NavLink
+                        to="/dashboard/profile"
+                        className={({ isActive }) =>
+                          `${
+                            active
+                              ? 'bg-slate-100 text-brand-secondary dark:bg-slate-700 dark:text-brand-primary'
+                              : 'text-slate-700 dark:text-slate-200'
+                          } ${
+                            isActive ? 'font-semibold text-brand-secondary dark:text-brand-primary' : ''
+                          } block px-4 py-2 text-sm`
+                        }
+                      >
+                        {t('nav.profile')}
+                      </NavLink>
+                    )}
+                  </Menu.Item>
+                  <Menu.Item>
+                    {({ active }) => (
+                      <NavLink
+                        to="/dashboard/settings"
+                        className={({ isActive }) =>
+                          `${
+                            active
+                              ? 'bg-slate-100 text-brand-secondary dark:bg-slate-700 dark:text-brand-primary'
+                              : 'text-slate-700 dark:text-slate-200'
+                          } ${
+                            isActive ? 'font-semibold text-brand-secondary dark:text-brand-primary' : ''
+                          } block px-4 py-2 text-sm`
+                        }
+                      >
+                        {t('nav.settings')}
+                      </NavLink>
+                    )}
+                  </Menu.Item>
+                  <Menu.Item>
+                    {({ active }) => (
+                      <button
+                        type="button"
+                        onClick={handleSignOut}
+                        disabled={signingOut}
+                        className={`${
+                          active
+                            ? 'bg-red-50 text-red-600 dark:bg-red-900/40 dark:text-red-300'
+                            : 'text-red-500 dark:text-red-400'
+                        } block w-full px-4 py-2 text-left text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60`}
+                      >
+                        {t(`nav.${signingOut ? 'signingOut' : 'signOut'}`)}
+                      </button>
+                    )}
+                  </Menu.Item>
+                </Menu.Items>
+              </Transition>
+            </Menu>
           </div>
 
           <button
@@ -131,7 +196,10 @@ const DashboardNavbar = () => {
                 </button>
 
                 <nav className="flex flex-col gap-4 text-lg font-medium text-slate-700 dark:text-slate-200">
-                  {NAV_ITEMS.map(({ to, key, end }) => (
+                  {[
+                    ...NAV_ITEMS,
+                    { to: '/dashboard/settings', key: 'settings', end: false as const },
+                  ].map(({ to, key, end }) => (
                     <NavLink
                       key={to}
                       to={to}
@@ -144,11 +212,12 @@ const DashboardNavbar = () => {
                       {t(`nav.${key}`)}
                     </NavLink>
                   ))}
+
                 </nav>
 
                 <div className="mt-auto flex flex-col gap-4">
-                  <LanguageSwitcher />
                   <ThemeToggle />
+                  <LanguageSwitcher />
                   <button
                     type="button"
                     onClick={handleSignOut}
