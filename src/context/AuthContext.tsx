@@ -100,7 +100,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           ? `${window.location.origin}/auth/callback`
           : undefined;
 
-      const { error } = await supabase.auth.signUp({
+      const { data: signUpData, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -108,6 +108,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           data,
         },
       });
+      if (!error && signUpData.user?.identities?.length === 0) {
+        return new AuthError('User already exists', 400, 'user_already_exists');
+      }
       return error ?? null;
     },
     []

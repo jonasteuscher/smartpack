@@ -30,6 +30,7 @@ const AuthForm = () => {
       'password should be at least 8 characters': t('form.errors.passwordTooShort'),
       'password should contain at least one uppercase letter, one lowercase letter, and one number':
         t('form.errors.passwordPolicy'),
+      'user already exists': t('form.errors.userAlreadyExists'),
     };
 
     const policyFragment =
