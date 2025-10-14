@@ -29,8 +29,12 @@
     "subheading": "Sieh dir deine Daten an und aktualisiere sie.",
     "actions": {
       "refresh": "Aktualisieren",
+      "refreshing": "Aktualisieren…",
       "updateAvatar": "Foto ändern",
-      "updateAvatarUploading": "Lade hoch…"
+      "updateAvatarUploading": "Lade hoch…",
+      "save": "Änderungen speichern",
+      "saving": "Speichere…",
+      "selectCountry": "Land auswählen"
     },
     "sections": {
       "details": "Profildetails",
@@ -78,7 +82,10 @@
     "state": {
       "loading": "Profil wird geladen...",
       "error": "Profil konnte nicht geladen werden. Bitte versuche es erneut.",
-      "empty": "Noch keine Profildaten vorhanden."
+      "empty": "Noch keine Profildaten vorhanden.",
+      "countriesLoading": "Lade Länder…",
+      "noCountriesFound": "Keine passenden Länder gefunden.",
+      "settingsSaved": "Deine Einstellungen wurden gespeichert."
     },
     "fallback": {
       "notSet": "Nicht hinterlegt",
@@ -88,7 +95,11 @@
       "avatarInvalidType": "Bitte wähle eine Bilddatei aus.",
       "avatarUploadFailed": "Dein Profilfoto konnte nicht hochgeladen werden.",
       "avatarUploadForbidden": "Uploads sind durch Sicherheitsrichtlinien blockiert. Bitte kontaktiere dein Team, um Profilfotos zu erlauben.",
-      "mustBeSignedIn": "Melde dich an, um dein Profilfoto zu ändern."
+      "countriesLoadFailed": "Die Länderliste konnte nicht geladen werden.",
+      "countrySaveFailed": "Dein Land konnte nicht gespeichert werden.",
+      "countrySaveForbidden": "Das Speichern ist durch Sicherheitsrichtlinien blockiert. Kontaktiere die Administration.",
+      "countrySelectRequired": "Bitte wähle dein Heimatland.",
+      "mustBeSignedIn": "Melde dich an, um dein Profil zu aktualisieren."
     }
   },
   "settings": {

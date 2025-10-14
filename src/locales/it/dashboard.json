@@ -29,8 +29,12 @@
     "subheading": "Consulta e aggiorna le tue informazioni personali.",
     "actions": {
       "refresh": "Aggiorna",
+      "refreshing": "Aggiornamento…",
       "updateAvatar": "Cambia foto",
-      "updateAvatarUploading": "Caricamento…"
+      "updateAvatarUploading": "Caricamento…",
+      "save": "Salva modifiche",
+      "saving": "Salvataggio…",
+      "selectCountry": "Seleziona il paese"
     },
     "sections": {
       "details": "Dettagli profilo",
@@ -78,7 +82,10 @@
     "state": {
       "loading": "Caricamento profilo...",
       "error": "Impossibile caricare il profilo. Riprova.",
-      "empty": "Nessuna informazione di profilo trovata."
+      "empty": "Nessuna informazione di profilo trovata.",
+      "countriesLoading": "Caricamento paesi…",
+      "noCountriesFound": "Nessun paese corrisponde alla ricerca.",
+      "settingsSaved": "Le impostazioni sono state salvate."
     },
     "fallback": {
       "notSet": "Non impostato",
@@ -88,7 +95,11 @@
       "avatarInvalidType": "Seleziona un file immagine.",
       "avatarUploadFailed": "Impossibile caricare la foto profilo.",
       "avatarUploadForbidden": "Il caricamento è bloccato dalle regole di sicurezza. Contatta l'amministratore per abilitarlo.",
-      "mustBeSignedIn": "Accedi per aggiornare la foto profilo."
+      "countriesLoadFailed": "Impossibile caricare l'elenco dei paesi.",
+      "countrySaveFailed": "Impossibile salvare il paese.",
+      "countrySaveForbidden": "Il salvataggio è bloccato dalle regole di sicurezza. Contatta l'amministratore.",
+      "countrySelectRequired": "Seleziona il tuo paese di residenza.",
+      "mustBeSignedIn": "Accedi per aggiornare il profilo."
     }
   },
   "settings": {

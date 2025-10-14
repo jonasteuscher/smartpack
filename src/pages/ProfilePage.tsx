@@ -1,8 +1,17 @@
 import { ChangeEvent, useCallback, useMemo, useRef, useState, useEffect } from 'react';
+import { Combobox } from '@headlessui/react';
+import { ArrowPathIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { useProfile } from '../hooks/useProfile';
 import { uploadProfileAvatar } from '../services/profileAvatar';
+import { updateRecord } from '../services/supabaseCrud';
+import type { Profile } from '../types/profile';
+
+interface CountryOption {
+  name: string;
+  code: string;
+}
 
 const ProfilePage = () => {
   const { t } = useTranslation('dashboard');
@@ -23,9 +32,196 @@ const ProfilePage = () => {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  const [countries, setCountries] = useState<CountryOption[]>([]);
+  const [countriesLoading, setCountriesLoading] = useState(false);
+  const [countriesError, setCountriesError] = useState<string | null>(null);
+  const [countryQuery, setCountryQuery] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState<CountryOption | null>(null);
+  const [originalCountry, setOriginalCountry] = useState<string | null>(null);
+  const [savingCountry, setSavingCountry] = useState(false);
+  const [countrySaveError, setCountrySaveError] = useState<string | null>(null);
+  const [countrySaved, setCountrySaved] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
   useEffect(() => {
     setLocalAvatarUrl(avatarUrl);
   }, [avatarUrl]);
+
+  useEffect(() => {
+    setOriginalCountry(profile?.core_country_of_residence ?? null);
+  }, [profile?.core_country_of_residence]);
+
+  useEffect(() => {
+    if (!countries.length) {
+      return;
+    }
+
+    const currentValue = profile?.core_country_of_residence ?? null;
+
+    if (!currentValue) {
+      setSelectedCountry(null);
+      return;
+    }
+
+    const normalized = currentValue.toLowerCase();
+    const match = countries.find(
+      (country) =>
+        country.name.toLowerCase() === normalized || country.code.toLowerCase() === normalized
+    );
+
+    if (match) {
+      setSelectedCountry(match);
+    } else {
+      setSelectedCountry({ name: currentValue, code: currentValue });
+    }
+
+    setCountryQuery('');
+  }, [countries, profile?.core_country_of_residence]);
+
+  const filteredCountries = useMemo(() => {
+    if (!countryQuery.trim()) {
+      return countries;
+    }
+
+    const normalizedQuery = countryQuery.trim().toLowerCase();
+    return countries.filter(
+      (country) =>
+        country.name.toLowerCase().includes(normalizedQuery) ||
+        country.code.toLowerCase().includes(normalizedQuery)
+    );
+  }, [countries, countryQuery]);
+
+  const isCountryDirty = (selectedCountry?.name ?? null) !== (originalCountry ?? null);
+
+  const handleCountryChange = (country: CountryOption | null) => {
+    setSelectedCountry(country);
+    setCountrySaved(false);
+    setCountrySaveError(null);
+    setCountryQuery('');
+  };
+
+  const handleSaveCountry = async () => {
+    if (!user) {
+      setCountrySaveError(
+        t('profile.errors.mustBeSignedIn', {
+          defaultValue: 'Sign in to update your profile.',
+        })
+      );
+      return;
+    }
+
+    if (!selectedCountry) {
+      setCountrySaveError(
+        t('profile.errors.countrySelectRequired', {
+          defaultValue: 'Please choose your home country.',
+        })
+      );
+      return;
+    }
+
+    if (!isCountryDirty) {
+      return;
+    }
+
+    try {
+      setSavingCountry(true);
+      setCountrySaveError(null);
+      setCountrySaved(false);
+
+      const { error: updateError } = await updateRecord<Profile>(
+        'profiles',
+        { core_country_of_residence: selectedCountry.name },
+        {
+          match: { user_id: user.id },
+        }
+      );
+
+      if (updateError) {
+        if (
+          updateError.message &&
+          updateError.message.toLowerCase().includes('row-level security')
+        ) {
+          throw new Error('country_update_forbidden');
+        }
+        throw updateError;
+      }
+
+      setOriginalCountry(selectedCountry.name);
+      setCountrySaved(true);
+      await refresh();
+    } catch (saveError) {
+      const message =
+        saveError instanceof Error
+          ? saveError.message === 'country_update_forbidden'
+            ? t('profile.errors.countrySaveForbidden', {
+                defaultValue:
+                  'Unable to save due to security rules. Please contact your administrator.',
+              })
+            : saveError.message
+          : t('profile.errors.countrySaveFailed', {
+              defaultValue: 'We could not save your selected country.',
+            });
+      setCountrySaveError(message);
+    } finally {
+      setSavingCountry(false);
+    }
+  };
+
+  const handleRefreshProfile = async () => {
+    try {
+      setRefreshing(true);
+      setCountrySaveError(null);
+      setCountrySaved(false);
+      await refresh();
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const loadCountries = async () => {
+      try {
+        setCountriesLoading(true);
+        setCountriesError(null);
+        const response = await fetch(
+          'https://restcountries.com/v3.1/all?fields=name,cca2',
+          { signal: controller.signal }
+        );
+
+        if (!response.ok) {
+          throw new Error(`Failed to load countries: ${response.status}`);
+        }
+
+        const rawCountries: { name: { common: string }; cca2: string }[] = await response.json();
+        const options = rawCountries
+          .map((country) => ({
+            name: country.name.common,
+            code: country.cca2,
+          }))
+          .filter((option) => option.name)
+          .sort((a, b) => a.name.localeCompare(b.name));
+
+        setCountries(options);
+      } catch (loadError) {
+        if (loadError instanceof DOMException && loadError.name === 'AbortError') {
+          return;
+        }
+        setCountriesError(
+          t('profile.errors.countriesLoadFailed', {
+            defaultValue: 'We could not load the list of countries.',
+          })
+        );
+      } finally {
+        setCountriesLoading(false);
+      }
+    };
+
+    void loadCountries();
+
+    return () => controller.abort();
+  }, [t]);
 
   const handleTriggerUpload = () => {
     setAvatarError(null);
@@ -45,7 +241,11 @@ const ProfilePage = () => {
     }
 
     if (!user) {
-      setAvatarError(t('profile.errors.mustBeSignedIn', { defaultValue: 'You must be signed in to update your picture.' }));
+      setAvatarError(
+        t('profile.errors.mustBeSignedIn', {
+          defaultValue: 'Sign in to update your profile.',
+        })
+      );
       return;
     }
 
@@ -147,7 +347,11 @@ const ProfilePage = () => {
       {
         title: t('profile.sections.core'),
         fields: [
-          { label: t('profile.fields.country'), value: profile?.core_country_of_residence },
+          {
+            id: 'country',
+            label: t('profile.fields.country'),
+            value: selectedCountry?.name ?? profile?.core_country_of_residence ?? null,
+          },
           { label: t('profile.fields.homeAirport'), value: profile?.core_home_airport_or_hub },
           { label: t('profile.fields.languages'), value: profile?.core_languages },
         ],
@@ -202,13 +406,13 @@ const ProfilePage = () => {
         ],
       },
     ],
-    [authMethod, profile, t, user?.email]
+    [authMethod, profile, selectedCountry, t, user?.email]
   );
 
   return (
     <section className="flex flex-col gap-6">
       <header className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-4">
             <div className="relative h-20 w-20 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
               {localAvatarUrl ? (
@@ -237,38 +441,72 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3">
-            <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-2 sm:items-end sm:justify-end">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
               <button
                 type="button"
                 onClick={handleTriggerUpload}
-                className="w-max rounded-full border border-dashed border-slate-300 px-4 py-2 text-xs font-semibold text-slate-500 transition hover:border-brand-secondary hover:text-brand-secondary disabled:opacity-60 dark:border-slate-600 dark:text-slate-300 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                className="w-max rounded-full border border-dashed border-slate-300 px-4 py-2 text-xs font-semibold text-slate-500 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-300 dark:hover:border-brand-primary dark:hover:text-brand-primary"
                 disabled={uploading}
               >
                 {uploading
                   ? t('profile.actions.updateAvatarUploading', { defaultValue: 'Uploading…' })
                   : t('profile.actions.updateAvatar', { defaultValue: 'Change photo' })}
               </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleFileSelected}
-              />
+              <button
+                type="button"
+                onClick={handleSaveCountry}
+                className="flex w-max items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                disabled={
+                  !selectedCountry ||
+                  !isCountryDirty ||
+                  savingCountry ||
+                  !!countriesError ||
+                  countriesLoading
+                }
+              >
+                {savingCountry
+                  ? t('profile.actions.saving', { defaultValue: 'Saving…' })
+                  : t('profile.actions.save', { defaultValue: 'Save changes' })}
+              </button>
+              <button
+                type="button"
+                onClick={handleRefreshProfile}
+                className="flex w-max items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                disabled={loading || refreshing}
+              >
+                <ArrowPathIcon
+                  className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`}
+                  aria-hidden="true"
+                />
+                {refreshing
+                  ? t('profile.actions.refreshing', { defaultValue: 'Refreshing…' })
+                  : t('profile.actions.refresh', { defaultValue: 'Refresh' })}
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-end sm:gap-3">
               {avatarError && (
                 <p className="text-xs text-red-600 dark:text-red-400">{avatarError}</p>
               )}
+              {countrySaveError && (
+                <p className="text-xs text-red-600 dark:text-red-400">{countrySaveError}</p>
+              )}
+              {!countrySaveError && countrySaved && (
+                <p className="text-xs text-emerald-600 dark:text-emerald-400">
+                  {t('profile.state.settingsSaved', { defaultValue: 'Your settings have been saved.' })}
+                </p>
+              )}
             </div>
-
-            <button
-              type="button"
-              onClick={refresh}
-              className="w-max rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
-            >
-              {t('profile.actions.refresh')}
-            </button>
           </div>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleFileSelected}
+          />
         </div>
       </header>
 
@@ -291,16 +529,91 @@ const ProfilePage = () => {
             >
               <h2 className="text-lg font-semibold">{section.title}</h2>
               <dl className="grid gap-4 sm:grid-cols-2">
-                {section.fields.map(({ label, value }) => (
-                  <div key={label} className="flex flex-col gap-1">
-                    <dt className="text-xs uppercase tracking-[0.2em] text-[var(--text-secondary)]">
-                      {label}
-                    </dt>
-                    <dd className="text-sm font-medium text-[var(--text-primary)]">
-                      {formatValue(value)}
-                    </dd>
-                  </div>
-                ))}
+                {section.fields.map((field) => {
+                  const { label, value } = field;
+                  const isCountryField = 'id' in field && field.id === 'country';
+
+                  return (
+                    <div key={label} className="flex flex-col gap-1">
+                      <dt className="text-xs uppercase tracking-[0.2em] text-[var(--text-secondary)]">
+                        {label}
+                      </dt>
+                      <dd className="text-sm font-medium text-[var(--text-primary)]">
+                        {isCountryField ? (
+                          <div className="flex flex-col gap-2">
+                            {countriesError && (
+                              <p className="text-xs text-red-600 dark:text-red-400">
+                                {countriesError}
+                              </p>
+                            )}
+                          <Combobox
+                            value={selectedCountry}
+                            onChange={handleCountryChange}
+                            disabled={countriesLoading || savingCountry || !!countriesError}
+                          >
+                            <div className="relative">
+                              <div className="relative w-full cursor-default overflow-hidden rounded-md border border-slate-300 bg-white text-left shadow-sm focus-within:border-brand-secondary focus-within:ring-1 focus-within:ring-brand-secondary dark:border-slate-600 dark:bg-slate-900">
+                                <Combobox.Input
+                                  className="w-full border-none bg-transparent py-2 pl-3 pr-10 text-sm text-slate-700 focus:outline-none dark:text-slate-100"
+                                  displayValue={(country: CountryOption | null) => country?.name ?? ''}
+                                  onChange={(event) => setCountryQuery(event.target.value)}
+                                  placeholder={
+                                    countriesLoading
+                                      ? t('profile.state.countriesLoading', {
+                                          defaultValue: 'Loading countries…',
+                                        })
+                                      : t('profile.actions.selectCountry', {
+                                          defaultValue: 'Select your country',
+                                        })
+                                  }
+                                />
+                                <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400">
+                                  <ChevronUpDownIcon className="h-5 w-5" aria-hidden="true" />
+                                </Combobox.Button>
+                              </div>
+                              <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-800">
+                                {countriesError ? (
+                                  <div className="cursor-default px-3 py-2 text-xs text-red-600 dark:text-red-400">
+                                    {countriesError}
+                                  </div>
+                                ) : filteredCountries.length === 0 ? (
+                                  <div className="cursor-default px-3 py-2 text-xs text-[var(--text-secondary)]">
+                                    {countriesLoading
+                                      ? t('profile.state.countriesLoading', {
+                                          defaultValue: 'Loading countries…',
+                                        })
+                                      : t('profile.state.noCountriesFound', {
+                                          defaultValue: 'No countries match your search.',
+                                        })}
+                                  </div>
+                                ) : (
+                                  filteredCountries.map((country) => (
+                                    <Combobox.Option
+                                      key={`${country.code}-${country.name}`}
+                                      value={country}
+                                      className={({ active }) =>
+                                        `cursor-pointer px-3 py-2 ${
+                                          active
+                                            ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-primary/20 dark:text-brand-primary'
+                                            : 'text-slate-700 dark:text-slate-100'
+                                        }`
+                                      }
+                                    >
+                                      {country.name}
+                                    </Combobox.Option>
+                                  ))
+                                )}
+                              </Combobox.Options>
+                            </div>
+                          </Combobox>
+                        </div>
+                      ) : (
+                        formatValue(value)
+                      )}
+                      </dd>
+                    </div>
+                  );
+                })}
               </dl>
             </article>
           ))}

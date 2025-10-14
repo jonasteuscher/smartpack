@@ -29,8 +29,12 @@
     "subheading": "View and update your personal information.",
     "actions": {
       "refresh": "Refresh",
+      "refreshing": "Refreshing…",
       "updateAvatar": "Change photo",
-      "updateAvatarUploading": "Uploading…"
+      "updateAvatarUploading": "Uploading…",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "selectCountry": "Select your country"
     },
     "sections": {
       "details": "Profile details",
@@ -78,7 +82,10 @@
     "state": {
       "loading": "Loading profile...",
       "error": "We couldn't load your profile. Please try again.",
-      "empty": "We couldn't find any profile information yet."
+      "empty": "We couldn't find any profile information yet.",
+      "countriesLoading": "Loading countries…",
+      "noCountriesFound": "No countries match your search.",
+      "settingsSaved": "Your settings have been saved."
     },
     "fallback": {
       "notSet": "Not set",
@@ -88,7 +95,11 @@
       "avatarInvalidType": "Please choose an image file.",
       "avatarUploadFailed": "We couldn’t upload your profile picture. Try again.",
       "avatarUploadForbidden": "Uploads are blocked by storage security rules. Ask your administrator to allow profile photos.",
-      "mustBeSignedIn": "Sign in to update your profile picture."
+      "countriesLoadFailed": "We couldn’t load the list of countries.",
+      "countrySaveFailed": "We couldn’t save your country. Try again.",
+      "countrySaveForbidden": "Saving is blocked by security rules. Contact your administrator.",
+      "countrySelectRequired": "Please choose your home country.",
+      "mustBeSignedIn": "Sign in to update your profile."
     }
   },
   "settings": {

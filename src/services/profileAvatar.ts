@@ -22,7 +22,9 @@ export const uploadProfileAvatar = async (user: User, file: File) => {
     });
 
   if (uploadError) {
-    if (uploadError.status === 403) {
+    const status = 'status' in uploadError ? (uploadError as { status?: number }).status : undefined;
+
+    if (status === 403) {
       throw new Error('avatar_upload_forbidden');
     }
     throw uploadError;
