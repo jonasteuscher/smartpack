@@ -372,7 +372,6 @@ const ProfilePage = () => {
             label: t('profile.fields.country'),
             value: selectedCountry?.name ?? profile?.core_country_of_residence ?? null,
           },
-          { label: t('profile.fields.homeAirport'), value: profile?.core_home_airport_or_hub },
           { label: t('profile.fields.languages'), value: profile?.core_languages },
         ],
       },

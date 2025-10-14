@@ -4,7 +4,6 @@ export interface Profile {
   user_lastname: string | null;
   email: string | null;
   core_country_of_residence?: string | null;
-  core_home_airport_or_hub?: string | null;
   core_languages?: string[] | null;
   travel_frequency_per_year?: number | null;
   travel_avg_trip_duration_days?: number | null;

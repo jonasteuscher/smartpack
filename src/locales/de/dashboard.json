@@ -55,7 +55,6 @@
       "authMethodPassword": "E-Mail & Passwort",
       "authMethodProvider": "Angemeldet mit {{provider}}",
       "country": "Wohnsitzland",
-      "homeAirport": "Heimatflughafen",
       "languages": "Sprachen",
       "travelFrequency": "Reisen pro Jahr", 
       "tripDuration": "Durchschnittliche Reisedauer (Tage)",
