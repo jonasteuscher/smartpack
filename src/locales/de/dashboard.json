@@ -29,7 +29,8 @@
     "subheading": "Sieh dir deine Daten an und aktualisiere sie.",
     "actions": {
       "refresh": "Aktualisieren",
-      "updateAvatar": "Foto ändern"
+      "updateAvatar": "Foto ändern",
+      "updateAvatarUploading": "Lade hoch…"
     },
     "sections": {
       "details": "Profildetails",
@@ -52,7 +53,7 @@
       "country": "Wohnsitzland",
       "homeAirport": "Heimatflughafen",
       "languages": "Sprachen",
-      "travelFrequency": "Reisen pro Jahr",
+      "travelFrequency": "Reisen pro Jahr", 
       "tripDuration": "Durchschnittliche Reisedauer (Tage)",
       "countriesVisited": "Bereiste Länder",
       "regionsVisited": "Häufig besuchte Regionen",
@@ -82,6 +83,12 @@
     "fallback": {
       "notSet": "Nicht hinterlegt",
       "notAvailable": "Nicht verfügbar"
+    },
+    "errors": {
+      "avatarInvalidType": "Bitte wähle eine Bilddatei aus.",
+      "avatarUploadFailed": "Dein Profilfoto konnte nicht hochgeladen werden.",
+      "avatarUploadForbidden": "Uploads sind durch Sicherheitsrichtlinien blockiert. Bitte kontaktiere dein Team, um Profilfotos zu erlauben.",
+      "mustBeSignedIn": "Melde dich an, um dein Profilfoto zu ändern."
     }
   },
   "settings": {

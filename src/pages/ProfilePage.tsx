@@ -1,7 +1,8 @@
-import { useCallback, useMemo } from 'react';
+import { ChangeEvent, useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { useProfile } from '../hooks/useProfile';
+import { uploadProfileAvatar } from '../services/profileAvatar';
 
 const ProfilePage = () => {
   const { t } = useTranslation('dashboard');
@@ -16,6 +17,63 @@ const ProfilePage = () => {
     displayName,
     authMethod,
   } = useProfile();
+
+  const [localAvatarUrl, setLocalAvatarUrl] = useState<string | null>(avatarUrl);
+  const [avatarError, setAvatarError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    setLocalAvatarUrl(avatarUrl);
+  }, [avatarUrl]);
+
+  const handleTriggerUpload = () => {
+    setAvatarError(null);
+    fileInputRef.current?.click();
+  };
+
+  const handleFileSelected = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      setAvatarError(t('profile.errors.avatarInvalidType', { defaultValue: 'Please select an image file.' }));
+      return;
+    }
+
+    if (!user) {
+      setAvatarError(t('profile.errors.mustBeSignedIn', { defaultValue: 'You must be signed in to update your picture.' }));
+      return;
+    }
+
+    try {
+      setUploading(true);
+      setAvatarError(null);
+      const publicUrl = await uploadProfileAvatar(user, file);
+      setLocalAvatarUrl(publicUrl);
+      await refresh();
+    } catch (uploadError) {
+      const message =
+        uploadError instanceof Error
+          ? uploadError.message === 'avatar_upload_forbidden'
+            ? t('profile.errors.avatarUploadForbidden', {
+                defaultValue:
+                  'Uploading is blocked by storage policies. Please contact support to enable profile photo uploads.',
+              })
+            : uploadError.message
+          : t('profile.errors.avatarUploadFailed', { defaultValue: 'Could not upload profile picture.' });
+      setAvatarError(message);
+    } finally {
+      setUploading(false);
+      // reset input so same file can be re-selected
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
 
   const formatValue = useCallback(
     (value: unknown) => {
@@ -153,9 +211,9 @@ const ProfilePage = () => {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
           <div className="flex items-center gap-4">
             <div className="relative h-20 w-20 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
-              {avatarUrl ? (
+              {localAvatarUrl ? (
                 <img
-                  src={avatarUrl}
+                  src={localAvatarUrl}
                   alt={resolvedName}
                   className="h-full w-full object-cover"
                   referrerPolicy="no-referrer"
@@ -179,22 +237,34 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              className="rounded-full border border-dashed border-slate-300 px-4 py-2 text-xs font-semibold text-slate-500 transition hover:border-brand-secondary hover:text-brand-secondary dark:border-slate-600 dark:text-slate-300 dark:hover:border-brand-primary dark:hover:text-brand-primary"
-              disabled
-              title={t('profile.actions.updateAvatar', {
-                defaultValue: 'Profile picture updates coming soon',
-              })}
-            >
-              {t('profile.actions.updateAvatar', { defaultValue: 'Change photo (soon)' })}
-            </button>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3">
+            <div className="flex flex-col gap-1">
+              <button
+                type="button"
+                onClick={handleTriggerUpload}
+                className="w-max rounded-full border border-dashed border-slate-300 px-4 py-2 text-xs font-semibold text-slate-500 transition hover:border-brand-secondary hover:text-brand-secondary disabled:opacity-60 dark:border-slate-600 dark:text-slate-300 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                disabled={uploading}
+              >
+                {uploading
+                  ? t('profile.actions.updateAvatarUploading', { defaultValue: 'Uploading…' })
+                  : t('profile.actions.updateAvatar', { defaultValue: 'Change photo' })}
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileSelected}
+              />
+              {avatarError && (
+                <p className="text-xs text-red-600 dark:text-red-400">{avatarError}</p>
+              )}
+            </div>
 
             <button
               type="button"
               onClick={refresh}
-              className="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+              className="w-max rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
             >
               {t('profile.actions.refresh')}
             </button>

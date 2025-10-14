@@ -29,7 +29,8 @@
     "subheading": "Consulta e aggiorna le tue informazioni personali.",
     "actions": {
       "refresh": "Aggiorna",
-      "updateAvatar": "Cambia foto"
+      "updateAvatar": "Cambia foto",
+      "updateAvatarUploading": "Caricamento…"
     },
     "sections": {
       "details": "Dettagli profilo",
@@ -82,6 +83,12 @@
     "fallback": {
       "notSet": "Non impostato",
       "notAvailable": "Non disponibile"
+    },
+    "errors": {
+      "avatarInvalidType": "Seleziona un file immagine.",
+      "avatarUploadFailed": "Impossibile caricare la foto profilo.",
+      "avatarUploadForbidden": "Il caricamento è bloccato dalle regole di sicurezza. Contatta l'amministratore per abilitarlo.",
+      "mustBeSignedIn": "Accedi per aggiornare la foto profilo."
     }
   },
   "settings": {

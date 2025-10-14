@@ -29,7 +29,8 @@
     "subheading": "View and update your personal information.",
     "actions": {
       "refresh": "Refresh",
-      "updateAvatar": "Change photo"
+      "updateAvatar": "Change photo",
+      "updateAvatarUploading": "Uploading…"
     },
     "sections": {
       "details": "Profile details",
@@ -82,6 +83,12 @@
     "fallback": {
       "notSet": "Not set",
       "notAvailable": "Not available"
+    },
+    "errors": {
+      "avatarInvalidType": "Please choose an image file.",
+      "avatarUploadFailed": "We couldn’t upload your profile picture. Try again.",
+      "avatarUploadForbidden": "Uploads are blocked by storage security rules. Ask your administrator to allow profile photos.",
+      "mustBeSignedIn": "Sign in to update your profile picture."
     }
   },
   "settings": {

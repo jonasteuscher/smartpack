@@ -29,7 +29,8 @@
     "subheading": "Consultez et mettez a jour vos informations personnelles.",
     "actions": {
       "refresh": "Actualiser",
-      "updateAvatar": "Changer la photo"
+      "updateAvatar": "Changer la photo",
+      "updateAvatarUploading": "Téléchargement…"
     },
     "sections": {
       "details": "Details du profil",
@@ -82,6 +83,12 @@
     "fallback": {
       "notSet": "Non defini",
       "notAvailable": "Non disponible"
+    },
+    "errors": {
+      "avatarInvalidType": "Veuillez choisir un fichier image.",
+      "avatarUploadFailed": "Impossible de téléverser votre photo de profil.",
+      "avatarUploadForbidden": "Le stockage bloque les téléversements. Contactez votre équipe pour activer les photos de profil.",
+      "mustBeSignedIn": "Connectez-vous pour modifier votre photo de profil."
     }
   },
   "settings": {
