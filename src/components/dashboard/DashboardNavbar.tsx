@@ -1,11 +1,12 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Dialog, Menu, Transition } from '@headlessui/react';
-import { Bars3Icon, UserCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import LanguageSwitcher from '@components/common/LanguageSwitcher';
 import ThemeToggle from '@components/common/ThemeToggle';
 import { useAuth } from '../../context/AuthContext';
+import { getAvatarInitials, getUserAvatarUrl } from '../../utils/getUserAvatarUrl';
 
 const NAV_ITEMS = [
   { to: '/app/dashboard', key: 'home', end: true },
@@ -22,7 +23,7 @@ const DashboardNavbar = () => {
   const { t } = useTranslation('dashboard');
   const [isOpen, setIsOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
 
   const closeMenu = () => setIsOpen(false);
 
@@ -42,6 +43,17 @@ const DashboardNavbar = () => {
       setIsOpen(false);
     }
   };
+
+  const avatarUrl = useMemo(() => getUserAvatarUrl(user), [user]);
+  const avatarInitials = useMemo(
+    () =>
+      getAvatarInitials(
+        (user?.user_metadata?.first_name as string | undefined) ?? user?.user_metadata?.given_name ?? null,
+        (user?.user_metadata?.last_name as string | undefined) ?? user?.user_metadata?.family_name ?? null,
+        (user?.user_metadata?.display_name as string | null) ?? user?.email ?? null
+      ),
+    [user?.email, user?.user_metadata]
+  );
 
   return (
     <header className="pointer-events-auto">
@@ -82,10 +94,21 @@ const DashboardNavbar = () => {
             <ThemeToggle />
             <Menu as="div" className="relative">
               <Menu.Button
-                className="flex items-center rounded-full border border-slate-200 bg-white p-1 text-slate-600 shadow-sm transition hover:text-brand-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                className="flex items-center rounded-full border border-slate-200 bg-white p-0.5 text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                 aria-label={t('nav.openUserMenu')}
               >
-                <UserCircleIcon className="h-8 w-8" />
+                {avatarUrl ? (
+                  <img
+                    src={avatarUrl}
+                    alt={t('nav.openUserMenu')}
+                    className="h-9 w-9 rounded-full object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-200 text-sm font-semibold text-slate-600 dark:bg-slate-700 dark:text-slate-200">
+                    {avatarInitials}
+                  </span>
+                )}
               </Menu.Button>
 
               <Transition

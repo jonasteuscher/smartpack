@@ -28,7 +28,8 @@
     "heading": "Profil",
     "subheading": "Sieh dir deine Daten an und aktualisiere sie.",
     "actions": {
-      "refresh": "Aktualisieren"
+      "refresh": "Aktualisieren",
+      "updateAvatar": "Foto ändern"
     },
     "sections": {
       "details": "Profildetails",
@@ -45,6 +46,9 @@
       "firstname": "Vorname",
       "lastname": "Nachname",
       "email": "E-Mail",
+      "authMethod": "Anmeldemethode",
+      "authMethodPassword": "E-Mail & Passwort",
+      "authMethodProvider": "Angemeldet mit {{provider}}",
       "country": "Wohnsitzland",
       "homeAirport": "Heimatflughafen",
       "languages": "Sprachen",

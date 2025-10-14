@@ -28,7 +28,8 @@
     "heading": "Profil",
     "subheading": "Consultez et mettez a jour vos informations personnelles.",
     "actions": {
-      "refresh": "Actualiser"
+      "refresh": "Actualiser",
+      "updateAvatar": "Changer la photo"
     },
     "sections": {
       "details": "Details du profil",
@@ -45,6 +46,9 @@
       "firstname": "Prenom",
       "lastname": "Nom",
       "email": "E-mail",
+      "authMethod": "Méthode d'authentification",
+      "authMethodPassword": "E-mail & mot de passe",
+      "authMethodProvider": "Connecté avec {{provider}}",
       "country": "Pays de residence",
       "homeAirport": "Aeroport de reference",
       "languages": "Langues",

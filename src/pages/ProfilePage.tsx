@@ -6,7 +6,16 @@ import { useProfile } from '../hooks/useProfile';
 const ProfilePage = () => {
   const { t } = useTranslation('dashboard');
   const { user } = useAuth();
-  const { profile, loading, error, refresh } = useProfile();
+  const {
+    profile,
+    loading,
+    error,
+    refresh,
+    avatarUrl,
+    avatarInitials,
+    displayName,
+    authMethod,
+  } = useProfile();
 
   const formatValue = useCallback(
     (value: unknown) => {
@@ -27,14 +36,54 @@ const ProfilePage = () => {
     [t]
   );
 
+  const resolvedName = useMemo(() => {
+    const firstName = profile?.user_firstname ?? (user?.user_metadata?.first_name as string | undefined);
+    const lastName = profile?.user_lastname ?? (user?.user_metadata?.last_name as string | undefined);
+
+    const combinedName = [firstName, lastName]
+      .map((value) => (typeof value === 'string' ? value.trim() : ''))
+      .filter(Boolean)
+      .join(' ');
+
+    if (combinedName.length > 0) {
+      return combinedName;
+    }
+
+    const metadataDisplayName = (user?.user_metadata?.display_name as string | undefined)?.trim();
+    if (metadataDisplayName) {
+      return metadataDisplayName;
+    }
+
+    if (displayName && displayName.trim().length > 0) {
+      return displayName;
+    }
+
+    return user?.email ?? t('profile.fallback.notSet');
+  }, [
+    displayName,
+    profile?.user_firstname,
+    profile?.user_lastname,
+    t,
+    user?.email,
+    user?.user_metadata,
+  ]);
+
   const sections = useMemo(
     () => [
       {
         title: t('profile.sections.details'),
         fields: [
-          { label: t('profile.fields.firstname'), value: profile?.user_firstname ?? null },
-          { label: t('profile.fields.lastname'), value: profile?.user_lastname ?? null },
           { label: t('profile.fields.email'), value: user?.email ?? null },
+          {
+            label: t('profile.fields.authMethod', { defaultValue: 'Authentication method' }),
+            value:
+              authMethod === 'email'
+                ? t('profile.fields.authMethodPassword', { defaultValue: 'Email & password' })
+                : t('profile.fields.authMethodProvider', {
+                    provider: authMethod,
+                    defaultValue: authMethod.charAt(0).toUpperCase() + authMethod.slice(1),
+                  }),
+          },
         ],
       },
       {
@@ -95,24 +144,62 @@ const ProfilePage = () => {
         ],
       },
     ],
-    [profile, t, user?.email]
+    [authMethod, profile, t, user?.email]
   );
 
   return (
     <section className="flex flex-col gap-6">
       <header className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-3xl font-semibold">{t('profile.heading')}</h1>
-          <p className="text-sm text-[var(--text-secondary)]">{t('profile.subheading')}</p>
-        </div>
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+          <div className="flex items-center gap-4">
+            <div className="relative h-20 w-20 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={resolvedName}
+                  className="h-full w-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <span className="flex h-full w-full items-center justify-center text-xl font-semibold text-slate-600 dark:text-slate-200">
+                  {avatarInitials}
+                </span>
+              )}
+            </div>
 
-        <button
-          type="button"
-          onClick={refresh}
-          className="self-start rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
-        >
-          {t('profile.actions.refresh')}
-        </button>
+            <div className="flex flex-col gap-1">
+              <h1 className="text-3xl font-semibold">{resolvedName}</h1>
+              <p className="text-sm text-[var(--text-secondary)]">{t('profile.subheading')}</p>
+              <p className="text-xs font-medium text-[var(--text-secondary)]">
+                {[profile?.user_firstname ?? (user?.user_metadata?.first_name as string | undefined), profile?.user_lastname ?? (user?.user_metadata?.last_name as string | undefined)]
+                  .map((value) => (typeof value === 'string' ? value.trim() : ''))
+                  .filter(Boolean)
+                  .join(' ') || t('profile.fallback.notSet')}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              className="rounded-full border border-dashed border-slate-300 px-4 py-2 text-xs font-semibold text-slate-500 transition hover:border-brand-secondary hover:text-brand-secondary dark:border-slate-600 dark:text-slate-300 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+              disabled
+              title={t('profile.actions.updateAvatar', {
+                defaultValue: 'Profile picture updates coming soon',
+              })}
+            >
+              {t('profile.actions.updateAvatar', { defaultValue: 'Change photo (soon)' })}
+            </button>
+
+            <button
+              type="button"
+              onClick={refresh}
+              className="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+            >
+              {t('profile.actions.refresh')}
+            </button>
+          </div>
+        </div>
       </header>
 
       {loading ? (

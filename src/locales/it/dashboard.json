@@ -28,7 +28,8 @@
     "heading": "Profilo",
     "subheading": "Consulta e aggiorna le tue informazioni personali.",
     "actions": {
-      "refresh": "Aggiorna"
+      "refresh": "Aggiorna",
+      "updateAvatar": "Cambia foto"
     },
     "sections": {
       "details": "Dettagli profilo",
@@ -45,6 +46,9 @@
       "firstname": "Nome",
       "lastname": "Cognome",
       "email": "Email",
+      "authMethod": "Metodo di accesso",
+      "authMethodPassword": "Email e password",
+      "authMethodProvider": "Accesso con {{provider}}",
       "country": "Paese di residenza",
       "homeAirport": "Aeroporto di riferimento",
       "languages": "Lingue",

@@ -28,7 +28,8 @@
     "heading": "Profile",
     "subheading": "View and update your personal information.",
     "actions": {
-      "refresh": "Refresh"
+      "refresh": "Refresh",
+      "updateAvatar": "Change photo"
     },
     "sections": {
       "details": "Profile details",
@@ -45,6 +46,9 @@
       "firstname": "Firstname",
       "lastname": "Lastname",
       "email": "Email",
+      "authMethod": "Authentication method",
+      "authMethodPassword": "Email & password",
+      "authMethodProvider": "Signed in with {{provider}}",
       "country": "Country of residence",
       "homeAirport": "Home airport / hub",
       "languages": "Languages",

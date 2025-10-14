@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useSupabaseQuery } from './useSupabaseQuery';
 import type { QueryOptions } from '../services/supabaseCrud';
 import type { Profile } from '../types/profile';
+import { getAvatarInitials, getUserAvatarUrl } from '../utils/getUserAvatarUrl';
 
 export const useProfile = () => {
   const { user } = useAuth();
@@ -34,10 +35,44 @@ export const useProfile = () => {
     const name = user?.user_metadata?.display_name as string | undefined;
     return (name && name.trim().length > 0 ? name : undefined) ?? user?.email ?? null;
   }, [user]);
+  const avatarUrl = useMemo(() => getUserAvatarUrl(user), [user]);
+  const avatarInitials = useMemo(
+    () =>
+      getAvatarInitials(
+        profile?.user_firstname ?? (user?.user_metadata?.first_name as string | null) ?? null,
+        profile?.user_lastname ?? (user?.user_metadata?.last_name as string | null) ?? null,
+        displayName
+      ),
+    [displayName, profile?.user_firstname, profile?.user_lastname, user?.user_metadata?.first_name, user?.user_metadata?.last_name]
+  );
+
+  const authMethod = useMemo(() => {
+    if (!user) {
+      return 'email';
+    }
+
+    const provider = user.app_metadata?.provider;
+
+    if (typeof provider === 'string' && provider.trim().length > 0) {
+      return provider;
+    }
+
+    if (Array.isArray(user.identities) && user.identities.length > 0) {
+      const identityProvider = user.identities[0]?.provider;
+      if (typeof identityProvider === 'string' && identityProvider.trim().length > 0) {
+        return identityProvider;
+      }
+    }
+
+    return 'email';
+  }, [user]);
 
   return {
     profile,
     displayName,
+    avatarUrl,
+    avatarInitials,
+    authMethod,
     error,
     loading,
     refresh,
