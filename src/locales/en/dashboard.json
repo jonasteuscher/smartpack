@@ -37,6 +37,8 @@
   "profile": {
     "heading": "Profile",
     "subheading": "View and update your personal information.",
+    "description": "The more you tell us about yourself, the better we can tailor your packing lists to you and your trips. That way you get suggestions that truly match your style, your activities, and your destination.",
+    "memberSince": "Member since {{date}}",
     "actions": {
       "refresh": "Refresh",
       "refreshing": "Refreshing…",

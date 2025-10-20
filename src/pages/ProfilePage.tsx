@@ -1,6 +1,6 @@
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Combobox } from '@headlessui/react';
-import { ArrowPathIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
+import { ArrowPathIcon, ChevronUpDownIcon, InformationCircleIcon } from '@heroicons/react/20/solid';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { useProfile } from '../hooks/useProfile';
@@ -17,6 +17,16 @@ interface CountryOption {
 interface LanguageOption {
   code: string;
   name: string;
+}
+
+interface DetailSectionField {
+  label: string;
+  value: unknown;
+}
+
+interface DetailSection {
+  title: string;
+  fields: DetailSectionField[];
 }
 
 const LANGUAGE_OPTIONS: LanguageOption[] = [
@@ -81,7 +91,7 @@ const languagesEqual = (a: string[], b: string[]): boolean => {
 };
 
 const ProfilePage = () => {
-  const { t } = useTranslation('dashboard');
+  const { t, i18n } = useTranslation('dashboard');
   const { user } = useAuth();
   const {
     profile,
@@ -320,24 +330,31 @@ const ProfilePage = () => {
     user?.user_metadata,
   ]);
 
-  const detailSections = useMemo(
+  const memberSince = useMemo(() => {
+    if (!profile?.created_at) {
+      return null;
+    }
+
+    const parsedDate = new Date(profile.created_at);
+    if (Number.isNaN(parsedDate.getTime())) {
+      return null;
+    }
+
+    try {
+      return new Intl.DateTimeFormat(i18n.language ?? 'en', {
+        month: 'long',
+        year: 'numeric',
+      }).format(parsedDate);
+    } catch {
+      return parsedDate.toLocaleDateString(undefined, {
+        month: 'long',
+        year: 'numeric',
+      });
+    }
+  }, [i18n.language, profile?.created_at]);
+
+  const secondarySections = useMemo<DetailSection[]>(
     () => [
-      {
-        title: t('profile.sections.details'),
-        fields: [
-          { label: t('profile.fields.email'), value: user?.email ?? null },
-          {
-            label: t('profile.fields.authMethod', { defaultValue: 'Authentication method' }),
-            value:
-              authMethod === 'email'
-                ? t('profile.fields.authMethodPassword', { defaultValue: 'Email & password' })
-                : t('profile.fields.authMethodProvider', {
-                    provider: authMethod,
-                    defaultValue: authMethod.charAt(0).toUpperCase() + authMethod.slice(1),
-                  }),
-          },
-        ],
-      },
       {
         title: t('profile.sections.travel'),
         fields: [
@@ -388,11 +405,21 @@ const ProfilePage = () => {
         ],
       },
     ],
-    [authMethod, profile, t, user?.email]
+    [profile, t]
   );
 
-  const detailsSection = detailSections[0];
-  const secondarySections = detailSections.slice(1);
+  const emailValue = user?.email ?? t('profile.fallback.notSet');
+  const isGoogleSignIn = authMethod === 'google';
+  const signInMethodDisplay = isGoogleSignIn
+    ? t('profile.fields.authMethodProvider', { provider: 'Google', defaultValue: 'Google' })
+    : authMethod === 'email'
+    ? t('profile.fields.authMethodPassword', { defaultValue: 'Email / Passwort' })
+    : authMethod
+    ? t('profile.fields.authMethodProvider', {
+        provider: authMethod,
+        defaultValue: authMethod.charAt(0).toUpperCase() + authMethod.slice(1),
+      })
+    : t('profile.fallback.notSet');
 
   const handleTriggerUpload = () => {
     setAvatarError(null);
@@ -636,13 +663,14 @@ const ProfilePage = () => {
             </div>
             <div className="flex flex-col items-center gap-1 text-center">
               <h1 className="text-3xl font-semibold">{resolvedName}</h1>
-              <p className="text-sm text-[var(--text-secondary)]">{t('profile.subheading')}</p>
-              <p className="text-xs font-medium text-[var(--text-secondary)]">
-                {[profile?.user_firstname ?? (user?.user_metadata?.first_name as string | undefined), profile?.user_lastname ?? (user?.user_metadata?.last_name as string | undefined)]
-                  .map((value) => (typeof value === 'string' ? value.trim() : ''))
-                  .filter(Boolean)
-                  .join(' ') || t('profile.fallback.notSet')}
-              </p>
+              {memberSince ? (
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  {t('profile.memberSince', {
+                    defaultValue: 'Member since {{date}}',
+                    date: memberSince,
+                  })}
+                </p>
+              ) : null}
             </div>
             <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-center">
               <button
@@ -672,28 +700,40 @@ const ProfilePage = () => {
           </div>
 
           <div className="flex flex-1 flex-col gap-4">
-            <div className="flex flex-col gap-1">
-              <p className="text-sm text-[var(--text-secondary)]">
-                {t('profile.heading', { defaultValue: 'Profile' })}
-              </p>
-              <p className="text-xs text-[var(--text-secondary)]">
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-4">
+                <h2 className="text-3xl font-semibold">
+                  {t('profile.sections.details', { defaultValue: 'Profile' })}
+                </h2>
+                <button
+                  type="button"
+                  onClick={handleRefreshProfile}
+                  className="flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                  disabled={refreshing || loading || isEditingCore}
+                >
+                  <ArrowPathIcon className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} aria-hidden="true" />
+                  {refreshing
+                    ? t('profile.actions.refreshing', { defaultValue: 'Refreshing…' })
+                    : t('profile.actions.refresh', { defaultValue: 'Refresh' })}
+                </button>
+              </div>
+              <p className="text-s text-[var(--text-secondary)]">
                 {t('profile.subheading', {
                   defaultValue: 'View and update your personal information.',
                 })}
               </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <button
-                type="button"
-                onClick={handleRefreshProfile}
-                className="flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
-                disabled={refreshing || loading || isEditingCore}
-              >
-                <ArrowPathIcon className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} aria-hidden="true" />
-                {refreshing
-                  ? t('profile.actions.refreshing', { defaultValue: 'Refreshing…' })
-                  : t('profile.actions.refresh', { defaultValue: 'Refresh' })}
-              </button>
+              <div className="flex items-start gap-3 rounded-xl border border-slate-200 bg-white/80 p-4 shadow-sm dark:border-slate-700/70 dark:bg-slate-800/70">
+                <InformationCircleIcon
+                  className="mt-0.5 h-5 w-5 flex-shrink-0 text-brand-secondary dark:text-brand-primary"
+                  aria-hidden="true"
+                />
+                <p className="text-xs leading-relaxed text-[var(--text-secondary)] dark:text-slate-200">
+                  {t('profile.description', {
+                    defaultValue:
+                      'The more you tell us about yourself, the better we can tailor your packing lists to you and your trips. That way you get suggestions that truly match your style, your activities, and your destination.',
+                  })}
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -719,24 +759,6 @@ const ProfilePage = () => {
         </div>
       ) : profile ? (
         <div className="grid gap-6 lg:grid-cols-2">
-          {detailsSection ? (
-            <article className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/60 p-6 shadow dark:border-slate-800/60 dark:bg-slate-900/60">
-              <h2 className="text-lg font-semibold">{detailsSection.title}</h2>
-              <dl className="grid gap-4">
-                {detailsSection.fields.map((field) => (
-                  <div key={field.label} className="flex flex-col gap-1">
-                    <dt className="text-xs uppercase tracking-[0.2em] text-[var(--text-secondary)]">
-                      {field.label}
-                    </dt>
-                    <dd className="text-sm font-medium text-[var(--text-primary)]">
-                      {formatValue(field.value)}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </article>
-          ) : null}
-
           <article className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/60 p-6 shadow dark:border-slate-800/60 dark:bg-slate-900/60 lg:col-span-2">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <h2 className="text-lg font-semibold">{t('profile.sections.core')}</h2>
@@ -896,7 +918,7 @@ const ProfilePage = () => {
                   )}
                 </dd>
               </div>
-              <div className="flex flex-col gap-1 md:col-span-2">
+              <div className="flex flex-col gap-1">
                 <dt className="text-xs uppercase tracking-[0.2em] text-[var(--text-secondary)]">
                   {t('profile.fields.languages')}
                 </dt>
@@ -970,6 +992,46 @@ const ProfilePage = () => {
                         </span>
                       ))}
                     </div>
+                  )}
+                </dd>
+              </div>
+              <div className="flex flex-col gap-1">
+                <dt className="text-xs uppercase tracking-[0.2em] text-[var(--text-secondary)]">
+                  {t('profile.fields.email')}
+                </dt>
+                <dd className="text-sm font-medium text-[var(--text-primary)]">{emailValue}</dd>
+              </div>
+              <div className="flex flex-col gap-1">
+                <dt className="text-xs uppercase tracking-[0.2em] text-[var(--text-secondary)]">
+                  {t('profile.fields.authMethod', { defaultValue: 'Authentication method' })}
+                </dt>
+                <dd className="text-sm font-medium text-[var(--text-primary)]">
+                  {isGoogleSignIn ? (
+                    <span className="flex items-center gap-2">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full border border-[#4285F4]/40 bg-white shadow-sm">
+                        <svg aria-hidden viewBox="0 0 24 24" className="h-3.5 w-3.5">
+                          <path
+                            fill="#4285F4"
+                            d="M21.35 11.1H12v2.9h5.35c-.23 1.4-.95 2.6-2.03 3.4v2.8h3.28c1.92-1.77 3.03-4.38 3.03-7.5 0-.72-.07-1.42-.2-2.1z"
+                          />
+                          <path
+                            fill="#34A853"
+                            d="M12 22c2.7 0 4.96-.9 6.62-2.5l-3.28-2.8c-.91.6-2.08.95-3.34.95-2.56 0-4.72-1.73-5.49-4.05H3.12v2.86C4.77 19.87 8.09 22 12 22z"
+                          />
+                          <path
+                            fill="#FBBC05"
+                            d="M6.51 13.6c-.2-.6-.31-1.25-.31-1.9s.11-1.3.31-1.9V6.94H3.12A9.97 9.97 0 0 0 2 11.7c0 1.57.36 3.07 1.12 4.76l3.39-2.86z"
+                          />
+                          <path
+                            fill="#EA4335"
+                            d="M12 5.8c1.47 0 2.79.5 3.83 1.47l2.86-2.87C16.96 2.75 14.7 2 12 2 8.09 2 4.77 4.13 3.12 7.64l3.39 2.86C7.28 7.53 9.44 5.8 12 5.8z"
+                          />
+                        </svg>
+                      </span>
+                      <span>{signInMethodDisplay}</span>
+                    </span>
+                  ) : (
+                    signInMethodDisplay
                   )}
                 </dd>
               </div>
