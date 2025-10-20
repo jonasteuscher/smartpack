@@ -24,6 +24,16 @@
     "subheading": "Gerez vos voyages passes, en cours et a venir.",
     "placeholder": "Des que vous planifierez des voyages, vos informations de voyage apparaitront ici."
   },
+  "onboard": {
+    "heading": "Parlez-nous un peu de vous",
+    "description": "Plus nous en savons sur vous, plus vos packlists et voyages seront precis.",
+    "actions": {
+      "continue": "Continuer",
+      "addLanguage": "Ajouter une langue",
+      "removeLanguage": "Supprimer la langue",
+      "selectLanguage": "Choisir une langue"
+    }
+  },
   "profile": {
     "heading": "Profil",
     "subheading": "Consultez et mettez a jour vos informations personnelles.",
@@ -32,6 +42,8 @@
       "refreshing": "Actualisation en cours…",
       "updateAvatar": "Changer la photo",
       "updateAvatarUploading": "Téléchargement…",
+      "removeAvatar": "Supprimer la photo",
+      "removeAvatarRemoving": "Suppression…",
       "save": "Enregistrer",
       "saving": "Enregistrement…",
       "selectCountry": "Choisir un pays"
@@ -94,6 +106,8 @@
       "avatarInvalidType": "Veuillez choisir un fichier image.",
       "avatarUploadFailed": "Impossible de téléverser votre photo de profil.",
       "avatarUploadForbidden": "Le stockage bloque les téléversements. Contactez votre équipe pour activer les photos de profil.",
+      "avatarRemoveFailed": "Impossible de supprimer votre photo de profil.",
+      "languageSaveFailed": "Impossible d'enregistrer vos langues.",
       "countriesLoadFailed": "Impossible de charger la liste des pays.",
       "countrySaveFailed": "Impossible d'enregistrer le pays.",
       "countrySaveForbidden": "L'enregistrement est bloqué par les règles de sécurité. Contactez l'administrateur.",

@@ -19,7 +19,21 @@ const MOBILE_NAV_ITEMS = [
   { to: '/app/settings', key: 'settings', end: false as const },
 ] as const;
 
-const DashboardNavbar = () => {
+type NavItem = (typeof NAV_ITEMS)[number];
+type MobileNavItem = (typeof MOBILE_NAV_ITEMS)[number];
+type NavKey = NavItem['key'] | MobileNavItem['key'];
+
+interface DashboardNavbarProps {
+  navItems?: NavItem[];
+  mobileNavItems?: MobileNavItem[];
+  hiddenNavKeys?: NavKey[];
+}
+
+const DashboardNavbar = ({
+  navItems = [...NAV_ITEMS],
+  mobileNavItems = [...MOBILE_NAV_ITEMS],
+  hiddenNavKeys = [],
+}: DashboardNavbarProps) => {
   const { t } = useTranslation('dashboard');
   const [isOpen, setIsOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
@@ -55,6 +69,12 @@ const DashboardNavbar = () => {
     [user?.email, user?.user_metadata]
   );
 
+  const hiddenKeySet = useMemo(() => new Set(hiddenNavKeys), [hiddenNavKeys]);
+  const desktopNavItems = navItems.filter(
+    ({ key }) => key !== 'profile' && !hiddenKeySet.has(key)
+  );
+  const mobileNavItemsToRender = mobileNavItems.filter(({ key }) => !hiddenKeySet.has(key));
+
   return (
     <header className="pointer-events-auto">
       <div className="container-responsive pt-6">
@@ -75,7 +95,7 @@ const DashboardNavbar = () => {
           </Link>
 
           <nav className="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex dark:text-slate-200">
-            {NAV_ITEMS.filter(({ key }) => key !== 'profile').map(({ to, key, end }) => (
+            {desktopNavItems.map(({ to, key, end }) => (
               <NavLink
                 key={to}
                 to={to}
@@ -224,7 +244,7 @@ const DashboardNavbar = () => {
                 </button>
 
                 <nav className="flex flex-col gap-4 text-lg font-medium text-slate-700 dark:text-slate-200">
-                  {MOBILE_NAV_ITEMS.map(({ to, key, end }) => (
+                  {mobileNavItemsToRender.map(({ to, key, end }) => (
                     <NavLink
                       key={to}
                       to={to}

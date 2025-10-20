@@ -24,6 +24,16 @@
     "subheading": "Gestisci i dettagli dei viaggi passati, presenti e futuri.",
     "placeholder": "Appena inizierai a pianificare viaggi, le informazioni appariranno qui."
   },
+  "onboard": {
+    "heading": "Raccontaci qualcosa di te",
+    "description": "Piu ti conosciamo, piu precise saranno le tue packlist e i tuoi viaggi.",
+    "actions": {
+      "continue": "Continua",
+      "addLanguage": "Aggiungi lingua",
+      "removeLanguage": "Rimuovi lingua",
+      "selectLanguage": "Seleziona lingua"
+    }
+  },
   "profile": {
     "heading": "Profilo",
     "subheading": "Consulta e aggiorna le tue informazioni personali.",
@@ -32,6 +42,8 @@
       "refreshing": "Aggiornamento…",
       "updateAvatar": "Cambia foto",
       "updateAvatarUploading": "Caricamento…",
+      "removeAvatar": "Rimuovi foto",
+      "removeAvatarRemoving": "Rimozione…",
       "save": "Salva modifiche",
       "saving": "Salvataggio…",
       "selectCountry": "Seleziona il paese"
@@ -94,6 +106,8 @@
       "avatarInvalidType": "Seleziona un file immagine.",
       "avatarUploadFailed": "Impossibile caricare la foto profilo.",
       "avatarUploadForbidden": "Il caricamento è bloccato dalle regole di sicurezza. Contatta l'amministratore per abilitarlo.",
+      "avatarRemoveFailed": "Impossibile rimuovere la foto profilo.",
+      "languageSaveFailed": "Impossibile salvare le lingue.",
       "countriesLoadFailed": "Impossibile caricare l'elenco dei paesi.",
       "countrySaveFailed": "Impossibile salvare il paese.",
       "countrySaveForbidden": "Il salvataggio è bloccato dalle regole di sicurezza. Contatta l'amministratore.",

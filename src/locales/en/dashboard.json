@@ -24,6 +24,16 @@
     "subheading": "Review and manage your past, current, and future trip details.",
     "placeholder": "Trip information will appear here once you start planning journeys."
   },
+  "onboard": {
+    "heading": "Tell us a bit about yourself",
+    "description": "The more we know about you, the more accurate and precise your packlists and trips are going to be.",
+    "actions": {
+      "continue": "Continue",
+      "addLanguage": "Add language",
+      "removeLanguage": "Remove language",
+      "selectLanguage": "Select language"
+    }
+  },
   "profile": {
     "heading": "Profile",
     "subheading": "View and update your personal information.",
@@ -32,6 +42,8 @@
       "refreshing": "Refreshing…",
       "updateAvatar": "Change photo",
       "updateAvatarUploading": "Uploading…",
+      "removeAvatar": "Remove photo",
+      "removeAvatarRemoving": "Removing…",
       "save": "Save changes",
       "saving": "Saving…",
       "selectCountry": "Select your country"
@@ -94,6 +106,8 @@
       "avatarInvalidType": "Please choose an image file.",
       "avatarUploadFailed": "We couldn’t upload your profile picture. Try again.",
       "avatarUploadForbidden": "Uploads are blocked by storage security rules. Ask your administrator to allow profile photos.",
+      "avatarRemoveFailed": "We couldn’t remove your profile picture. Try again.",
+      "languageSaveFailed": "We couldn’t save your languages. Try again.",
       "countriesLoadFailed": "We couldn’t load the list of countries.",
       "countrySaveFailed": "We couldn’t save your country. Try again.",
       "countrySaveForbidden": "Saving is blocked by security rules. Contact your administrator.",

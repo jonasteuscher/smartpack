@@ -24,6 +24,16 @@
     "subheading": "Verwalte vergangene, aktuelle und kommende Reiseübersichten.",
     "placeholder": "Sobald du Reisen planst, erscheinen hier deine Reiseinformationen."
   },
+  "onboard": {
+    "heading": "Erzähl uns etwas über dich",
+    "description": "Je mehr wir über dich wissen, desto genauer und präziser werden deine Packlisten und Reisen.",
+    "actions": {
+      "continue": "Weiter",
+      "addLanguage": "Sprache hinzufügen",
+      "removeLanguage": "Sprache entfernen",
+      "selectLanguage": "Sprache auswählen"
+    }
+  },
   "profile": {
     "heading": "Profil",
     "subheading": "Sieh dir deine Daten an und aktualisiere sie.",
@@ -32,6 +42,8 @@
       "refreshing": "Aktualisieren…",
       "updateAvatar": "Foto ändern",
       "updateAvatarUploading": "Lade hoch…",
+      "removeAvatar": "Foto entfernen",
+      "removeAvatarRemoving": "Entferne…",
       "save": "Änderungen speichern",
       "saving": "Speichere…",
       "selectCountry": "Land auswählen"
@@ -94,6 +106,8 @@
       "avatarInvalidType": "Bitte wähle eine Bilddatei aus.",
       "avatarUploadFailed": "Dein Profilfoto konnte nicht hochgeladen werden.",
       "avatarUploadForbidden": "Uploads sind durch Sicherheitsrichtlinien blockiert. Bitte kontaktiere dein Team, um Profilfotos zu erlauben.",
+      "avatarRemoveFailed": "Dein Profilfoto konnte nicht entfernt werden.",
+      "languageSaveFailed": "Deine Sprachen konnten nicht gespeichert werden.",
       "countriesLoadFailed": "Die Länderliste konnte nicht geladen werden.",
       "countrySaveFailed": "Dein Land konnte nicht gespeichert werden.",
       "countrySaveForbidden": "Das Speichern ist durch Sicherheitsrichtlinien blockiert. Kontaktiere die Administration.",

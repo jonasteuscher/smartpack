@@ -14,6 +14,15 @@ import {
   useCallback,
 } from 'react';
 import { supabase } from '../utils/supabaseClient';
+import { ensureProfileForUser } from '../services/profile';
+
+const normalizeName = (value: unknown): string | null => {
+  if (typeof value !== 'string') {
+    return null;
+  }
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+};
 
 interface EmailSignUpParams {
   email: string;
@@ -111,6 +120,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!error && signUpData.user?.identities?.length === 0) {
         return new AuthError('User already exists', 400, 'user_already_exists');
       }
+
+      if (!error && signUpData.user?.id) {
+        try {
+          await ensureProfileForUser(signUpData.user.id, {
+            user_firstname: firstName?.trim() || null,
+            user_lastname: lastName?.trim() || null,
+          });
+        } catch (profileError) {
+          console.error('Failed to create profile after sign-up', profileError);
+        }
+      }
       return error ?? null;
     },
     []
@@ -157,6 +177,42 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const { error } = await supabase.auth.signOut();
     return error ?? null;
   }, []);
+
+  const userMetadata = session?.user?.user_metadata;
+
+  useEffect(() => {
+    const userId = session?.user?.id;
+    if (!userId) {
+      return;
+    }
+
+    const metadata = userMetadata ?? {};
+    const fullName = normalizeName(metadata.name);
+    const firstNameFromFull = fullName?.split(' ').shift() ?? null;
+    const remainingFromFull = fullName ? fullName.replace(firstNameFromFull ?? '', '').trim() : null;
+
+    const firstName =
+      normalizeName(metadata.first_name) ??
+      normalizeName(metadata.given_name) ??
+      firstNameFromFull;
+    const lastName =
+      normalizeName(metadata.last_name) ??
+      normalizeName(metadata.family_name) ??
+      normalizeName(metadata.middle_name) ??
+      remainingFromFull;
+
+    const defaultFields: Record<string, unknown> = {};
+    if (firstName) {
+      defaultFields.user_firstname = firstName;
+    }
+    if (lastName) {
+      defaultFields.user_lastname = lastName;
+    }
+
+    void ensureProfileForUser(userId, defaultFields).catch((profileError) => {
+      console.error('Failed to ensure profile for authenticated user', profileError);
+    });
+  }, [session?.user?.id, userMetadata]);
 
   const value = useMemo(
     () => ({

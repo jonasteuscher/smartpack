@@ -35,7 +35,11 @@ export const uploadProfileAvatar = async (user: User, file: File) => {
   } = supabase.storage.from(BUCKET_NAME).getPublicUrl(path);
 
   const { error: updateError } = await supabase.auth.updateUser({
-    data: { avatar_url: publicUrl, updated_at: new Date().toISOString() },
+    data: {
+      avatar_url: publicUrl,
+      avatar_storage_path: path,
+      updated_at: new Date().toISOString(),
+    },
   });
 
   if (updateError) {
@@ -43,4 +47,31 @@ export const uploadProfileAvatar = async (user: User, file: File) => {
   }
 
   return publicUrl;
+};
+
+export const removeProfileAvatar = async (user: User) => {
+  const avatarPath = (user.user_metadata?.avatar_storage_path as string | undefined) ?? null;
+
+  if (avatarPath) {
+    const { error: deleteError } = await supabase.storage.from(BUCKET_NAME).remove([avatarPath]);
+
+    if (deleteError) {
+      const status = (deleteError as { status?: number }).status;
+      if (status !== 404) {
+        throw deleteError;
+      }
+    }
+  }
+
+  const { error: updateError } = await supabase.auth.updateUser({
+    data: {
+      avatar_url: null,
+      avatar_storage_path: null,
+      updated_at: new Date().toISOString(),
+    },
+  });
+
+  if (updateError) {
+    throw updateError;
+  }
 };

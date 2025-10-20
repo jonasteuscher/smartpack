@@ -4,7 +4,7 @@ import { ArrowPathIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { useProfile } from '../hooks/useProfile';
-import { uploadProfileAvatar } from '../services/profileAvatar';
+import { removeProfileAvatar, uploadProfileAvatar } from '../services/profileAvatar';
 import { updateRecord } from '../services/supabaseCrud';
 import type { Profile } from '../types/profile';
 
@@ -32,6 +32,34 @@ const toFlagEmoji = (countryCode: string) => {
     .join('');
 };
 
+interface LanguageOption {
+  code: string;
+  name: string;
+}
+
+const LANGUAGE_OPTIONS: LanguageOption[] = [
+  { code: 'en', name: 'English' },
+  { code: 'de', name: 'German' },
+  { code: 'fr', name: 'French' },
+  { code: 'it', name: 'Italian' },
+  { code: 'es', name: 'Spanish' },
+  { code: 'pt', name: 'Portuguese' },
+  { code: 'nl', name: 'Dutch' },
+  { code: 'sv', name: 'Swedish' },
+  { code: 'no', name: 'Norwegian' },
+  { code: 'da', name: 'Danish' },
+  { code: 'fi', name: 'Finnish' },
+  { code: 'pl', name: 'Polish' },
+  { code: 'cs', name: 'Czech' },
+  { code: 'ru', name: 'Russian' },
+  { code: 'tr', name: 'Turkish' },
+  { code: 'ja', name: 'Japanese' },
+  { code: 'ko', name: 'Korean' },
+  { code: 'zh', name: 'Chinese' },
+  { code: 'ar', name: 'Arabic' },
+  { code: 'hi', name: 'Hindi' },
+];
+
 const ProfilePage = () => {
   const { t } = useTranslation('dashboard');
   const { user } = useAuth();
@@ -49,6 +77,7 @@ const ProfilePage = () => {
   const [localAvatarUrl, setLocalAvatarUrl] = useState<string | null>(avatarUrl);
   const [avatarError, setAvatarError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [removingAvatar, setRemovingAvatar] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [countries, setCountries] = useState<CountryOption[]>([]);
@@ -61,6 +90,16 @@ const ProfilePage = () => {
   const [countrySaveError, setCountrySaveError] = useState<string | null>(null);
   const [countrySaved, setCountrySaved] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>(
+    Array.isArray(profile?.core_languages)
+      ? (profile?.core_languages as string[]).map((code) => code.toLowerCase())
+      : []
+  );
+  const [languageToAdd, setLanguageToAdd] = useState('');
+  const [languagesDirty, setLanguagesDirty] = useState(false);
+  const [languagesError, setLanguagesError] = useState<string | null>(null);
+  const [languagesSaved, setLanguagesSaved] = useState(false);
+  const [savingLanguages, setSavingLanguages] = useState(false);
 
   useEffect(() => {
     setLocalAvatarUrl(avatarUrl);
@@ -69,6 +108,17 @@ const ProfilePage = () => {
   useEffect(() => {
     setOriginalCountry(profile?.core_country_of_residence ?? null);
   }, [profile?.core_country_of_residence]);
+
+  useEffect(() => {
+    if (Array.isArray(profile?.core_languages)) {
+      setSelectedLanguages((profile?.core_languages as string[]).map((code) => code.toLowerCase()));
+    } else {
+      setSelectedLanguages([]);
+    }
+    setLanguagesDirty(false);
+    setLanguagesError(null);
+    setLanguageToAdd('');
+  }, [profile?.core_languages]);
 
   useEffect(() => {
     if (!countries.length) {
@@ -111,12 +161,90 @@ const ProfilePage = () => {
   }, [countries, countryQuery]);
 
   const isCountryDirty = (selectedCountry?.name ?? null) !== (originalCountry ?? null);
+  const availableLanguages = useMemo(() => {
+    const chosen = new Set(selectedLanguages.map((code) => code.toLowerCase()));
+    return LANGUAGE_OPTIONS.filter((language) => !chosen.has(language.code.toLowerCase())).sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+  }, [selectedLanguages]);
 
   const handleCountryChange = (country: CountryOption | null) => {
     setSelectedCountry(country);
     setCountrySaved(false);
     setCountrySaveError(null);
     setCountryQuery('');
+  };
+
+  const handleAddLanguage = () => {
+    if (!languageToAdd) {
+      return;
+    }
+
+    const normalized = languageToAdd.toLowerCase();
+    if (selectedLanguages.includes(normalized)) {
+      setLanguageToAdd('');
+      return;
+    }
+
+    setSelectedLanguages((prev) => [...prev, normalized]);
+    setLanguageToAdd('');
+    setLanguagesDirty(true);
+    setLanguagesSaved(false);
+    setLanguagesError(null);
+  };
+
+  const handleRemoveLanguage = (code: string) => {
+    const normalized = code.toLowerCase();
+    setSelectedLanguages((prev) => prev.filter((item) => item !== normalized));
+    setLanguagesDirty(true);
+    setLanguagesSaved(false);
+    setLanguagesError(null);
+  };
+
+  const handleSaveLanguages = async () => {
+    if (!user) {
+      setLanguagesError(
+        t('profile.errors.mustBeSignedIn', {
+          defaultValue: 'Sign in to update your profile.',
+        })
+      );
+      return;
+    }
+
+    if (!languagesDirty) {
+      return;
+    }
+
+    try {
+      setSavingLanguages(true);
+      setLanguagesError(null);
+
+      const payload: Partial<Profile> = {
+        core_languages: selectedLanguages.length > 0 ? selectedLanguages : null,
+      };
+
+      const { error: updateError } = await updateRecord<Profile>('profiles', payload, {
+        match: { user_id: user.id },
+      });
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      setLanguagesDirty(false);
+      setLanguagesSaved(true);
+      await refresh();
+    } catch (languageSaveError) {
+      setLanguagesError(
+        languageSaveError instanceof Error
+          ? languageSaveError.message
+          : t('profile.errors.languageSaveFailed', {
+              defaultValue: 'We could not save your languages.',
+            })
+      );
+    } finally {
+      setSavingLanguages(false);
+    }
   };
 
   const handleSaveCountry = async () => {
@@ -191,6 +319,15 @@ const ProfilePage = () => {
       setRefreshing(true);
       setCountrySaveError(null);
       setCountrySaved(false);
+      setLanguagesError(null);
+      setLanguagesDirty(false);
+      setLanguagesSaved(false);
+      setLanguageToAdd('');
+      setSelectedLanguages(
+        Array.isArray(profile?.core_languages)
+          ? (profile?.core_languages as string[]).map((code) => code.toLowerCase())
+          : []
+      );
       await refresh();
     } finally {
       setRefreshing(false);
@@ -295,6 +432,39 @@ const ProfilePage = () => {
     }
   };
 
+  const handleRemoveAvatar = async () => {
+    if (removingAvatar) {
+      return;
+    }
+
+    if (!user) {
+      setAvatarError(
+        t('profile.errors.mustBeSignedIn', {
+          defaultValue: 'Sign in to update your profile.',
+        })
+      );
+      return;
+    }
+
+    try {
+      setRemovingAvatar(true);
+      setAvatarError(null);
+      await removeProfileAvatar(user);
+      setLocalAvatarUrl(null);
+      await refresh();
+    } catch (removeError) {
+      const message =
+        removeError instanceof Error
+          ? removeError.message
+          : t('profile.errors.avatarRemoveFailed', {
+              defaultValue: 'Could not remove profile picture.',
+            });
+      setAvatarError(message);
+    } finally {
+      setRemovingAvatar(false);
+    }
+  };
+
   const formatValue = useCallback(
     (value: unknown) => {
       if (value === null || value === undefined) {
@@ -372,7 +542,6 @@ const ProfilePage = () => {
             label: t('profile.fields.country'),
             value: selectedCountry?.name ?? profile?.core_country_of_residence ?? null,
           },
-          { label: t('profile.fields.languages'), value: profile?.core_languages },
         ],
       },
       {
@@ -462,16 +631,28 @@ const ProfilePage = () => {
 
           <div className="flex flex-col gap-2 sm:items-end sm:justify-end">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
-              <button
-                type="button"
-                onClick={handleTriggerUpload}
-                className="w-max rounded-full border border-dashed border-slate-300 px-4 py-2 text-xs font-semibold text-slate-500 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-300 dark:hover:border-brand-primary dark:hover:text-brand-primary"
-                disabled={uploading}
-              >
-                {uploading
-                  ? t('profile.actions.updateAvatarUploading', { defaultValue: 'Uploading…' })
-                  : t('profile.actions.updateAvatar', { defaultValue: 'Change photo' })}
-              </button>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+                <button
+                  type="button"
+                  onClick={handleTriggerUpload}
+                  className="w-max rounded-full border border-dashed border-slate-300 px-4 py-2 text-xs font-semibold text-slate-500 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-300 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                  disabled={uploading || removingAvatar}
+                >
+                  {uploading
+                    ? t('profile.actions.updateAvatarUploading', { defaultValue: 'Uploading…' })
+                    : t('profile.actions.updateAvatar', { defaultValue: 'Change photo' })}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleRemoveAvatar}
+                  className="w-max rounded-full border border-red-300 px-4 py-2 text-xs font-semibold text-red-500 transition hover:border-red-400 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-60 dark:border-red-500/80 dark:text-red-300 dark:hover:border-red-400"
+                  disabled={removingAvatar || uploading || !localAvatarUrl}
+                >
+                  {removingAvatar
+                    ? t('profile.actions.removeAvatarRemoving', { defaultValue: 'Removing…' })
+                    : t('profile.actions.removeAvatar', { defaultValue: 'Remove photo' })}
+                </button>
+              </div>
               <button
                 type="button"
                 onClick={handleSaveCountry}
@@ -559,99 +740,175 @@ const ProfilePage = () => {
                       </dt>
                       <dd className="text-sm font-medium text-[var(--text-primary)]">
                         {isCountryField ? (
-                          <div className="flex flex-col gap-2">
-                            {countriesError && (
-                              <p className="text-xs text-red-600 dark:text-red-400">
-                                {countriesError}
-                              </p>
-                            )}
-                            <Combobox
-                              value={selectedCountry}
-                              onChange={handleCountryChange}
-                              disabled={countriesLoading || savingCountry || !!countriesError}
-                            >
-                              <div className="relative">
-                                <div className="relative w-full cursor-default overflow-hidden rounded-md border border-slate-300 bg-white text-left shadow-sm focus-within:border-brand-secondary focus-within:ring-1 focus-within:ring-brand-secondary dark:border-slate-600 dark:bg-slate-900">
-                                  <Combobox.Input
-                                    className="w-full border-none bg-transparent py-2 pl-3 pr-10 text-sm text-slate-700 focus:outline-none dark:text-slate-100"
-                                    displayValue={(country: CountryOption | null) => {
-                                      if (!country) {
-                                        return '';
-                                      }
-                                      const parts = [country.flag, country.name].filter(
-                                        (part) => part && part.trim().length > 0
-                                      );
-                                      return parts.join(' ');
-                                    }}
-                                    onChange={(event) => setCountryQuery(event.target.value)}
-                                    placeholder={
-                                      countriesLoading
-                                        ? t('profile.state.countriesLoading', {
-                                            defaultValue: 'Loading countries…',
-                                          })
-                                        : t('profile.actions.selectCountry', {
-                                            defaultValue: 'Select your country',
-                                          })
-                                    }
-                                  />
-                                  <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400">
-                                    <ChevronUpDownIcon className="h-5 w-5" aria-hidden="true" />
-                                  </Combobox.Button>
-                                </div>
-                                <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-800">
-                                  {countriesError ? (
-                                    <div className="cursor-default px-3 py-2 text-xs text-red-600 dark:text-red-400">
-                                      {countriesError}
-                                    </div>
-                                  ) : filteredCountries.length === 0 ? (
-                                    <div className="cursor-default px-3 py-2 text-xs text-[var(--text-secondary)]">
-                                      {countriesLoading
-                                        ? t('profile.state.countriesLoading', {
-                                            defaultValue: 'Loading countries…',
-                                          })
-                                        : t('profile.state.noCountriesFound', {
-                                            defaultValue: 'No countries match your search.',
-                                          })}
-                                    </div>
-                                  ) : (
-                                    filteredCountries.map((country) => (
-                                      <Combobox.Option
-                                        key={`${country.code}-${country.name}`}
-                                        value={country}
-                                        className={({ active }) =>
-                                          `cursor-pointer px-3 py-2 ${
-                                            active
-                                              ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-primary/20 dark:text-brand-primary'
-                                              : 'text-slate-700 dark:text-slate-100'
-                                          }`
+                          <div className="flex flex-col gap-4">
+                            <div className="flex flex-col gap-2">
+                              {countriesError && (
+                                <p className="text-xs text-red-600 dark:text-red-400">
+                                  {countriesError}
+                                </p>
+                              )}
+                              <Combobox
+                                value={selectedCountry}
+                                onChange={handleCountryChange}
+                                disabled={countriesLoading || savingCountry || !!countriesError}
+                              >
+                                <div className="relative">
+                                  <div className="relative w-full cursor-default overflow-hidden rounded-md border border-slate-300 bg-white text-left shadow-sm focus-within:border-brand-secondary focus-within:ring-1 focus-within:ring-brand-secondary dark:border-slate-600 dark:bg-slate-900">
+                                    <Combobox.Input
+                                      className="w-full border-none bg-transparent py-2 pl-3 pr-10 text-sm text-slate-700 focus:outline-none dark:text-slate-100"
+                                      displayValue={(country: CountryOption | null) => {
+                                        if (!country) {
+                                          return '';
                                         }
-                                      >
-                                        {({ selected }) => (
+                                        const parts = [country.flag, country.name].filter(
+                                          (part) => part && part.trim().length > 0
+                                        );
+                                        return parts.join(' ');
+                                      }}
+                                      onChange={(event) => setCountryQuery(event.target.value)}
+                                      placeholder={
+                                        countriesLoading
+                                          ? t('profile.state.countriesLoading', {
+                                              defaultValue: 'Loading countries…',
+                                            })
+                                          : t('profile.actions.selectCountry', {
+                                              defaultValue: 'Select your country',
+                                            })
+                                      }
+                                    />
+                                    <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400">
+                                      <ChevronUpDownIcon className="h-5 w-5" aria-hidden="true" />
+                                    </Combobox.Button>
+                                  </div>
+                                  <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-800">
+                                    {countriesError ? (
+                                      <div className="cursor-default px-3 py-2 text-xs text-red-600 dark:text-red-400">
+                                        {countriesError}
+                                      </div>
+                                    ) : filteredCountries.length === 0 ? (
+                                      <div className="cursor-default px-3 py-2 text-xs text-[var(--text-secondary)]">
+                                        {countriesLoading
+                                          ? t('profile.state.countriesLoading', {
+                                              defaultValue: 'Loading countries…',
+                                            })
+                                          : t('profile.state.noCountriesFound', {
+                                              defaultValue: 'No countries match your search.',
+                                            })}
+                                      </div>
+                                    ) : (
+                                      filteredCountries.map((country) => (
+                                        <Combobox.Option
+                                          key={`${country.code}-${country.name}`}
+                                          value={country}
+                                          className={({ active }) =>
+                                            `cursor-pointer px-3 py-2 ${
+                                              active
+                                                ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-primary/20 dark:text-brand-primary'
+                                                : 'text-slate-700 dark:text-slate-100'
+                                            }`
+                                          }
+                                        >
                                           <div className="flex items-center gap-2">
                                             {country.flag ? (
                                               <span className="text-lg" aria-hidden="true">
                                                 {country.flag}
                                               </span>
                                             ) : null}
-                                            <span
-                                              className={`text-sm ${
-                                                selected ? 'font-semibold' : 'font-medium'
-                                              }`}
-                                            >
-                                              {country.name}
-                                            </span>
+                                            <span className="text-sm font-medium">{country.name}</span>
                                           </div>
-                                        )}
-                                      </Combobox.Option>
-                                    ))
-                                  )}
-                                </Combobox.Options>
+                                        </Combobox.Option>
+                                      ))
+                                    )}
+                                  </Combobox.Options>
+                                </div>
+                              </Combobox>
+                            </div>
+
+                            <div className="flex flex-col gap-2">
+                              <span className="text-xs uppercase tracking-[0.2em] text-[var(--text-secondary)]">
+                                {t('profile.fields.languages')}
+                              </span>
+                              <div className="flex flex-wrap gap-2">
+                                {selectedLanguages.length === 0 ? (
+                                  <p className="text-xs text-[var(--text-secondary)]">
+                                    {t('profile.fallback.notSet')}
+                                  </p>
+                                ) : (
+                                  selectedLanguages.map((code) => (
+                                    <span
+                                      key={code}
+                                      className="flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold uppercase text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                    >
+                                      {code.toUpperCase()}
+                                      <button
+                                        type="button"
+                                        onClick={() => handleRemoveLanguage(code)}
+                                        className="text-slate-400 transition hover:text-red-500"
+                                        aria-label={t('onboard.actions.removeLanguage', {
+                                          defaultValue: 'Remove language',
+                                        })}
+                                      >
+                                        ×
+                                      </button>
+                                    </span>
+                                  ))
+                                )}
                               </div>
-                            </Combobox>
-                        </div>
-                      ) : (
-                        formatValue(value)
-                      )}
+                              <div className="flex items-center gap-2">
+                                <select
+                                  value={languageToAdd}
+                                  onChange={(event) => {
+                                    setLanguageToAdd(event.target.value);
+                                    setLanguagesError(null);
+                                  }}
+                                  className="w-40 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                >
+                                  <option value="">
+                                    {t('onboard.actions.selectLanguage', { defaultValue: 'Select language' })}
+                                  </option>
+                                  {availableLanguages.map((language) => (
+                                    <option key={language.code} value={language.code}>
+                                      {language.name} ({language.code.toUpperCase()})
+                                    </option>
+                                  ))}
+                                </select>
+                                <button
+                                  type="button"
+                                  onClick={handleAddLanguage}
+                                  className="flex h-8 w-8 items-center justify-center rounded-full border border-brand-secondary text-sm font-semibold text-brand-secondary transition hover:bg-brand-secondary hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                  disabled={!languageToAdd}
+                                  aria-label={t('onboard.actions.addLanguage', { defaultValue: 'Add language' })}
+                                >
+                                  +
+                                </button>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <button
+                                  type="button"
+                                  onClick={handleSaveLanguages}
+                                  className="rounded-full border border-brand-secondary px-4 py-2 text-xs font-semibold text-brand-secondary transition hover:bg-brand-secondary hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                                  disabled={savingLanguages || !languagesDirty}
+                                >
+                                  {savingLanguages
+                                    ? t('profile.actions.saving', { defaultValue: 'Saving…' })
+                                    : t('profile.actions.save', { defaultValue: 'Save changes' })}
+                                </button>
+                                {languagesError ? (
+                                  <span className="text-xs text-red-500">{languagesError}</span>
+                                ) : null}
+                                {!languagesError && languagesSaved ? (
+                                  <span className="text-xs text-emerald-600">
+                                    {t('profile.state.settingsSaved', {
+                                      defaultValue: 'Your settings have been saved.',
+                                    })}
+                                  </span>
+                                ) : null}
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          formatValue(value)
+                        )}
                       </dd>
                     </div>
                   );

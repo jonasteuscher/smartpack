@@ -11,6 +11,7 @@ import AuthCallbackPage from './pages/AuthCallbackPage';
 import DashboardLayout from './components/dashboard/DashboardLayout';
 import DashboardHomePage from './pages/DashboardHomePage';
 import TripsPage from './pages/TripsPage';
+import OnboardPage from './pages/OnboardPage';
 import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
 
@@ -50,6 +51,14 @@ const App = () => {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
+        <Route
+          path="/app/onboard"
+          element={
+            <ProtectedRoute>
+              <OnboardPage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/app"
           element={
