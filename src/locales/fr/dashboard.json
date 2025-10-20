@@ -44,6 +44,8 @@
       "updateAvatarUploading": "Téléchargement…",
       "removeAvatar": "Supprimer la photo",
       "removeAvatarRemoving": "Suppression…",
+      "edit": "Modifier",
+      "cancel": "Annuler",
       "save": "Enregistrer",
       "saving": "Enregistrement…",
       "selectCountry": "Choisir un pays"

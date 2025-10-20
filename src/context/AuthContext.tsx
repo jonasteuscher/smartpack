@@ -178,15 +178,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return error ?? null;
   }, []);
 
-  const userMetadata = session?.user?.user_metadata;
-
   useEffect(() => {
     const userId = session?.user?.id;
     if (!userId) {
       return;
     }
 
-    const metadata = userMetadata ?? {};
+    const metadata = session?.user?.user_metadata ?? {};
     const fullName = normalizeName(metadata.name);
     const firstNameFromFull = fullName?.split(' ').shift() ?? null;
     const remainingFromFull = fullName ? fullName.replace(firstNameFromFull ?? '', '').trim() : null;
@@ -212,7 +210,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     void ensureProfileForUser(userId, defaultFields).catch((profileError) => {
       console.error('Failed to ensure profile for authenticated user', profileError);
     });
-  }, [session?.user?.id, userMetadata]);
+  }, [session?.user?.id, session?.user?.user_metadata]);
 
   const value = useMemo(
     () => ({
