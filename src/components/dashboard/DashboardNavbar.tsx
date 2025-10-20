@@ -10,7 +10,7 @@ import { getAvatarInitials, getUserAvatarUrl } from '../../utils/getUserAvatarUr
 
 const NAV_ITEMS = [
   { to: '/app/dashboard', key: 'home', end: true },
-  { to: '/app/packlists', key: 'packlists', end: false },
+  { to: '/app/trips', key: 'trips', end: false },
   { to: '/app/profile', key: 'profile', end: false },
 ] as const;
 

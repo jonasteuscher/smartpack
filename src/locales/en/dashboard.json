@@ -1,7 +1,7 @@
 {
   "nav": {
     "home": "Home",
-    "packlists": "Packlists",
+    "trips": "Trips",
     "profile": "Profile",
     "settings": "Settings",
     "openMenu": "Open navigation",
@@ -12,17 +12,17 @@
   },
   "home": {
     "heading": "Your next trip",
-    "subheading": "We'll surface your upcoming journey and suggested packlists here.",
+    "subheading": "We'll surface your upcoming journey and suggested trip insights here.",
     "signedInAs": "You are logged in as {{name}}",
     "actions": {
       "signOut": "Sign out"
     },
     "placeholder": "This area will highlight your current itinerary, weather insights, and items that need attention."
   },
-  "packlists": {
-    "heading": "Packlists",
-    "subheading": "Review and manage your past, current, and future trip checklists.",
-    "placeholder": "Packlist content will appear here once you start planning trips."
+  "trips": {
+    "heading": "Trips",
+    "subheading": "Review and manage your past, current, and future trip details.",
+    "placeholder": "Trip information will appear here once you start planning journeys."
   },
   "profile": {
     "heading": "Profile",

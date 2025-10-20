@@ -10,7 +10,7 @@ import AuthPage from './pages/AuthPage';
 import AuthCallbackPage from './pages/AuthCallbackPage';
 import DashboardLayout from './components/dashboard/DashboardLayout';
 import DashboardHomePage from './pages/DashboardHomePage';
-import PacklistsPage from './pages/PacklistsPage';
+import TripsPage from './pages/TripsPage';
 import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
 
@@ -60,7 +60,7 @@ const App = () => {
         >
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<DashboardHomePage />} />
-          <Route path="packlists" element={<PacklistsPage />} />
+          <Route path="trips" element={<TripsPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>

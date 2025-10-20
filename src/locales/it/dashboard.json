@@ -1,7 +1,7 @@
 {
   "nav": {
     "home": "Home",
-    "packlists": "Liste",
+    "trips": "Viaggi",
     "profile": "Profilo",
     "settings": "Impostazioni",
     "openMenu": "Apri navigazione",
@@ -12,17 +12,17 @@
   },
   "home": {
     "heading": "Il tuo prossimo viaggio",
-    "subheading": "Qui mostreremo il prossimo itinerario e le packlist suggerite.",
+    "subheading": "Qui mostreremo il prossimo itinerario e le informazioni chiave sui viaggi.",
     "signedInAs": "Sei connesso come {{name}}",
     "actions": {
       "signOut": "Esci"
     },
     "placeholder": "Quest'area presto mostrera l'itinerario attuale, il meteo e le cose da completare."
   },
-  "packlists": {
-    "heading": "Liste",
-    "subheading": "Gestisci le liste di viaggio passate, attuali e future.",
-    "placeholder": "Appena inizierai a pianificare viaggi, le tue liste appariranno qui."
+  "trips": {
+    "heading": "Viaggi",
+    "subheading": "Gestisci i dettagli dei viaggi passati, presenti e futuri.",
+    "placeholder": "Appena inizierai a pianificare viaggi, le informazioni appariranno qui."
   },
   "profile": {
     "heading": "Profilo",
