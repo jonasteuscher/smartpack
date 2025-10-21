@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { useProfile } from '../hooks/useProfile';
 import { removeProfileAvatar, uploadProfileAvatar } from '../services/profileAvatar';
 import { updateRecord } from '../services/supabaseCrud';
-import type { Profile, TravelFrequencyPerYear } from '../types/profile';
+import type { Profile, TravelFrequencyPerYear, TravelTripDurationDays } from '../types/profile';
 
 interface CountryOption {
   name: string;
@@ -70,6 +70,18 @@ const TRAVEL_FREQUENCY_FALLBACK_LABELS: Record<TravelFrequencyPerYear, string> =
 
 const isTravelFrequencyValue = (value: unknown): value is TravelFrequencyPerYear =>
   typeof value === 'string' && (TRAVEL_FREQUENCY_VALUES as readonly string[]).includes(value);
+
+const TRAVEL_DURATION_VALUES: readonly TravelTripDurationDays[] = ['short', 'medium', 'long', 'extended'];
+
+const TRAVEL_DURATION_FALLBACK_LABELS: Record<TravelTripDurationDays, string> = {
+  short: 'Short (1-3 days)',
+  medium: 'Medium (4-7 days)',
+  long: 'Long (8-14 days)',
+  extended: 'Extended (15+ days)',
+};
+
+const isTravelDurationValue = (value: unknown): value is TravelTripDurationDays =>
+  typeof value === 'string' && (TRAVEL_DURATION_VALUES as readonly string[]).includes(value);
 
 const toFlagEmoji = (countryCode: string) => {
   if (!countryCode || countryCode.length !== 2) {
@@ -158,6 +170,8 @@ const ProfilePage = () => {
   const [travelSaved, setTravelSaved] = useState(false);
   const [travelFrequency, setTravelFrequency] = useState<TravelFrequencyPerYear | null>(null);
   const [originalTravelFrequency, setOriginalTravelFrequency] = useState<TravelFrequencyPerYear | null>(null);
+  const [travelDuration, setTravelDuration] = useState<TravelTripDurationDays | null>(null);
+  const [originalTravelDuration, setOriginalTravelDuration] = useState<TravelTripDurationDays | null>(null);
 
   useEffect(() => {
     setLocalAvatarUrl(avatarUrl);
@@ -201,6 +215,17 @@ const ProfilePage = () => {
       setTravelFrequency(sanitizedFrequency);
     }
   }, [profile?.travel_frequency_per_year, isEditingTravel]);
+
+  useEffect(() => {
+    const rawDuration = profile?.travel_avg_trip_duration_days;
+    const sanitizedDuration = isTravelDurationValue(rawDuration) ? rawDuration : null;
+
+    setOriginalTravelDuration(sanitizedDuration);
+
+    if (!isEditingTravel) {
+      setTravelDuration(sanitizedDuration);
+    }
+  }, [profile?.travel_avg_trip_duration_days, isEditingTravel]);
 
   const resolveCountryOption = useCallback(
     (value: string | null | undefined) => {
@@ -333,14 +358,48 @@ const ProfilePage = () => {
     return travelFrequencyLabelByValue.get(value) ?? null;
   }, [profile?.travel_frequency_per_year, travelFrequencyLabelByValue]);
 
+  const travelDurationOptions = useMemo(
+    (): { value: TravelTripDurationDays; label: string }[] =>
+      TRAVEL_DURATION_VALUES.map((value) => ({
+        value,
+        label: t(`profile.travelDuration.${value}`, {
+          defaultValue: TRAVEL_DURATION_FALLBACK_LABELS[value],
+        }),
+      })),
+    [t]
+  );
+
+  const travelDurationLabelByValue = useMemo(() => {
+    const map = new Map<TravelTripDurationDays, string>();
+    travelDurationOptions.forEach((option) => {
+      map.set(option.value, option.label);
+    });
+    return map;
+  }, [travelDurationOptions]);
+
+  const travelDurationProfileLabel = useMemo(() => {
+    const value = profile?.travel_avg_trip_duration_days;
+    if (!isTravelDurationValue(value)) {
+      return null;
+    }
+
+    return travelDurationLabelByValue.get(value) ?? null;
+  }, [profile?.travel_avg_trip_duration_days, travelDurationLabelByValue]);
+
   const trimmedFirstName = coreFirstName.trim();
   const trimmedLastName = coreLastName.trim();
   const normalizedSelectedCountry = selectedCountry?.name ?? null;
 
   const normalizedTravelFrequency = travelFrequency;
-  const isTravelDirty = normalizedTravelFrequency !== originalTravelFrequency;
+  const normalizedTravelDuration = travelDuration;
+  const isTravelFrequencyDirty = normalizedTravelFrequency !== originalTravelFrequency;
+  const isTravelDurationDirty = normalizedTravelDuration !== originalTravelDuration;
+  const isTravelDirty = isTravelFrequencyDirty || isTravelDurationDirty;
   const travelFrequencyDisplayLabel = normalizedTravelFrequency
     ? travelFrequencyLabelByValue.get(normalizedTravelFrequency) ?? null
+    : null;
+  const travelDurationDisplayLabel = normalizedTravelDuration
+    ? travelDurationLabelByValue.get(normalizedTravelDuration) ?? null
     : null;
 
   const isFirstNameDirty = trimmedFirstName !== originalFirstName;
@@ -457,7 +516,11 @@ const ProfilePage = () => {
             label: t('profile.fields.travelFrequency'),
             value: profile?.travel_frequency_per_year,
           },
-          { label: t('profile.fields.tripDuration'), value: profile?.travel_avg_trip_duration_days },
+          {
+            id: 'travel_avg_trip_duration_days',
+            label: t('profile.fields.tripDuration'),
+            value: profile?.travel_avg_trip_duration_days,
+          },
           { label: t('profile.fields.countriesVisited'), value: profile?.travel_countries_visited_count },
           { label: t('profile.fields.regionsVisited'), value: profile?.travel_regions_often_visited },
           { label: t('profile.fields.travelStyles'), value: profile?.travel_usual_travel_styles },
@@ -750,6 +813,7 @@ const ProfilePage = () => {
     setTravelSaved(false);
     setTravelSaveError(null);
     setTravelFrequency(originalTravelFrequency);
+    setTravelDuration(originalTravelDuration);
   };
 
   const handleCancelEditingTravel = () => {
@@ -757,6 +821,7 @@ const ProfilePage = () => {
     setTravelSaved(false);
     setTravelSaveError(null);
     setTravelFrequency(originalTravelFrequency);
+    setTravelDuration(originalTravelDuration);
   };
 
   const handleSaveTravel = async () => {
@@ -778,9 +843,20 @@ const ProfilePage = () => {
       setSavingTravel(true);
       setTravelSaveError(null);
 
-      const payload: Partial<Profile> = {
-        travel_frequency_per_year: normalizedTravelFrequency,
-      };
+      const payload: Partial<Profile> = {};
+
+      if (isTravelFrequencyDirty) {
+        payload.travel_frequency_per_year = normalizedTravelFrequency ?? null;
+      }
+
+      if (isTravelDurationDirty) {
+        payload.travel_avg_trip_duration_days = normalizedTravelDuration ?? null;
+      }
+
+      if (Object.keys(payload).length === 0) {
+        setIsEditingTravel(false);
+        return;
+      }
 
       const { error: updateError } = await updateRecord<Profile>('profiles', payload, {
         match: { user_id: user.id },
@@ -793,9 +869,10 @@ const ProfilePage = () => {
       await refresh();
       setIsEditingTravel(false);
       setTravelSaved(true);
-      setOriginalTravelFrequency(normalizedTravelFrequency);
+      setOriginalTravelFrequency(normalizedTravelFrequency ?? null);
+      setOriginalTravelDuration(normalizedTravelDuration ?? null);
     } catch (saveError) {
-      console.error('Failed to save travel frequency', saveError);
+      console.error('Failed to save travel preferences', saveError);
       setTravelSaveError(
         saveError instanceof Error
           ? saveError.message
@@ -1297,38 +1374,67 @@ const ProfilePage = () => {
                       {field.label}
                     </dt>
                     <dd className="text-sm font-medium text-[var(--text-primary)]">
-                      {section.id === 'travel' && field.id === 'travel_frequency_per_year' ? (
-                        isEditingTravel ? (
-                          <select
-                            value={travelFrequency ?? ''}
-                            onChange={(event) => {
-                              const nextValue = event.target.value;
-                              setTravelFrequency(isTravelFrequencyValue(nextValue) ? nextValue : null);
-                              setTravelSaved(false);
-                              setTravelSaveError(null);
-                            }}
-                            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
-                            disabled={savingTravel}
-                          >
-                            <option value="">
-                              {t('profile.actions.selectTravelFrequency', {
-                                defaultValue: 'Select your travel frequency',
-                              })}
-                            </option>
-                            {travelFrequencyOptions.map((option) => (
-                              <option key={option.value} value={option.value}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </select>
-                        ) : (
-                          travelFrequencyDisplayLabel ??
-                          travelFrequencyProfileLabel ??
-                          t('profile.fallback.notSet')
-                        )
-                      ) : (
-                        formatValue(field.value)
-                      )}
+                      {section.id === 'travel' && field.id === 'travel_frequency_per_year'
+                        ? isEditingTravel
+                          ? (
+                              <select
+                                value={travelFrequency ?? ''}
+                                onChange={(event) => {
+                                  const nextValue = event.target.value;
+                                  setTravelFrequency(isTravelFrequencyValue(nextValue) ? nextValue : null);
+                                  setTravelSaved(false);
+                                  setTravelSaveError(null);
+                                }}
+                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                disabled={savingTravel}
+                              >
+                                <option value="">
+                                  {t('profile.actions.selectTravelFrequency', {
+                                    defaultValue: 'Select your travel frequency',
+                                  })}
+                                </option>
+                                {travelFrequencyOptions.map((option) => (
+                                  <option key={option.value} value={option.value}>
+                                    {option.label}
+                                  </option>
+                                ))}
+                              </select>
+                            )
+                          : travelFrequencyDisplayLabel ??
+                            travelFrequencyProfileLabel ??
+                            t('profile.fallback.notSet')
+                        : section.id === 'travel' && field.id === 'travel_avg_trip_duration_days'
+                        ? isEditingTravel
+                          ? (
+                              <select
+                                value={travelDuration ?? ''}
+                                onChange={(event) => {
+                                  const nextValue = event.target.value;
+                                  setTravelDuration(isTravelDurationValue(nextValue) ? nextValue : null);
+                                  setTravelSaved(false);
+                                  setTravelSaveError(null);
+                                }}
+                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                disabled={savingTravel}
+                              >
+                                <option value="">
+                                  {t('profile.actions.selectTravelDuration', {
+                                    defaultValue: 'Select your average trip length',
+                                  })}
+                                </option>
+                                {travelDurationOptions.map((option) => (
+                                  <option key={option.value} value={option.value}>
+                                    {option.label}
+                                  </option>
+                                ))}
+                              </select>
+                            )
+                          : travelDurationDisplayLabel ??
+                            travelDurationProfileLabel ??
+                            t('profile.fallback.notSet')
+                        : (
+                          formatValue(field.value)
+                        )}
                     </dd>
                   </div>
                 ))}

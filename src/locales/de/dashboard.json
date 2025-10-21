@@ -52,7 +52,8 @@
       "save": "Änderungen speichern",
       "saving": "Speichere…",
       "selectCountry": "Land auswählen",
-      "selectTravelFrequency": "Reisehäufigkeit auswählen"
+      "selectTravelFrequency": "Reisehäufigkeit auswählen",
+      "selectTravelDuration": "Reisedauer auswählen"
     },
     "sections": {
       "details": "Profildetails",
@@ -126,6 +127,12 @@
       "sometimes": "Gelegentlich (3-5 Reisen)",
       "often": "Oft (6-10 Reisen)",
       "frequent": "Sehr oft (10+ Reisen)"
+    },
+    "travelDuration": {
+      "short": "Kurz (1-3 Tage)",
+      "medium": "Mittel (4-7 Tage)",
+      "long": "Lang (8-14 Tage)",
+      "extended": "Sehr lang (15+ Tage)"
     }
   },
   "settings": {

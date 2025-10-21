@@ -52,7 +52,8 @@
       "save": "Save changes",
       "saving": "Saving…",
       "selectCountry": "Select your country",
-      "selectTravelFrequency": "Select your travel frequency"
+      "selectTravelFrequency": "Select your travel frequency",
+      "selectTravelDuration": "Select your average trip length"
     },
     "sections": {
       "details": "Profile details",
@@ -126,6 +127,12 @@
       "sometimes": "Sometimes (3-5 trips)",
       "often": "Often (6-10 trips)",
       "frequent": "Very often (10+ trips)"
+    },
+    "travelDuration": {
+      "short": "Short (1-3 days)",
+      "medium": "Medium (4-7 days)",
+      "long": "Long (8-14 days)",
+      "extended": "Extended (15+ days)"
     }
   },
   "settings": {
