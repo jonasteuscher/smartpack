@@ -433,6 +433,17 @@ const ProfilePage = () => {
   const emailValue = user?.email ?? t('profile.fallback.notSet');
   const isGoogleSignIn = authMethod === 'google';
   const canManageAvatar = !isGoogleSignIn;
+  const countryDisplayOption = useMemo(() => {
+    if (!normalizedSelectedCountry) {
+      return null;
+    }
+
+    if (!selectedCountry) {
+      return resolveCountryOption(normalizedSelectedCountry);
+    }
+
+    return selectedCountry;
+  }, [normalizedSelectedCountry, resolveCountryOption, selectedCountry]);
   const signInMethodDisplay = isGoogleSignIn
     ? t('profile.fields.authMethodProvider', { provider: 'Google', defaultValue: 'Google' })
     : authMethod === 'email'
@@ -948,8 +959,15 @@ const ProfilePage = () => {
                         </Combobox>
                       </div>
                     </div>
+                  ) : normalizedSelectedCountry ? (
+                    <span className="flex items-center gap-2">
+                      {countryDisplayOption?.flag ? (
+                        <span className="text-lg leading-none">{countryDisplayOption.flag}</span>
+                      ) : null}
+                      <span>{normalizedSelectedCountry}</span>
+                    </span>
                   ) : (
-                    normalizedSelectedCountry ?? t('profile.fallback.notSet')
+                    t('profile.fallback.notSet')
                   )}
                 </dd>
               </div>
