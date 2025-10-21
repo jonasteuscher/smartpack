@@ -22,9 +22,11 @@ interface LanguageOption {
 interface DetailSectionField {
   label: string;
   value: unknown;
+  id?: string;
 }
 
 interface DetailSection {
+  id: string;
   title: string;
   fields: DetailSectionField[];
 }
@@ -133,6 +135,13 @@ const ProfilePage = () => {
   const [coreSaveError, setCoreSaveError] = useState<string | null>(null);
   const [coreSaved, setCoreSaved] = useState(false);
 
+  const [isEditingTravel, setIsEditingTravel] = useState(false);
+  const [savingTravel, setSavingTravel] = useState(false);
+  const [travelSaveError, setTravelSaveError] = useState<string | null>(null);
+  const [travelSaved, setTravelSaved] = useState(false);
+  const [travelFrequency, setTravelFrequency] = useState<string | null>(null);
+  const [originalTravelFrequency, setOriginalTravelFrequency] = useState<string | null>(null);
+
   useEffect(() => {
     setLocalAvatarUrl(avatarUrl);
   }, [avatarUrl]);
@@ -164,6 +173,21 @@ const ProfilePage = () => {
       setLanguageToAdd('');
     }
   }, [profile?.core_languages, isEditingCore]);
+
+  useEffect(() => {
+    const rawFrequency =
+      typeof profile?.travel_frequency_per_year === 'string'
+        ? profile.travel_frequency_per_year.trim()
+        : null;
+
+    const sanitizedFrequency = rawFrequency && rawFrequency.length > 0 ? rawFrequency : null;
+
+    setOriginalTravelFrequency(sanitizedFrequency);
+
+    if (!isEditingTravel) {
+      setTravelFrequency(sanitizedFrequency);
+    }
+  }, [profile?.travel_frequency_per_year, isEditingTravel]);
 
   const resolveCountryOption = useCallback(
     (value: string | null | undefined) => {
@@ -268,9 +292,66 @@ const ProfilePage = () => {
     );
   }, [coreLanguages]);
 
+  const travelFrequencyOptions = useMemo(
+    () => [
+      {
+        value: 'rarely',
+        label: t('profile.travelFrequency.rarely', {
+          defaultValue: 'Selten (1–2 Reisen)',
+        }),
+      },
+      {
+        value: 'sometimes',
+        label: t('profile.travelFrequency.sometimes', {
+          defaultValue: 'Gelegentlich (3–5 Reisen)',
+        }),
+      },
+      {
+        value: 'often',
+        label: t('profile.travelFrequency.often', {
+          defaultValue: 'Oft (6–10 Reisen)',
+        }),
+      },
+      {
+        value: 'frequent',
+        label: t('profile.travelFrequency.frequent', {
+          defaultValue: 'Sehr oft (10+ Reisen)',
+        }),
+      },
+    ],
+    [t]
+  );
+
+  const travelFrequencyLabelByValue = useMemo(() => {
+    const map = new Map<string, string>();
+    travelFrequencyOptions.forEach((option) => {
+      map.set(option.value, option.label);
+    });
+    return map;
+  }, [travelFrequencyOptions]);
+
+  const travelFrequencyProfileLabel = useMemo(() => {
+    if (typeof profile?.travel_frequency_per_year !== 'string') {
+      return null;
+    }
+
+    const trimmed = profile.travel_frequency_per_year.trim();
+    if (trimmed.length === 0) {
+      return null;
+    }
+
+    return travelFrequencyLabelByValue.get(trimmed) ?? null;
+  }, [profile?.travel_frequency_per_year, travelFrequencyLabelByValue]);
+
   const trimmedFirstName = coreFirstName.trim();
   const trimmedLastName = coreLastName.trim();
   const normalizedSelectedCountry = selectedCountry?.name ?? null;
+
+  const normalizedTravelFrequency = travelFrequency ?? null;
+  const isTravelDirty = normalizedTravelFrequency !== (originalTravelFrequency ?? null);
+  const travelFrequencyDisplayLabel = normalizedTravelFrequency
+    ? travelFrequencyLabelByValue.get(normalizedTravelFrequency) ?? normalizedTravelFrequency
+    : null;
 
   const isFirstNameDirty = trimmedFirstName !== originalFirstName;
   const isLastNameDirty = trimmedLastName !== originalLastName;
@@ -378,9 +459,14 @@ const ProfilePage = () => {
   const secondarySections = useMemo<DetailSection[]>(
     () => [
       {
+        id: 'travel',
         title: t('profile.sections.travel'),
         fields: [
-          { label: t('profile.fields.travelFrequency'), value: profile?.travel_frequency_per_year },
+          {
+            id: 'travel_frequency_per_year',
+            label: t('profile.fields.travelFrequency'),
+            value: profile?.travel_frequency_per_year,
+          },
           { label: t('profile.fields.tripDuration'), value: profile?.travel_avg_trip_duration_days },
           { label: t('profile.fields.countriesVisited'), value: profile?.travel_countries_visited_count },
           { label: t('profile.fields.regionsVisited'), value: profile?.travel_regions_often_visited },
@@ -389,6 +475,7 @@ const ProfilePage = () => {
         ],
       },
       {
+        id: 'transport',
         title: t('profile.sections.transport'),
         fields: [
           { label: t('profile.fields.transportModes'), value: profile?.transport_usual_transport_modes },
@@ -396,6 +483,7 @@ const ProfilePage = () => {
         ],
       },
       {
+        id: 'accommodation',
         title: t('profile.sections.accommodation'),
         fields: [
           { label: t('profile.fields.accommodationTypes'), value: profile?.accommodation_common_types },
@@ -404,6 +492,7 @@ const ProfilePage = () => {
         ],
       },
       {
+        id: 'activities',
         title: t('profile.sections.activities'),
         fields: [
           { label: t('profile.fields.activitiesSports'), value: profile?.activity_sports_outdoor },
@@ -412,6 +501,7 @@ const ProfilePage = () => {
         ],
       },
       {
+        id: 'sustainability',
         title: t('profile.sections.sustainability'),
         fields: [
           { label: t('profile.fields.sustainabilityFocus'), value: profile?.sustainability_focus },
@@ -419,6 +509,7 @@ const ProfilePage = () => {
         ],
       },
       {
+        id: 'budget',
         title: t('profile.sections.budget'),
         fields: [
           { label: t('profile.fields.budgetLevel'), value: profile?.budget_level },
@@ -664,12 +755,77 @@ const ProfilePage = () => {
     }
   };
 
+  const handleStartEditingTravel = () => {
+    setIsEditingTravel(true);
+    setTravelSaved(false);
+    setTravelSaveError(null);
+    setTravelFrequency(originalTravelFrequency);
+  };
+
+  const handleCancelEditingTravel = () => {
+    setIsEditingTravel(false);
+    setTravelSaved(false);
+    setTravelSaveError(null);
+    setTravelFrequency(originalTravelFrequency);
+  };
+
+  const handleSaveTravel = async () => {
+    if (!user?.id) {
+      setTravelSaveError(
+        t('profile.errors.mustBeSignedIn', {
+          defaultValue: 'Sign in to update your profile.',
+        })
+      );
+      return;
+    }
+
+    if (!isTravelDirty) {
+      setIsEditingTravel(false);
+      return;
+    }
+
+    try {
+      setSavingTravel(true);
+      setTravelSaveError(null);
+
+      const payload: Partial<Profile> = {
+        travel_frequency_per_year: normalizedTravelFrequency,
+      };
+
+      const { error: updateError } = await updateRecord<Profile>('profiles', payload, {
+        match: { user_id: user.id },
+      });
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      await refresh();
+      setIsEditingTravel(false);
+      setTravelSaved(true);
+      setOriginalTravelFrequency(normalizedTravelFrequency);
+    } catch (saveError) {
+      console.error('Failed to save travel frequency', saveError);
+      setTravelSaveError(
+        saveError instanceof Error
+          ? saveError.message
+          : t('profile.errors.travelSaveFailed', {
+              defaultValue: 'We couldn’t save your travel preferences. Try again.',
+            })
+      );
+    } finally {
+      setSavingTravel(false);
+    }
+  };
+
   const handleRefreshProfile = async () => {
     try {
       setRefreshing(true);
       setCoreSaved(false);
       setCoreSaveError(null);
       setAvatarError(null);
+      setTravelSaved(false);
+      setTravelSaveError(null);
       await refresh();
     } finally {
       setRefreshing(false);
@@ -1093,10 +1249,57 @@ const ProfilePage = () => {
 
           {secondarySections.map((section) => (
             <article
-              key={section.title}
+              key={section.id}
               className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/60 p-6 shadow dark:border-slate-800/60 dark:bg-slate-900/60"
             >
-              <h2 className="text-lg font-semibold">{section.title}</h2>
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <h2 className="text-lg font-semibold">{section.title}</h2>
+                {section.id === 'travel' ? (
+                  isEditingTravel ? (
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={handleCancelEditingTravel}
+                        className="rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                        disabled={savingTravel}
+                      >
+                        {t('profile.actions.cancel', { defaultValue: 'Cancel' })}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleSaveTravel}
+                        className="rounded-full border border-brand-secondary bg-brand-secondary px-4 py-2 text-xs font-semibold text-white transition hover:bg-brand-secondary/90 disabled:cursor-not-allowed disabled:opacity-60 dark:border-brand-secondary"
+                        disabled={savingTravel}
+                      >
+                        {savingTravel
+                          ? t('profile.actions.saving', { defaultValue: 'Saving…' })
+                          : t('profile.actions.save', { defaultValue: 'Save' })}
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleStartEditingTravel}
+                      className="rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                      disabled={savingTravel}
+                    >
+                      {t('profile.actions.edit', { defaultValue: 'Edit' })}
+                    </button>
+                  )
+                ) : null}
+              </div>
+              {section.id === 'travel' ? (
+                <>
+                  {travelSaveError ? (
+                    <p className="text-xs text-red-500">{travelSaveError}</p>
+                  ) : null}
+                  {!travelSaveError && travelSaved ? (
+                    <p className="text-xs text-emerald-600">
+                      {t('profile.state.settingsSaved', { defaultValue: 'Your settings have been saved.' })}
+                    </p>
+                  ) : null}
+                </>
+              ) : null}
               <dl className="grid gap-4 sm:grid-cols-2">
                 {section.fields.map((field) => (
                   <div key={field.label} className="flex flex-col gap-1">
@@ -1104,7 +1307,38 @@ const ProfilePage = () => {
                       {field.label}
                     </dt>
                     <dd className="text-sm font-medium text-[var(--text-primary)]">
-                      {formatValue(field.value)}
+                      {section.id === 'travel' && field.id === 'travel_frequency_per_year' ? (
+                        isEditingTravel ? (
+                          <select
+                            value={travelFrequency ?? ''}
+                            onChange={(event) => {
+                              const nextValue = event.target.value;
+                              setTravelFrequency(nextValue.length > 0 ? nextValue : null);
+                              setTravelSaved(false);
+                              setTravelSaveError(null);
+                            }}
+                            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                            disabled={savingTravel}
+                          >
+                            <option value="">
+                              {t('profile.actions.selectTravelFrequency', {
+                                defaultValue: 'Select your travel frequency',
+                              })}
+                            </option>
+                            {travelFrequencyOptions.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          travelFrequencyDisplayLabel ??
+                          travelFrequencyProfileLabel ??
+                          t('profile.fallback.notSet')
+                        )
+                      ) : (
+                        formatValue(field.value)
+                      )}
                     </dd>
                   </div>
                 ))}
