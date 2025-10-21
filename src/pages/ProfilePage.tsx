@@ -37,6 +37,12 @@ interface TravelSeasonOption {
   defaultLabel: string;
 }
 
+interface TransportModeOption {
+  value: string;
+  translationKey: string;
+  defaultLabel: string;
+}
+
 interface DetailSectionField {
   label: string;
   value: unknown;
@@ -131,6 +137,17 @@ const TRAVEL_SEASON_OPTIONS: readonly TravelSeasonOption[] = [
   { value: 'all_year', translationKey: 'profile.travelSeasons.all_year', defaultLabel: 'All year round' },
 ];
 
+const TRANSPORT_MODE_OPTIONS: readonly TransportModeOption[] = [
+  { value: 'plane', translationKey: 'profile.transportModes.plane', defaultLabel: '✈️ Plane' },
+  { value: 'train', translationKey: 'profile.transportModes.train', defaultLabel: '🚆 Train' },
+  { value: 'car', translationKey: 'profile.transportModes.car', defaultLabel: '🚗 Car' },
+  { value: 'bus', translationKey: 'profile.transportModes.bus', defaultLabel: '🚌 Bus' },
+  { value: 'camper', translationKey: 'profile.transportModes.camper', defaultLabel: '🚐 Camper / Van' },
+  { value: 'bike', translationKey: 'profile.transportModes.bike', defaultLabel: '🚴‍♀️ Bike' },
+  { value: 'boat', translationKey: 'profile.transportModes.boat', defaultLabel: '🚢 Boat / Ferry' },
+  { value: 'foot', translationKey: 'profile.transportModes.foot', defaultLabel: '🚶 On foot' },
+];
+
 const toFlagEmoji = (countryCode: string) => {
   if (!countryCode || countryCode.length !== 2) {
     return '';
@@ -173,7 +190,32 @@ const normalizeSeasons = (seasons: string[]): string[] =>
     .filter((season) => season.length > 0)
     .sort();
 
+const normalizeTransportModes = (modes: string[]): string[] => {
+  const allowedValues = new Set(TRANSPORT_MODE_OPTIONS.map((option) => option.value));
+  const chosen = new Set(
+    modes
+      .map((mode) => (typeof mode === 'string' ? mode.trim().toLowerCase() : ''))
+      .filter((mode) => mode.length > 0 && allowedValues.has(mode))
+  );
+
+  return TRANSPORT_MODE_OPTIONS.map((option) => option.value).filter((value) => chosen.has(value));
+};
+
 const languagesEqual = (a: string[], b: string[]): boolean => {
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  for (let index = 0; index < a.length; index += 1) {
+    if (a[index] !== b[index]) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+const transportModesEqual = (a: string[], b: string[]): boolean => {
   if (a.length !== b.length) {
     return false;
   }
@@ -248,6 +290,13 @@ const ProfilePage = () => {
   const [travelStyleToAdd, setTravelStyleToAdd] = useState('');
   const [travelSeason, setTravelSeason] = useState<string | null>(null);
   const [originalTravelSeason, setOriginalTravelSeason] = useState<string | null>(null);
+  const [isEditingTransport, setIsEditingTransport] = useState(false);
+  const [savingTransport, setSavingTransport] = useState(false);
+  const [transportSaveError, setTransportSaveError] = useState<string | null>(null);
+  const [transportSaved, setTransportSaved] = useState(false);
+  const [transportModes, setTransportModes] = useState<string[]>([]);
+  const [originalTransportModes, setOriginalTransportModes] = useState<string[]>([]);
+  const [transportModeToAdd, setTransportModeToAdd] = useState('');
 
   useEffect(() => {
     setLocalAvatarUrl(avatarUrl);
@@ -355,6 +404,19 @@ const ProfilePage = () => {
       setTravelSeason(primarySeason);
     }
   }, [profile?.travel_seasonality_preference, isEditingTravel]);
+
+  useEffect(() => {
+    const modesArray = Array.isArray(profile?.transport_usual_transport_modes)
+      ? normalizeTransportModes(profile.transport_usual_transport_modes as string[])
+      : [];
+
+    setOriginalTransportModes(modesArray);
+
+    if (!isEditingTransport) {
+      setTransportModes(modesArray);
+      setTransportModeToAdd('');
+    }
+  }, [profile?.transport_usual_transport_modes, isEditingTransport]);
 
   const resolveCountryOption = useCallback(
     (value: string | null | undefined) => {
@@ -605,6 +667,28 @@ const ProfilePage = () => {
     return map;
   }, [travelSeasonOptions]);
 
+  const transportModeOptions = useMemo(
+    () =>
+      TRANSPORT_MODE_OPTIONS.map((option) => ({
+        value: option.value,
+        label: t(option.translationKey, { defaultValue: option.defaultLabel }),
+      })),
+    [t]
+  );
+
+  const transportModeLabelByValue = useMemo(() => {
+    const map = new Map<string, string>();
+    transportModeOptions.forEach((option) => {
+      map.set(option.value, option.label);
+    });
+    return map;
+  }, [transportModeOptions]);
+
+  const availableTransportModes = useMemo(
+    () => transportModeOptions.filter((option) => !transportModes.includes(option.value)),
+    [transportModeOptions, transportModes]
+  );
+
   const trimmedFirstName = coreFirstName.trim();
   const trimmedLastName = coreLastName.trim();
   const normalizedSelectedCountry = selectedCountry?.name ?? null;
@@ -636,6 +720,8 @@ const ProfilePage = () => {
     isTravelStylesDirty ||
     isTravelSeasonDirty ||
     isTravelCountriesVisitedDirty;
+  const isTransportModesDirty = !transportModesEqual(transportModes, originalTransportModes);
+  const isTransportDirty = isTransportModesDirty;
   const travelFrequencyDisplayLabel = normalizedTravelFrequency
     ? travelFrequencyLabelByValue.get(normalizedTravelFrequency) ?? null
     : null;
@@ -666,6 +752,14 @@ const ProfilePage = () => {
   const originalTravelSeasonDisplayLabel = originalTravelSeason
     ? travelSeasonLabelByValue.get(originalTravelSeason) ?? originalTravelSeason
     : null;
+  const transportModesDisplayLabels = useMemo(
+    () => transportModes.map((mode) => transportModeLabelByValue.get(mode) ?? mode),
+    [transportModes, transportModeLabelByValue]
+  );
+  const originalTransportModesDisplayLabels = useMemo(
+    () => originalTransportModes.map((mode) => transportModeLabelByValue.get(mode) ?? mode),
+    [originalTransportModes, transportModeLabelByValue]
+  );
 
   const isFirstNameDirty = trimmedFirstName !== originalFirstName;
   const isLastNameDirty = trimmedLastName !== originalLastName;
@@ -812,8 +906,16 @@ const ProfilePage = () => {
         id: 'transport',
         title: t('profile.sections.transport'),
         fields: [
-          { label: t('profile.fields.transportModes'), value: profile?.transport_usual_transport_modes },
-          { label: t('profile.fields.luggageTypes'), value: profile?.transport_preferred_luggage_types },
+          {
+            id: 'transport_usual_transport_modes',
+            label: t('profile.fields.transportModes'),
+            value: profile?.transport_usual_transport_modes,
+          },
+          {
+            id: 'transport_preferred_luggage_types',
+            label: t('profile.fields.luggageTypes'),
+            value: profile?.transport_preferred_luggage_types,
+          },
         ],
       },
       {
@@ -1176,6 +1278,103 @@ const ProfilePage = () => {
     setTravelStyles(originalTravelStyles);
     setTravelStyleToAdd('');
     setTravelSeason(originalTravelSeason);
+  };
+
+  const handleStartEditingTransport = () => {
+    setIsEditingTransport(true);
+    setTransportSaved(false);
+    setTransportSaveError(null);
+    setTransportModes(originalTransportModes);
+    setTransportModeToAdd('');
+  };
+
+  const handleCancelEditingTransport = () => {
+    setIsEditingTransport(false);
+    setTransportSaved(false);
+    setTransportSaveError(null);
+    setTransportModes(originalTransportModes);
+    setTransportModeToAdd('');
+  };
+
+  const handleAddTransportMode = () => {
+    if (!transportModeToAdd) {
+      return;
+    }
+
+    if (transportModes.includes(transportModeToAdd)) {
+      setTransportModeToAdd('');
+      return;
+    }
+
+    setTransportModes((prev) => normalizeTransportModes([...prev, transportModeToAdd]));
+    setTransportModeToAdd('');
+    setTransportSaved(false);
+    setTransportSaveError(null);
+  };
+
+  const handleRemoveTransportMode = (mode: string) => {
+    setTransportModes((prev) => normalizeTransportModes(prev.filter((item) => item !== mode)));
+    setTransportSaved(false);
+    setTransportSaveError(null);
+  };
+
+  const handleSaveTransport = async () => {
+    if (!user?.id) {
+      setTransportSaveError(
+        t('profile.errors.mustBeSignedIn', {
+          defaultValue: 'Sign in to update your profile.',
+        })
+      );
+      return;
+    }
+
+    if (!isTransportDirty) {
+      setIsEditingTransport(false);
+      return;
+    }
+
+    try {
+      setSavingTransport(true);
+      setTransportSaveError(null);
+
+      const normalizedModes = normalizeTransportModes(transportModes);
+      const payload: Partial<Profile> = {};
+
+      if (isTransportModesDirty) {
+        payload.transport_usual_transport_modes = normalizedModes.length > 0 ? normalizedModes : null;
+      }
+
+      if (Object.keys(payload).length === 0) {
+        setIsEditingTransport(false);
+        return;
+      }
+
+      const { error: updateError } = await updateRecord<Profile>('profiles', payload, {
+        match: { user_id: user.id },
+      });
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      await refresh();
+      setIsEditingTransport(false);
+      setTransportSaved(true);
+      setOriginalTransportModes(normalizedModes);
+      setTransportModes(normalizedModes);
+      setTransportModeToAdd('');
+    } catch (saveError) {
+      console.error('Failed to save transport preferences', saveError);
+      setTransportSaveError(
+        saveError instanceof Error
+          ? saveError.message
+          : t('profile.errors.transportSaveFailed', {
+              defaultValue: 'We couldn’t save your transport preferences. Try again.',
+            })
+      );
+    } finally {
+      setSavingTransport(false);
+    }
   };
 
   const handleSaveTravel = async () => {
@@ -1734,6 +1933,38 @@ const ProfilePage = () => {
                       {t('profile.actions.edit', { defaultValue: 'Edit' })}
                     </button>
                   )
+                ) : section.id === 'transport' ? (
+                  isEditingTransport ? (
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={handleCancelEditingTransport}
+                        className="rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                        disabled={savingTransport}
+                      >
+                        {t('profile.actions.cancel', { defaultValue: 'Cancel' })}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleSaveTransport}
+                        className="rounded-full border border-brand-secondary bg-brand-secondary px-4 py-2 text-xs font-semibold text-white transition hover:bg-brand-secondary/90 disabled:cursor-not-allowed disabled:opacity-60 dark:border-brand-secondary"
+                        disabled={savingTransport}
+                      >
+                        {savingTransport
+                          ? t('profile.actions.saving', { defaultValue: 'Saving…' })
+                          : t('profile.actions.save', { defaultValue: 'Save' })}
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleStartEditingTransport}
+                      className="rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                      disabled={savingTransport}
+                    >
+                      {t('profile.actions.edit', { defaultValue: 'Edit' })}
+                    </button>
+                  )
                 ) : null}
               </div>
               {section.id === 'travel' ? (
@@ -1742,6 +1973,17 @@ const ProfilePage = () => {
                     <p className="text-xs text-red-500">{travelSaveError}</p>
                   ) : null}
                   {!travelSaveError && travelSaved ? (
+                    <p className="text-xs text-emerald-600">
+                      {t('profile.state.settingsSaved', { defaultValue: 'Your settings have been saved.' })}
+                    </p>
+                  ) : null}
+                </>
+              ) : section.id === 'transport' ? (
+                <>
+                  {transportSaveError ? (
+                    <p className="text-xs text-red-500">{transportSaveError}</p>
+                  ) : null}
+                  {!transportSaveError && transportSaved ? (
                     <p className="text-xs text-emerald-600">
                       {t('profile.state.settingsSaved', { defaultValue: 'Your settings have been saved.' })}
                     </p>
@@ -2065,6 +2307,87 @@ const ProfilePage = () => {
                           : travelDurationDisplayLabel ??
                             travelDurationProfileLabel ??
                             t('profile.fallback.notSet')
+                        : section.id === 'transport' && field.id === 'transport_usual_transport_modes'
+                        ? isEditingTransport
+                          ? (
+                              <div className="flex flex-col gap-3">
+                                <div className="flex flex-wrap gap-2">
+                                  {transportModes.length === 0 ? (
+                                    <span className="text-xs text-[var(--text-secondary)]">
+                                      {t('profile.fallback.notSet')}
+                                    </span>
+                                  ) : (
+                                    transportModes.map((mode, index) => (
+                                      <span
+                                        key={mode}
+                                        className="flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                      >
+                                        {transportModesDisplayLabels[index]}
+                                        <button
+                                          type="button"
+                                          onClick={() => handleRemoveTransportMode(mode)}
+                                          className="text-slate-400 transition hover:text-red-500"
+                                          aria-label={t('profile.actions.removeTransportMode', {
+                                            defaultValue: 'Remove transport mode',
+                                          })}
+                                          disabled={savingTransport}
+                                        >
+                                          ×
+                                        </button>
+                                      </span>
+                                    ))
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <select
+                                    value={transportModeToAdd}
+                                    onChange={(event) => setTransportModeToAdd(event.target.value)}
+                                    className="w-48 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                    disabled={savingTransport}
+                                  >
+                                    <option value="">
+                                      {t('profile.actions.selectTransportMode', {
+                                        defaultValue: 'Select transport mode',
+                                      })}
+                                    </option>
+                                    {availableTransportModes.map((option) => (
+                                      <option key={option.value} value={option.value}>
+                                        {option.label}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <button
+                                    type="button"
+                                    onClick={handleAddTransportMode}
+                                    className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-secondary text-lg font-semibold text-brand-secondary transition hover:bg-brand-secondary hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                    disabled={!transportModeToAdd || savingTransport}
+                                    aria-label={t('profile.actions.addTransportMode', {
+                                      defaultValue: 'Add transport mode',
+                                    })}
+                                  >
+                                    +
+                                  </button>
+                                </div>
+                              </div>
+                            )
+                          : originalTransportModes.length === 0
+                            ? (
+                                <span className="text-xs text-[var(--text-secondary)]">
+                                  {t('profile.fallback.notSet')}
+                                </span>
+                              )
+                            : (
+                                <div className="flex flex-wrap gap-2">
+                                  {originalTransportModes.map((mode, index) => (
+                                    <span
+                                      key={mode}
+                                      className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                    >
+                                      {originalTransportModesDisplayLabels[index]}
+                                    </span>
+                                  ))}
+                                </div>
+                              )
                         : (
                           formatValue(field.value)
                         )}

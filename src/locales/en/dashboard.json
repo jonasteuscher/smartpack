@@ -63,7 +63,10 @@
       "selectTravelStyle": "Select travel style",
       "addTravelStyle": "Add travel style",
       "removeTravelStyle": "Remove travel style",
-      "selectTravelSeason": "Select season"
+      "selectTravelSeason": "Select season",
+      "selectTransportMode": "Select transport mode",
+      "addTransportMode": "Add transport mode",
+      "removeTransportMode": "Remove transport mode"
     },
     "sections": {
       "details": "Profile details",
@@ -130,7 +133,8 @@
       "countrySaveForbidden": "Saving is blocked by security rules. Contact your administrator.",
       "countrySelectRequired": "Please choose your home country.",
       "mustBeSignedIn": "Sign in to update your profile.",
-      "travelSaveFailed": "We couldn’t save your travel preferences. Try again."
+      "travelSaveFailed": "We couldn’t save your travel preferences. Try again.",
+      "transportSaveFailed": "We couldn’t save your transport preferences. Try again."
     },
     "travelFrequency": {
       "rarely": "Rarely (1-2 trips)",
@@ -170,6 +174,16 @@
       "autumn": "Autumn",
       "winter": "Winter",
       "all_year": "All year round"
+    },
+    "transportModes": {
+      "plane": "✈️ Plane",
+      "train": "🚆 Train",
+      "car": "🚗 Car",
+      "bus": "🚌 Bus",
+      "camper": "🚐 Camper / Van",
+      "bike": "🚴‍♀️ Bike",
+      "boat": "🚢 Boat / Ferry",
+      "foot": "🚶 On foot"
     }
   },
   "settings": {
