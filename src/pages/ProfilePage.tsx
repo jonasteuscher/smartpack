@@ -310,6 +310,33 @@ const ProfilePage = () => {
     return () => controller.abort();
   }, [t]);
 
+  const countryDisplayNames = useMemo(() => {
+    try {
+      return new Intl.DisplayNames([i18n.language ?? 'en'], { type: 'region' });
+    } catch {
+      return null;
+    }
+  }, [i18n.language]);
+
+  const getCountryDisplayName = useCallback(
+    (country: CountryOption | null | undefined) => {
+      if (!country) {
+        return null;
+      }
+
+      const upperCode = country.code?.toUpperCase();
+      if (upperCode && upperCode.length === 2) {
+        const localized = countryDisplayNames?.of(upperCode);
+        if (localized && localized.toUpperCase() !== upperCode) {
+          return localized;
+        }
+      }
+
+      return country.name;
+    },
+    [countryDisplayNames]
+  );
+
   const filteredCountries = useMemo(() => {
     if (!countryQuery.trim()) {
       return countries;
@@ -319,9 +346,11 @@ const ProfilePage = () => {
     return countries.filter((country) => {
       const nameMatch = country.name.toLowerCase().includes(normalizedQuery);
       const codeMatch = country.code.toLowerCase().includes(normalizedQuery);
-      return nameMatch || codeMatch;
+      const localizedName = getCountryDisplayName(country)?.toLowerCase() ?? '';
+      const localizedMatch = localizedName.includes(normalizedQuery);
+      return nameMatch || codeMatch || localizedMatch;
     });
-  }, [countries, countryQuery]);
+  }, [countries, countryQuery, getCountryDisplayName]);
 
   const availableLanguages = useMemo(() => {
     const chosen = new Set(coreLanguages.map((code) => code.toLowerCase()));
@@ -588,6 +617,14 @@ const ProfilePage = () => {
 
     return selectedCountry;
   }, [normalizedSelectedCountry, resolveCountryOption, selectedCountry]);
+
+  const selectedCountryDisplayName = useMemo(() => {
+    if (!countryDisplayOption) {
+      return normalizedSelectedCountry;
+    }
+
+    return getCountryDisplayName(countryDisplayOption) ?? normalizedSelectedCountry;
+  }, [countryDisplayOption, getCountryDisplayName, normalizedSelectedCountry]);
   const signInMethodDisplay = isGoogleSignIn
     ? t('profile.fields.authMethodProvider', { provider: 'Google', defaultValue: 'Google' })
     : authMethod === 'email'
@@ -1135,7 +1172,9 @@ const ProfilePage = () => {
                           <div className="relative">
                             <Combobox.Input
                               className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
-                              displayValue={(country: CountryOption | null) => country?.name ?? ''}
+                              displayValue={(country: CountryOption | null) =>
+                                getCountryDisplayName(country) ?? country?.name ?? ''
+                              }
                               placeholder={t('profile.actions.selectCountry', {
                                 defaultValue: 'Select your country',
                               })}
@@ -1174,7 +1213,9 @@ const ProfilePage = () => {
                                   }
                                 >
                                   <span className="text-lg leading-none">{country.flag}</span>
-                                  <span className="flex-1 text-left">{country.name}</span>
+                                  <span className="flex-1 text-left">
+                                    {getCountryDisplayName(country) ?? country.name}
+                                  </span>
                                 </Combobox.Option>
                               ))
                             )}
@@ -1187,7 +1228,7 @@ const ProfilePage = () => {
                       {countryDisplayOption?.flag ? (
                         <span className="text-lg leading-none">{countryDisplayOption.flag}</span>
                       ) : null}
-                      <span>{normalizedSelectedCountry}</span>
+                      <span>{selectedCountryDisplayName ?? normalizedSelectedCountry}</span>
                     </span>
                   ) : (
                     t('profile.fallback.notSet')
