@@ -51,7 +51,8 @@
       "cancel": "Annuler",
       "save": "Enregistrer",
       "saving": "Enregistrement…",
-      "selectCountry": "Choisir un pays"
+      "selectCountry": "Choisir un pays",
+      "selectTravelFrequency": "Choisir la frequence de voyage"
     },
     "sections": {
       "details": "Details du profil",
@@ -117,7 +118,14 @@
       "countrySaveFailed": "Impossible d'enregistrer le pays.",
       "countrySaveForbidden": "L'enregistrement est bloqué par les règles de sécurité. Contactez l'administrateur.",
       "countrySelectRequired": "Veuillez choisir votre pays de résidence.",
-      "mustBeSignedIn": "Connectez-vous pour mettre à jour votre profil."
+      "mustBeSignedIn": "Connectez-vous pour mettre a jour votre profil.",
+      "travelSaveFailed": "Impossible d'enregistrer vos preferences de voyage. Veuillez reessayer."
+    },
+    "travelFrequency": {
+      "rarely": "Rarement (1-2 voyages)",
+      "sometimes": "Parfois (3-5 voyages)",
+      "often": "Souvent (6-10 voyages)",
+      "frequent": "Tres souvent (10+ voyages)"
     }
   },
   "settings": {

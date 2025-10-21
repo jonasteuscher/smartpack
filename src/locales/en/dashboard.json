@@ -51,7 +51,8 @@
       "cancel": "Cancel",
       "save": "Save changes",
       "saving": "Saving…",
-      "selectCountry": "Select your country"
+      "selectCountry": "Select your country",
+      "selectTravelFrequency": "Select your travel frequency"
     },
     "sections": {
       "details": "Profile details",
@@ -117,7 +118,14 @@
       "countrySaveFailed": "We couldn’t save your country. Try again.",
       "countrySaveForbidden": "Saving is blocked by security rules. Contact your administrator.",
       "countrySelectRequired": "Please choose your home country.",
-      "mustBeSignedIn": "Sign in to update your profile."
+      "mustBeSignedIn": "Sign in to update your profile.",
+      "travelSaveFailed": "We couldn’t save your travel preferences. Try again."
+    },
+    "travelFrequency": {
+      "rarely": "Rarely (1-2 trips)",
+      "sometimes": "Sometimes (3-5 trips)",
+      "often": "Often (6-10 trips)",
+      "frequent": "Very often (10+ trips)"
     }
   },
   "settings": {

@@ -297,25 +297,25 @@ const ProfilePage = () => {
       {
         value: 'rarely',
         label: t('profile.travelFrequency.rarely', {
-          defaultValue: 'Selten (1–2 Reisen)',
+          defaultValue: 'Rarely (1-2 trips)',
         }),
       },
       {
         value: 'sometimes',
         label: t('profile.travelFrequency.sometimes', {
-          defaultValue: 'Gelegentlich (3–5 Reisen)',
+          defaultValue: 'Sometimes (3-5 trips)',
         }),
       },
       {
         value: 'often',
         label: t('profile.travelFrequency.often', {
-          defaultValue: 'Oft (6–10 Reisen)',
+          defaultValue: 'Often (6-10 trips)',
         }),
       },
       {
         value: 'frequent',
         label: t('profile.travelFrequency.frequent', {
-          defaultValue: 'Sehr oft (10+ Reisen)',
+          defaultValue: 'Very often (10+ trips)',
         }),
       },
     ],

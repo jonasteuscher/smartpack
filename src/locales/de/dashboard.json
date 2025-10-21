@@ -51,7 +51,8 @@
       "cancel": "Abbrechen",
       "save": "Änderungen speichern",
       "saving": "Speichere…",
-      "selectCountry": "Land auswählen"
+      "selectCountry": "Land auswählen",
+      "selectTravelFrequency": "Reisehäufigkeit auswählen"
     },
     "sections": {
       "details": "Profildetails",
@@ -117,7 +118,14 @@
       "countrySaveFailed": "Dein Land konnte nicht gespeichert werden.",
       "countrySaveForbidden": "Das Speichern ist durch Sicherheitsrichtlinien blockiert. Kontaktiere die Administration.",
       "countrySelectRequired": "Bitte wähle dein Heimatland.",
-      "mustBeSignedIn": "Melde dich an, um dein Profil zu aktualisieren."
+      "mustBeSignedIn": "Melde dich an, um dein Profil zu aktualisieren.",
+      "travelSaveFailed": "Deine Reisepräferenzen konnten nicht gespeichert werden. Versuche es erneut."
+    },
+    "travelFrequency": {
+      "rarely": "Selten (1-2 Reisen)",
+      "sometimes": "Gelegentlich (3-5 Reisen)",
+      "often": "Oft (6-10 Reisen)",
+      "frequent": "Sehr oft (10+ Reisen)"
     }
   },
   "settings": {
