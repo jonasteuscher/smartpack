@@ -432,6 +432,7 @@ const ProfilePage = () => {
 
   const emailValue = user?.email ?? t('profile.fallback.notSet');
   const isGoogleSignIn = authMethod === 'google';
+  const canManageAvatar = !isGoogleSignIn;
   const signInMethodDisplay = isGoogleSignIn
     ? t('profile.fields.authMethodProvider', { provider: 'Google', defaultValue: 'Google' })
     : authMethod === 'email'
@@ -694,28 +695,30 @@ const ProfilePage = () => {
                 </p>
               ) : null}
             </div>
-            <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-center">
-              <button
-                type="button"
-                onClick={handleTriggerUpload}
-                className="flex-1 rounded-full border border-dashed border-slate-300 px-4 py-2 text-xs font-semibold text-slate-500 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-300 dark:hover:border-brand-primary dark:hover:text-brand-primary"
-                disabled={uploadingAvatar || removingAvatar}
-              >
-                {uploadingAvatar
-                  ? t('profile.actions.updateAvatarUploading', { defaultValue: 'Uploading…' })
-                  : t('profile.actions.updateAvatar', { defaultValue: 'Change photo' })}
-              </button>
-              <button
-                type="button"
-                onClick={handleRemoveAvatar}
-                className="flex-1 rounded-full border border-red-300 px-4 py-2 text-xs font-semibold text-red-500 transition hover:border-red-400 hover:bg-red-500/10 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-60 dark:border-red-500/80 dark:text-red-300 dark:hover:border-red-400"
-                disabled={removingAvatar || uploadingAvatar || !localAvatarUrl}
-              >
-                {removingAvatar
-                  ? t('profile.actions.removeAvatarRemoving', { defaultValue: 'Removing…' })
-                  : t('profile.actions.removeAvatar', { defaultValue: 'Remove photo' })}
-              </button>
-            </div>
+            {canManageAvatar ? (
+              <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-center">
+                <button
+                  type="button"
+                  onClick={handleTriggerUpload}
+                  className="flex-1 rounded-full border border-dashed border-slate-300 px-4 py-2 text-xs font-semibold text-slate-500 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-300 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                  disabled={uploadingAvatar || removingAvatar}
+                >
+                  {uploadingAvatar
+                    ? t('profile.actions.updateAvatarUploading', { defaultValue: 'Uploading…' })
+                    : t('profile.actions.updateAvatar', { defaultValue: 'Change photo' })}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleRemoveAvatar}
+                  className="flex-1 rounded-full border border-red-300 px-4 py-2 text-xs font-semibold text-red-500 transition hover:border-red-400 hover:bg-red-500/10 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-60 dark:border-red-500/80 dark:text-red-300 dark:hover:border-red-400"
+                  disabled={removingAvatar || uploadingAvatar || !localAvatarUrl}
+                >
+                  {removingAvatar
+                    ? t('profile.actions.removeAvatarRemoving', { defaultValue: 'Removing…' })
+                    : t('profile.actions.removeAvatar', { defaultValue: 'Remove photo' })}
+                </button>
+              </div>
+            ) : null}
             {avatarError ? (
               <p className="text-xs text-red-500">{avatarError}</p>
             ) : null}
