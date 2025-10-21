@@ -152,24 +152,24 @@
       "extended": "Extended (15+ days)"
     },
     "travelRegions": {
-      "CH": "Switzerland / Domestic",
-      "EU": "Europe",
-      "NA": "North America",
-      "SA": "South America",
-      "AS": "Asia",
-      "AF": "Africa",
-      "OC": "Oceania",
-      "ME": "Middle East"
+      "CH": "🇨🇭 Switzerland / Domestic",
+      "EU": "🇪🇺 Europe",
+      "NA": "🇺🇸 North America",
+      "SA": "🇧🇷 South America",
+      "AS": "🇯🇵 Asia",
+      "AF": "🇿🇦 Africa",
+      "OC": "🇦🇺 Oceania",
+      "ME": "🕌 Middle East"
     },
     "travelStyles": {
-      "citytrip": "City trips",
-      "beach": "Beach holidays",
-      "outdoor": "Adventure & outdoor",
-      "business": "Business travel",
-      "camping": "Camping / Vanlife",
-      "luxury": "Luxury travel",
-      "backpacking": "Backpacking",
-      "culture": "Culture & sightseeing"
+      "citytrip": "🏙️ City trips",
+      "beach": "🏖️ Beach holidays",
+      "outdoor": "🧗 Adventure & outdoor",
+      "business": "💼 Business travel",
+      "camping": "🚐 Camping / Vanlife",
+      "luxury": "✨ Luxury travel",
+      "backpacking": "🎒 Backpacking",
+      "culture": "🗺️ Culture & sightseeing"
     },
     "travelSeasons": {
       "spring": "Spring",

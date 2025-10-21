@@ -162,14 +162,14 @@
       "ME": "Medio Oriente"
     },
     "travelStyles": {
-      "citytrip": "Viaggi in citta",
-      "beach": "Vacanze al mare",
-      "outdoor": "Avventura & outdoor",
-      "business": "Viaggi di lavoro",
-      "camping": "Camping / Vanlife",
-      "luxury": "Viaggi di lusso",
-      "backpacking": "Backpacking",
-      "culture": "Cultura & sightseeing"
+      "citytrip": "🏙️ Viaggi in citta",
+      "beach": "🏖️ Vacanze al mare",
+      "outdoor": "🧗 Avventura & outdoor",
+      "business": "💼 Viaggi di lavoro",
+      "camping": "🚐 Camping / Vanlife",
+      "luxury": "✨ Viaggi di lusso",
+      "backpacking": "🎒 Backpacking",
+      "culture": "🗺️ Cultura & sightseeing"
     },
     "travelSeasons": {
       "spring": "Primavera",

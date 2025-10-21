@@ -152,24 +152,24 @@
       "extended": "Sehr lang (15+ Tage)"
     },
     "travelRegions": {
-      "CH": "Schweiz / Inland",
-      "EU": "Europa",
-      "NA": "Nordamerika",
-      "SA": "Südamerika",
-      "AS": "Asien",
-      "AF": "Afrika",
-      "OC": "Ozeanien",
-      "ME": "Naher Osten"
+      "CH": "🇨🇭 Schweiz / Inland",
+      "EU": "🇪🇺 Europa",
+      "NA": "🇺🇸 Nordamerika",
+      "SA": "🇧🇷 Südamerika",
+      "AS": "🇯🇵 Asien",
+      "AF": "🇿🇦 Afrika",
+      "OC": "🇦🇺 Ozeanien",
+      "ME": "🕌 Naher Osten"
     },
     "travelStyles": {
-      "citytrip": "Städtereisen",
-      "beach": "Strandferien",
-      "outdoor": "Abenteuer & Outdoor",
-      "business": "Geschäftsreisen",
-      "camping": "Camping / Vanlife",
-      "luxury": "Luxusreisen",
-      "backpacking": "Backpacking",
-      "culture": "Kultur & Sightseeing"
+      "citytrip": "🏙️ Städtereisen",
+      "beach": "🏖️ Strandferien",
+      "outdoor": "🧗 Abenteuer & Outdoor",
+      "business": "💼 Geschäftsreisen",
+      "camping": "🚐 Camping / Vanlife",
+      "luxury": "✨ Luxusreisen",
+      "backpacking": "🎒 Backpacking",
+      "culture": "🗺️ Kultur & Sightseeing"
     },
     "travelSeasons": {
       "spring": "Frühling",

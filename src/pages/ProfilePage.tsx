@@ -17,18 +17,21 @@ interface CountryOption {
 interface LanguageOption {
   code: string;
   name: string;
+  emoji?: string;
 }
 
 interface TravelRegionOption {
   value: string;
   translationKey: string;
   defaultLabel: string;
+  emoji?: string;
 }
 
 interface TravelStyleOption {
   value: string;
   translationKey: string;
   defaultLabel: string;
+  emoji?: string;
 }
 
 interface TravelSeasonOption {
@@ -62,26 +65,26 @@ interface DetailSection {
 }
 
 const LANGUAGE_OPTIONS: LanguageOption[] = [
-  { code: 'en', name: 'English' },
-  { code: 'de', name: 'German' },
-  { code: 'fr', name: 'French' },
-  { code: 'it', name: 'Italian' },
-  { code: 'es', name: 'Spanish' },
-  { code: 'pt', name: 'Portuguese' },
-  { code: 'nl', name: 'Dutch' },
-  { code: 'sv', name: 'Swedish' },
-  { code: 'no', name: 'Norwegian' },
-  { code: 'da', name: 'Danish' },
-  { code: 'fi', name: 'Finnish' },
-  { code: 'pl', name: 'Polish' },
-  { code: 'cs', name: 'Czech' },
-  { code: 'ru', name: 'Russian' },
-  { code: 'tr', name: 'Turkish' },
-  { code: 'ja', name: 'Japanese' },
-  { code: 'ko', name: 'Korean' },
-  { code: 'zh', name: 'Chinese' },
-  { code: 'ar', name: 'Arabic' },
-  { code: 'hi', name: 'Hindi' },
+  { code: 'en', name: 'English', emoji: '🇬🇧' },
+  { code: 'de', name: 'German', emoji: '🇩🇪' },
+  { code: 'fr', name: 'French', emoji: '🇫🇷' },
+  { code: 'it', name: 'Italian', emoji: '🇮🇹' },
+  { code: 'es', name: 'Spanish', emoji: '🇪🇸' },
+  { code: 'pt', name: 'Portuguese', emoji: '🇵🇹' },
+  { code: 'nl', name: 'Dutch', emoji: '🇳🇱' },
+  { code: 'sv', name: 'Swedish', emoji: '🇸🇪' },
+  { code: 'no', name: 'Norwegian', emoji: '🇳🇴' },
+  { code: 'da', name: 'Danish', emoji: '🇩🇰' },
+  { code: 'fi', name: 'Finnish', emoji: '🇫🇮' },
+  { code: 'pl', name: 'Polish', emoji: '🇵🇱' },
+  { code: 'cs', name: 'Czech', emoji: '🇨🇿' },
+  { code: 'ru', name: 'Russian', emoji: '🇷🇺' },
+  { code: 'tr', name: 'Turkish', emoji: '🇹🇷' },
+  { code: 'ja', name: 'Japanese', emoji: '🇯🇵' },
+  { code: 'ko', name: 'Korean', emoji: '🇰🇷' },
+  { code: 'zh', name: 'Chinese', emoji: '🇨🇳' },
+  { code: 'ar', name: 'Arabic', emoji: '🇸🇦' },
+  { code: 'hi', name: 'Hindi', emoji: '🇮🇳' },
 ];
 
 const TRAVEL_FREQUENCY_VALUES: readonly TravelFrequencyPerYear[] = [
@@ -114,25 +117,25 @@ const isTravelDurationValue = (value: unknown): value is TravelTripDurationDays 
   typeof value === 'string' && (TRAVEL_DURATION_VALUES as readonly string[]).includes(value);
 
 const TRAVEL_REGION_OPTIONS: readonly TravelRegionOption[] = [
-  { value: 'CH', translationKey: 'profile.travelRegions.CH', defaultLabel: 'Switzerland / Domestic' },
-  { value: 'EU', translationKey: 'profile.travelRegions.EU', defaultLabel: 'Europe' },
-  { value: 'NA', translationKey: 'profile.travelRegions.NA', defaultLabel: 'North America' },
-  { value: 'SA', translationKey: 'profile.travelRegions.SA', defaultLabel: 'South America' },
-  { value: 'AS', translationKey: 'profile.travelRegions.AS', defaultLabel: 'Asia' },
-  { value: 'AF', translationKey: 'profile.travelRegions.AF', defaultLabel: 'Africa' },
-  { value: 'OC', translationKey: 'profile.travelRegions.OC', defaultLabel: 'Oceania' },
-  { value: 'ME', translationKey: 'profile.travelRegions.ME', defaultLabel: 'Middle East' },
+  { value: 'CH', translationKey: 'profile.travelRegions.CH', defaultLabel: '🇨🇭 Switzerland / Domestic', emoji: '🇨🇭' },
+  { value: 'EU', translationKey: 'profile.travelRegions.EU', defaultLabel: '🇪🇺 Europe', emoji: '🇪🇺' },
+  { value: 'NA', translationKey: 'profile.travelRegions.NA', defaultLabel: '🇺🇸 North America', emoji: '🇺🇸' },
+  { value: 'SA', translationKey: 'profile.travelRegions.SA', defaultLabel: '🇧🇷 South America', emoji: '🇧🇷' },
+  { value: 'AS', translationKey: 'profile.travelRegions.AS', defaultLabel: '🇯🇵 Asia', emoji: '🇯🇵' },
+  { value: 'AF', translationKey: 'profile.travelRegions.AF', defaultLabel: '🇿🇦 Africa', emoji: '🇿🇦' },
+  { value: 'OC', translationKey: 'profile.travelRegions.OC', defaultLabel: '🇦🇺 Oceania', emoji: '🇦🇺' },
+  { value: 'ME', translationKey: 'profile.travelRegions.ME', defaultLabel: '🕌 Middle East', emoji: '🕌' },
 ];
 
 const TRAVEL_STYLE_OPTIONS: readonly TravelStyleOption[] = [
-  { value: 'citytrip', translationKey: 'profile.travelStyles.citytrip', defaultLabel: 'City trips' },
-  { value: 'beach', translationKey: 'profile.travelStyles.beach', defaultLabel: 'Beach holidays' },
-  { value: 'outdoor', translationKey: 'profile.travelStyles.outdoor', defaultLabel: 'Adventure & outdoor' },
-  { value: 'business', translationKey: 'profile.travelStyles.business', defaultLabel: 'Business travel' },
-  { value: 'camping', translationKey: 'profile.travelStyles.camping', defaultLabel: 'Camping / Vanlife' },
-  { value: 'luxury', translationKey: 'profile.travelStyles.luxury', defaultLabel: 'Luxury travel' },
-  { value: 'backpacking', translationKey: 'profile.travelStyles.backpacking', defaultLabel: 'Backpacking' },
-  { value: 'culture', translationKey: 'profile.travelStyles.culture', defaultLabel: 'Culture & sightseeing' },
+  { value: 'citytrip', translationKey: 'profile.travelStyles.citytrip', defaultLabel: '🏙️ City trips', emoji: '🏙️' },
+  { value: 'beach', translationKey: 'profile.travelStyles.beach', defaultLabel: '🏖️ Beach holidays', emoji: '🏖️' },
+  { value: 'outdoor', translationKey: 'profile.travelStyles.outdoor', defaultLabel: '🧗 Adventure & outdoor', emoji: '🧗' },
+  { value: 'business', translationKey: 'profile.travelStyles.business', defaultLabel: '💼 Business travel', emoji: '💼' },
+  { value: 'camping', translationKey: 'profile.travelStyles.camping', defaultLabel: '🚐 Camping / Vanlife', emoji: '🚐' },
+  { value: 'luxury', translationKey: 'profile.travelStyles.luxury', defaultLabel: '✨ Luxury travel', emoji: '✨' },
+  { value: 'backpacking', translationKey: 'profile.travelStyles.backpacking', defaultLabel: '🎒 Backpacking', emoji: '🎒' },
+  { value: 'culture', translationKey: 'profile.travelStyles.culture', defaultLabel: '🗺️ Culture & sightseeing', emoji: '🗺️' },
 ];
 
 const TRAVEL_SEASON_OPTIONS: readonly TravelSeasonOption[] = [
@@ -188,11 +191,13 @@ const normalizeLanguages = (languages: string[]): string[] =>
     .filter((code) => code.length > 0)
     .sort();
 
-const normalizeRegions = (regions: string[]): string[] =>
-  regions
+const normalizeRegions = (regions: string[]): string[] => {
+  const allowed = new Set(TRAVEL_REGION_OPTIONS.map((option) => option.value));
+  return regions
     .map((code) => (typeof code === 'string' ? code.trim().toUpperCase() : ''))
-    .filter((code) => code.length > 0)
+    .filter((code) => code.length > 0 && allowed.has(code))
     .sort();
+};
 
 const normalizeStyles = (styles: string[]): string[] =>
   styles
@@ -600,6 +605,28 @@ const ProfilePage = () => {
     });
   }, [countries, countryQuery, getCountryDisplayName]);
 
+  const languageOptionByCode = useMemo(() => {
+    const map = new Map<string, LanguageOption>();
+    LANGUAGE_OPTIONS.forEach((option) => {
+      map.set(option.code.toLowerCase(), option);
+    });
+    return map;
+  }, []);
+
+  const getLanguageBadgeLabel = useCallback(
+    (code: string) => {
+      const option = languageOptionByCode.get(code.toLowerCase());
+      const displayCode = code.toUpperCase();
+
+      if (!option) {
+        return displayCode;
+      }
+
+      return option.emoji ? `${option.emoji} ${displayCode}` : displayCode;
+    },
+    [languageOptionByCode]
+  );
+
   const availableLanguages = useMemo(() => {
     const chosen = new Set(coreLanguages.map((code) => code.toLowerCase()));
     return LANGUAGE_OPTIONS.filter((language) => !chosen.has(language.code.toLowerCase())).sort((a, b) =>
@@ -665,10 +692,17 @@ const ProfilePage = () => {
 
   const travelRegionOptions = useMemo(
     () =>
-      TRAVEL_REGION_OPTIONS.map((option) => ({
-        value: option.value,
-        label: t(option.translationKey, { defaultValue: option.defaultLabel }),
-      })),
+      TRAVEL_REGION_OPTIONS.map((option) => {
+        const localized = t(option.translationKey, { defaultValue: option.defaultLabel });
+        const label =
+          option.emoji && !localized.trim().startsWith(option.emoji)
+            ? `${option.emoji} ${localized}`
+            : localized;
+        return {
+          value: option.value,
+          label,
+        };
+      }),
     [t]
   );
 
@@ -687,10 +721,17 @@ const ProfilePage = () => {
 
   const travelStyleOptions = useMemo(
     () =>
-      TRAVEL_STYLE_OPTIONS.map((option) => ({
-        value: option.value,
-        label: t(option.translationKey, { defaultValue: option.defaultLabel }),
-      })),
+      TRAVEL_STYLE_OPTIONS.map((option) => {
+        const localized = t(option.translationKey, { defaultValue: option.defaultLabel });
+        const label =
+          option.emoji && !localized.trim().startsWith(option.emoji)
+            ? `${option.emoji} ${localized}`
+            : localized;
+        return {
+          value: option.value,
+          label,
+        };
+      }),
     [t]
   );
 
@@ -1915,7 +1956,7 @@ const ProfilePage = () => {
                               key={code}
                               className="flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold uppercase text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
                             >
-                              {code.toUpperCase()}
+                              {getLanguageBadgeLabel(code)}
                               <button
                                 type="button"
                                 onClick={() => handleRemoveLanguage(code)}
@@ -1941,6 +1982,7 @@ const ProfilePage = () => {
                           </option>
                           {availableLanguages.map((language) => (
                             <option key={language.code} value={language.code}>
+                              {language.emoji ? `${language.emoji} ` : ''}
                               {language.name} ({language.code.toUpperCase()})
                             </option>
                           ))}
@@ -1967,7 +2009,7 @@ const ProfilePage = () => {
                           key={code}
                           className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold uppercase text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
                         >
-                          {code.toUpperCase()}
+                          {getLanguageBadgeLabel(code)}
                         </span>
                       ))}
                     </div>
@@ -2162,7 +2204,7 @@ const ProfilePage = () => {
                                     travelRegionsDisplayLabels.map((label, index) => (
                                       <span
                                         key={`${travelRegions[index]}-${label}`}
-                                        className="flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold uppercase text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                        className="flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
                                       >
                                         {label}
                                         <button
@@ -2222,7 +2264,7 @@ const ProfilePage = () => {
                                   {originalTravelRegionsDisplayLabels.map((label, index) => (
                                     <span
                                       key={`${originalTravelRegions[index]}-${label}`}
-                                      className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold uppercase text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                      className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
                                     >
                                       {label}
                                     </span>
@@ -2242,7 +2284,7 @@ const ProfilePage = () => {
                                     travelStylesDisplayLabels.map((label, index) => (
                                       <span
                                         key={`${travelStyles[index]}-${label}`}
-                                        className="flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold uppercase text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                        className="flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
                                       >
                                         {label}
                                         <button
@@ -2302,7 +2344,7 @@ const ProfilePage = () => {
                                   {originalTravelStylesDisplayLabels.map((label, index) => (
                                     <span
                                       key={`${originalTravelStyles[index]}-${label}`}
-                                      className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold uppercase text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                      className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
                                     >
                                       {label}
                                     </span>
