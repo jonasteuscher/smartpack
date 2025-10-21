@@ -1,3 +1,5 @@
+export type TravelFrequencyPerYear = 'rarely' | 'sometimes' | 'often' | 'frequent';
+
 export interface Profile {
   user_id: string;
   user_firstname: string | null;
@@ -5,7 +7,7 @@ export interface Profile {
   email: string | null;
   core_country_of_residence?: string | null;
   core_languages?: string[] | null;
-  travel_frequency_per_year?: number | null;
+  travel_frequency_per_year?: TravelFrequencyPerYear | null;
   travel_avg_trip_duration_days?: number | null;
   travel_countries_visited_count?: number | null;
   travel_regions_often_visited?: string[] | null;

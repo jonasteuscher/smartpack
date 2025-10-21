@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { useProfile } from '../hooks/useProfile';
 import { removeProfileAvatar, uploadProfileAvatar } from '../services/profileAvatar';
 import { updateRecord } from '../services/supabaseCrud';
-import type { Profile } from '../types/profile';
+import type { Profile, TravelFrequencyPerYear } from '../types/profile';
 
 interface CountryOption {
   name: string;
@@ -53,6 +53,23 @@ const LANGUAGE_OPTIONS: LanguageOption[] = [
   { code: 'ar', name: 'Arabic' },
   { code: 'hi', name: 'Hindi' },
 ];
+
+const TRAVEL_FREQUENCY_VALUES: readonly TravelFrequencyPerYear[] = [
+  'rarely',
+  'sometimes',
+  'often',
+  'frequent',
+];
+
+const TRAVEL_FREQUENCY_FALLBACK_LABELS: Record<TravelFrequencyPerYear, string> = {
+  rarely: 'Rarely (1-2 trips)',
+  sometimes: 'Sometimes (3-5 trips)',
+  often: 'Often (6-10 trips)',
+  frequent: 'Very often (10+ trips)',
+};
+
+const isTravelFrequencyValue = (value: unknown): value is TravelFrequencyPerYear =>
+  typeof value === 'string' && (TRAVEL_FREQUENCY_VALUES as readonly string[]).includes(value);
 
 const toFlagEmoji = (countryCode: string) => {
   if (!countryCode || countryCode.length !== 2) {
@@ -139,8 +156,8 @@ const ProfilePage = () => {
   const [savingTravel, setSavingTravel] = useState(false);
   const [travelSaveError, setTravelSaveError] = useState<string | null>(null);
   const [travelSaved, setTravelSaved] = useState(false);
-  const [travelFrequency, setTravelFrequency] = useState<string | null>(null);
-  const [originalTravelFrequency, setOriginalTravelFrequency] = useState<string | null>(null);
+  const [travelFrequency, setTravelFrequency] = useState<TravelFrequencyPerYear | null>(null);
+  const [originalTravelFrequency, setOriginalTravelFrequency] = useState<TravelFrequencyPerYear | null>(null);
 
   useEffect(() => {
     setLocalAvatarUrl(avatarUrl);
@@ -175,12 +192,8 @@ const ProfilePage = () => {
   }, [profile?.core_languages, isEditingCore]);
 
   useEffect(() => {
-    const rawFrequency =
-      typeof profile?.travel_frequency_per_year === 'string'
-        ? profile.travel_frequency_per_year.trim()
-        : null;
-
-    const sanitizedFrequency = rawFrequency && rawFrequency.length > 0 ? rawFrequency : null;
+    const rawFrequency = profile?.travel_frequency_per_year;
+    const sanitizedFrequency = isTravelFrequencyValue(rawFrequency) ? rawFrequency : null;
 
     setOriginalTravelFrequency(sanitizedFrequency);
 
@@ -293,37 +306,18 @@ const ProfilePage = () => {
   }, [coreLanguages]);
 
   const travelFrequencyOptions = useMemo(
-    () => [
-      {
-        value: 'rarely',
-        label: t('profile.travelFrequency.rarely', {
-          defaultValue: 'Rarely (1-2 trips)',
+    (): { value: TravelFrequencyPerYear; label: string }[] =>
+      TRAVEL_FREQUENCY_VALUES.map((value) => ({
+        value,
+        label: t(`profile.travelFrequency.${value}`, {
+          defaultValue: TRAVEL_FREQUENCY_FALLBACK_LABELS[value],
         }),
-      },
-      {
-        value: 'sometimes',
-        label: t('profile.travelFrequency.sometimes', {
-          defaultValue: 'Sometimes (3-5 trips)',
-        }),
-      },
-      {
-        value: 'often',
-        label: t('profile.travelFrequency.often', {
-          defaultValue: 'Often (6-10 trips)',
-        }),
-      },
-      {
-        value: 'frequent',
-        label: t('profile.travelFrequency.frequent', {
-          defaultValue: 'Very often (10+ trips)',
-        }),
-      },
-    ],
+      })),
     [t]
   );
 
   const travelFrequencyLabelByValue = useMemo(() => {
-    const map = new Map<string, string>();
+    const map = new Map<TravelFrequencyPerYear, string>();
     travelFrequencyOptions.forEach((option) => {
       map.set(option.value, option.label);
     });
@@ -331,26 +325,22 @@ const ProfilePage = () => {
   }, [travelFrequencyOptions]);
 
   const travelFrequencyProfileLabel = useMemo(() => {
-    if (typeof profile?.travel_frequency_per_year !== 'string') {
+    const value = profile?.travel_frequency_per_year;
+    if (!isTravelFrequencyValue(value)) {
       return null;
     }
 
-    const trimmed = profile.travel_frequency_per_year.trim();
-    if (trimmed.length === 0) {
-      return null;
-    }
-
-    return travelFrequencyLabelByValue.get(trimmed) ?? null;
+    return travelFrequencyLabelByValue.get(value) ?? null;
   }, [profile?.travel_frequency_per_year, travelFrequencyLabelByValue]);
 
   const trimmedFirstName = coreFirstName.trim();
   const trimmedLastName = coreLastName.trim();
   const normalizedSelectedCountry = selectedCountry?.name ?? null;
 
-  const normalizedTravelFrequency = travelFrequency ?? null;
-  const isTravelDirty = normalizedTravelFrequency !== (originalTravelFrequency ?? null);
+  const normalizedTravelFrequency = travelFrequency;
+  const isTravelDirty = normalizedTravelFrequency !== originalTravelFrequency;
   const travelFrequencyDisplayLabel = normalizedTravelFrequency
-    ? travelFrequencyLabelByValue.get(normalizedTravelFrequency) ?? normalizedTravelFrequency
+    ? travelFrequencyLabelByValue.get(normalizedTravelFrequency) ?? null
     : null;
 
   const isFirstNameDirty = trimmedFirstName !== originalFirstName;
@@ -1313,7 +1303,7 @@ const ProfilePage = () => {
                             value={travelFrequency ?? ''}
                             onChange={(event) => {
                               const nextValue = event.target.value;
-                              setTravelFrequency(nextValue.length > 0 ? nextValue : null);
+                              setTravelFrequency(isTravelFrequencyValue(nextValue) ? nextValue : null);
                               setTravelSaved(false);
                               setTravelSaveError(null);
                             }}
