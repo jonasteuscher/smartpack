@@ -53,7 +53,13 @@
       "saving": "Speichere…",
       "selectCountry": "Land auswählen",
       "selectTravelFrequency": "Reisehäufigkeit auswählen",
-      "selectTravelDuration": "Reisedauer auswählen"
+      "selectTravelDuration": "Reisedauer auswählen",
+      "increaseTravelCountriesVisited": "Anzahl bereister Länder erhöhen",
+      "decreaseTravelCountriesVisited": "Anzahl bereister Länder verringern",
+      "enterTravelCountriesVisited": "Anzahl bereister Länder eingeben",
+      "selectTravelRegion": "Region auswählen",
+      "addTravelRegion": "Region hinzufügen",
+      "removeTravelRegion": "Region entfernen"
     },
     "sections": {
       "details": "Profildetails",
@@ -133,6 +139,16 @@
       "medium": "Mittel (4-7 Tage)",
       "long": "Lang (8-14 Tage)",
       "extended": "Sehr lang (15+ Tage)"
+    },
+    "travelRegions": {
+      "CH": "Schweiz / Inland",
+      "EU": "Europa",
+      "NA": "Nordamerika",
+      "SA": "Südamerika",
+      "AS": "Asien",
+      "AF": "Afrika",
+      "OC": "Ozeanien",
+      "ME": "Naher Osten"
     }
   },
   "settings": {

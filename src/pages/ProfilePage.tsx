@@ -19,6 +19,12 @@ interface LanguageOption {
   name: string;
 }
 
+interface TravelRegionOption {
+  value: string;
+  translationKey: string;
+  defaultLabel: string;
+}
+
 interface DetailSectionField {
   label: string;
   value: unknown;
@@ -83,6 +89,17 @@ const TRAVEL_DURATION_FALLBACK_LABELS: Record<TravelTripDurationDays, string> = 
 const isTravelDurationValue = (value: unknown): value is TravelTripDurationDays =>
   typeof value === 'string' && (TRAVEL_DURATION_VALUES as readonly string[]).includes(value);
 
+const TRAVEL_REGION_OPTIONS: readonly TravelRegionOption[] = [
+  { value: 'CH', translationKey: 'profile.travelRegions.CH', defaultLabel: 'Switzerland / Domestic' },
+  { value: 'EU', translationKey: 'profile.travelRegions.EU', defaultLabel: 'Europe' },
+  { value: 'NA', translationKey: 'profile.travelRegions.NA', defaultLabel: 'North America' },
+  { value: 'SA', translationKey: 'profile.travelRegions.SA', defaultLabel: 'South America' },
+  { value: 'AS', translationKey: 'profile.travelRegions.AS', defaultLabel: 'Asia' },
+  { value: 'AF', translationKey: 'profile.travelRegions.AF', defaultLabel: 'Africa' },
+  { value: 'OC', translationKey: 'profile.travelRegions.OC', defaultLabel: 'Oceania' },
+  { value: 'ME', translationKey: 'profile.travelRegions.ME', defaultLabel: 'Middle East' },
+];
+
 const toFlagEmoji = (countryCode: string) => {
   if (!countryCode || countryCode.length !== 2) {
     return '';
@@ -104,6 +121,12 @@ const toFlagEmoji = (countryCode: string) => {
 const normalizeLanguages = (languages: string[]): string[] =>
   languages
     .map((code) => (typeof code === 'string' ? code.trim().toLowerCase() : ''))
+    .filter((code) => code.length > 0)
+    .sort();
+
+const normalizeRegions = (regions: string[]): string[] =>
+  regions
+    .map((code) => (typeof code === 'string' ? code.trim().toUpperCase() : ''))
     .filter((code) => code.length > 0)
     .sort();
 
@@ -172,6 +195,11 @@ const ProfilePage = () => {
   const [originalTravelFrequency, setOriginalTravelFrequency] = useState<TravelFrequencyPerYear | null>(null);
   const [travelDuration, setTravelDuration] = useState<TravelTripDurationDays | null>(null);
   const [originalTravelDuration, setOriginalTravelDuration] = useState<TravelTripDurationDays | null>(null);
+  const [travelCountriesVisited, setTravelCountriesVisited] = useState('');
+  const [originalTravelCountriesVisited, setOriginalTravelCountriesVisited] = useState<number | null>(null);
+  const [travelRegions, setTravelRegions] = useState<string[]>([]);
+  const [originalTravelRegions, setOriginalTravelRegions] = useState<string[]>([]);
+  const [travelRegionToAdd, setTravelRegionToAdd] = useState('');
 
   useEffect(() => {
     setLocalAvatarUrl(avatarUrl);
@@ -226,6 +254,32 @@ const ProfilePage = () => {
       setTravelDuration(sanitizedDuration);
     }
   }, [profile?.travel_avg_trip_duration_days, isEditingTravel]);
+
+  useEffect(() => {
+    const rawCount =
+      typeof profile?.travel_countries_visited_count === 'number' && Number.isFinite(profile.travel_countries_visited_count)
+        ? profile.travel_countries_visited_count
+        : null;
+
+    setOriginalTravelCountriesVisited(rawCount);
+
+    if (!isEditingTravel) {
+      setTravelCountriesVisited(rawCount !== null ? String(rawCount) : '');
+    }
+  }, [profile?.travel_countries_visited_count, isEditingTravel]);
+
+  useEffect(() => {
+    const regionsArray = Array.isArray(profile?.travel_regions_often_visited)
+      ? normalizeRegions(profile.travel_regions_often_visited as string[])
+      : [];
+
+    setOriginalTravelRegions(regionsArray);
+
+    if (!isEditingTravel) {
+      setTravelRegions(regionsArray);
+      setTravelRegionToAdd('');
+    }
+  }, [profile?.travel_regions_often_visited, isEditingTravel]);
 
   const resolveCountryOption = useCallback(
     (value: string | null | undefined) => {
@@ -415,21 +469,66 @@ const ProfilePage = () => {
     return travelDurationLabelByValue.get(value) ?? null;
   }, [profile?.travel_avg_trip_duration_days, travelDurationLabelByValue]);
 
+  const travelRegionOptions = useMemo(
+    () =>
+      TRAVEL_REGION_OPTIONS.map((option) => ({
+        value: option.value,
+        label: t(option.translationKey, { defaultValue: option.defaultLabel }),
+      })),
+    [t]
+  );
+
+  const travelRegionLabelByValue = useMemo(() => {
+    const map = new Map<string, string>();
+    travelRegionOptions.forEach((option) => {
+      map.set(option.value, option.label);
+    });
+    return map;
+  }, [travelRegionOptions]);
+
+  const availableTravelRegions = useMemo(() => {
+    const chosen = new Set(travelRegions);
+    return travelRegionOptions.filter((region) => !chosen.has(region.value));
+  }, [travelRegionOptions, travelRegions]);
+
   const trimmedFirstName = coreFirstName.trim();
   const trimmedLastName = coreLastName.trim();
   const normalizedSelectedCountry = selectedCountry?.name ?? null;
 
   const normalizedTravelFrequency = travelFrequency;
   const normalizedTravelDuration = travelDuration;
+  const trimmedTravelCountriesVisited = travelCountriesVisited.trim();
+  const parsedTravelCountriesVisited =
+    trimmedTravelCountriesVisited.length > 0
+      ? Number.parseInt(trimmedTravelCountriesVisited, 10)
+      : Number.NaN;
+  const travelCountriesVisitedValue = Number.isFinite(parsedTravelCountriesVisited)
+    ? Math.max(0, parsedTravelCountriesVisited)
+    : null;
   const isTravelFrequencyDirty = normalizedTravelFrequency !== originalTravelFrequency;
   const isTravelDurationDirty = normalizedTravelDuration !== originalTravelDuration;
-  const isTravelDirty = isTravelFrequencyDirty || isTravelDurationDirty;
+  const isTravelRegionsDirty =
+    travelRegions.length !== originalTravelRegions.length ||
+    travelRegions.some((region, index) => region !== originalTravelRegions[index]);
+  const isTravelCountriesVisitedDirty = travelCountriesVisitedValue !== originalTravelCountriesVisited;
+  const isTravelDirty =
+    isTravelFrequencyDirty || isTravelDurationDirty || isTravelRegionsDirty || isTravelCountriesVisitedDirty;
   const travelFrequencyDisplayLabel = normalizedTravelFrequency
     ? travelFrequencyLabelByValue.get(normalizedTravelFrequency) ?? null
     : null;
   const travelDurationDisplayLabel = normalizedTravelDuration
     ? travelDurationLabelByValue.get(normalizedTravelDuration) ?? null
     : null;
+  const travelRegionsDisplayLabels = useMemo(
+    () =>
+      travelRegions.map((code) => travelRegionLabelByValue.get(code) ?? code),
+    [travelRegions, travelRegionLabelByValue]
+  );
+  const originalTravelRegionsDisplayLabels = useMemo(
+    () =>
+      originalTravelRegions.map((code) => travelRegionLabelByValue.get(code) ?? code),
+    [originalTravelRegions, travelRegionLabelByValue]
+  );
 
   const isFirstNameDirty = trimmedFirstName !== originalFirstName;
   const isLastNameDirty = trimmedLastName !== originalLastName;
@@ -550,8 +649,16 @@ const ProfilePage = () => {
             label: t('profile.fields.tripDuration'),
             value: profile?.travel_avg_trip_duration_days,
           },
-          { label: t('profile.fields.countriesVisited'), value: profile?.travel_countries_visited_count },
-          { label: t('profile.fields.regionsVisited'), value: profile?.travel_regions_often_visited },
+          {
+            id: 'travel_countries_visited_count',
+            label: t('profile.fields.countriesVisited'),
+            value: profile?.travel_countries_visited_count,
+          },
+          {
+            id: 'travel_regions_often_visited',
+            label: t('profile.fields.regionsVisited'),
+            value: profile?.travel_regions_often_visited,
+          },
           { label: t('profile.fields.travelStyles'), value: profile?.travel_usual_travel_styles },
           { label: t('profile.fields.travelSeasonality'), value: profile?.travel_seasonality_preference },
         ],
@@ -750,6 +857,30 @@ const ProfilePage = () => {
     setCoreSaveError(null);
   };
 
+  const handleAddTravelRegion = () => {
+    if (!travelRegionToAdd) {
+      return;
+    }
+
+    const normalized = travelRegionToAdd.toUpperCase();
+    if (travelRegions.includes(normalized)) {
+      setTravelRegionToAdd('');
+      return;
+    }
+
+    setTravelRegions((prev) => normalizeRegions([...prev, normalized]));
+    setTravelRegionToAdd('');
+    setTravelSaved(false);
+    setTravelSaveError(null);
+  };
+
+  const handleRemoveTravelRegion = (code: string) => {
+    const normalized = code.toUpperCase();
+    setTravelRegions((prev) => normalizeRegions(prev.filter((item) => item !== normalized)));
+    setTravelSaved(false);
+    setTravelSaveError(null);
+  };
+
   const handleStartEditingCore = () => {
     setIsEditingCore(true);
     setCoreSaved(false);
@@ -851,6 +982,11 @@ const ProfilePage = () => {
     setTravelSaveError(null);
     setTravelFrequency(originalTravelFrequency);
     setTravelDuration(originalTravelDuration);
+    setTravelCountriesVisited(
+      originalTravelCountriesVisited !== null ? String(originalTravelCountriesVisited) : ''
+    );
+    setTravelRegions(originalTravelRegions);
+    setTravelRegionToAdd('');
   };
 
   const handleCancelEditingTravel = () => {
@@ -859,6 +995,11 @@ const ProfilePage = () => {
     setTravelSaveError(null);
     setTravelFrequency(originalTravelFrequency);
     setTravelDuration(originalTravelDuration);
+    setTravelCountriesVisited(
+      originalTravelCountriesVisited !== null ? String(originalTravelCountriesVisited) : ''
+    );
+    setTravelRegions(originalTravelRegions);
+    setTravelRegionToAdd('');
   };
 
   const handleSaveTravel = async () => {
@@ -890,6 +1031,14 @@ const ProfilePage = () => {
         payload.travel_avg_trip_duration_days = normalizedTravelDuration ?? null;
       }
 
+      if (isTravelRegionsDirty) {
+        payload.travel_regions_often_visited = travelRegions.length > 0 ? travelRegions : null;
+      }
+
+      if (isTravelCountriesVisitedDirty) {
+        payload.travel_countries_visited_count = travelCountriesVisitedValue ?? null;
+      }
+
       if (Object.keys(payload).length === 0) {
         setIsEditingTravel(false);
         return;
@@ -908,6 +1057,11 @@ const ProfilePage = () => {
       setTravelSaved(true);
       setOriginalTravelFrequency(normalizedTravelFrequency ?? null);
       setOriginalTravelDuration(normalizedTravelDuration ?? null);
+      setOriginalTravelRegions(travelRegions);
+      setOriginalTravelCountriesVisited(travelCountriesVisitedValue ?? null);
+      setTravelCountriesVisited(
+        travelCountriesVisitedValue !== null ? String(travelCountriesVisitedValue) : ''
+      );
     } catch (saveError) {
       console.error('Failed to save travel preferences', saveError);
       setTravelSaveError(
@@ -1444,6 +1598,149 @@ const ProfilePage = () => {
                           : travelFrequencyDisplayLabel ??
                             travelFrequencyProfileLabel ??
                             t('profile.fallback.notSet')
+                        : section.id === 'travel' && field.id === 'travel_regions_often_visited'
+                        ? isEditingTravel
+                          ? (
+                              <div className="flex flex-col gap-3">
+                                <div className="flex flex-wrap gap-2">
+                                  {travelRegions.length === 0 ? (
+                                    <span className="text-xs text-[var(--text-secondary)]">
+                                      {t('profile.fallback.notSet')}
+                                    </span>
+                                  ) : (
+                                    travelRegionsDisplayLabels.map((label, index) => (
+                                      <span
+                                        key={`${travelRegions[index]}-${label}`}
+                                        className="flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold uppercase text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                      >
+                                        {label}
+                                        <button
+                                          type="button"
+                                          onClick={() => handleRemoveTravelRegion(travelRegions[index])}
+                                          className="text-slate-400 transition hover:text-red-500"
+                                          aria-label={t('profile.actions.removeTravelRegion', {
+                                            defaultValue: 'Remove region',
+                                          })}
+                                        >
+                                          ×
+                                        </button>
+                                      </span>
+                                    ))
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <select
+                                    value={travelRegionToAdd}
+                                    onChange={(event) => setTravelRegionToAdd(event.target.value)}
+                                    className="w-60 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                    disabled={savingTravel}
+                                  >
+                                    <option value="">
+                                      {t('profile.actions.selectTravelRegion', {
+                                        defaultValue: 'Select region',
+                                      })}
+                                    </option>
+                                    {availableTravelRegions.map((option) => (
+                                      <option key={option.value} value={option.value}>
+                                        {option.label}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <button
+                                    type="button"
+                                    onClick={handleAddTravelRegion}
+                                    className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-secondary text-lg font-semibold text-brand-secondary transition hover:bg-brand-secondary hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                    disabled={savingTravel || !travelRegionToAdd}
+                                    aria-label={t('profile.actions.addTravelRegion', {
+                                      defaultValue: 'Add region',
+                                    })}
+                                  >
+                                    +
+                                  </button>
+                                </div>
+                              </div>
+                            )
+                          : originalTravelRegions.length === 0
+                            ? (
+                                <span className="text-xs text-[var(--text-secondary)]">
+                                  {t('profile.fallback.notSet')}
+                                </span>
+                              )
+                            : (
+                                <div className="flex flex-wrap gap-2">
+                                  {originalTravelRegionsDisplayLabels.map((label, index) => (
+                                    <span
+                                      key={`${originalTravelRegions[index]}-${label}`}
+                                      className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold uppercase text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                    >
+                                      {label}
+                                    </span>
+                                  ))}
+                                </div>
+                              )
+                        : section.id === 'travel' && field.id === 'travel_countries_visited_count'
+                        ? isEditingTravel
+                          ? (
+                              <div className="flex items-center gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const nextValue = travelCountriesVisitedValue ?? 0;
+                                    if (nextValue <= 0) {
+                                      setTravelCountriesVisited('');
+                                    } else {
+                                      const decremented = Math.max(nextValue - 1, 0);
+                                      setTravelCountriesVisited(String(decremented));
+                                    }
+                                    setTravelSaved(false);
+                                    setTravelSaveError(null);
+                                  }}
+                                  className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 text-lg font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                                  disabled={savingTravel}
+                                  aria-label={t('profile.actions.decreaseTravelCountriesVisited', {
+                                    defaultValue: 'Decrease countries visited',
+                                  })}
+                                >
+                                  −
+                                </button>
+                                <input
+                                  type="text"
+                                  inputMode="numeric"
+                                  pattern="[0-9]*"
+                                  value={travelCountriesVisited}
+                                  onChange={(event) => {
+                                    const digitsOnly = event.target.value.replace(/[^0-9]/g, '');
+                                    setTravelCountriesVisited(digitsOnly);
+                                    setTravelSaved(false);
+                                    setTravelSaveError(null);
+                                  }}
+                                  className="w-24 rounded-lg border border-slate-300 bg-white px-3 py-2 text-center text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                  placeholder={t('profile.actions.enterTravelCountriesVisited', {
+                                    defaultValue: 'Enter number',
+                                  })}
+                                  disabled={savingTravel}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const nextValue = (travelCountriesVisitedValue ?? 0) + 1;
+                                    setTravelCountriesVisited(String(nextValue));
+                                    setTravelSaved(false);
+                                    setTravelSaveError(null);
+                                  }}
+                                  className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 text-lg font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                                  disabled={savingTravel}
+                                  aria-label={t('profile.actions.increaseTravelCountriesVisited', {
+                                    defaultValue: 'Increase countries visited',
+                                  })}
+                                >
+                                  +
+                                </button>
+                              </div>
+                            )
+                          : originalTravelCountriesVisited !== null
+                            ? String(originalTravelCountriesVisited)
+                            : t('profile.fallback.notSet')
                         : section.id === 'travel' && field.id === 'travel_avg_trip_duration_days'
                         ? isEditingTravel
                           ? (

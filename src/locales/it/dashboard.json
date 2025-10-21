@@ -53,7 +53,13 @@
       "saving": "Salvataggio…",
       "selectCountry": "Seleziona il paese",
       "selectTravelFrequency": "Seleziona la frequenza dei viaggi",
-      "selectTravelDuration": "Seleziona la durata media del viaggio"
+      "selectTravelDuration": "Seleziona la durata media del viaggio",
+      "increaseTravelCountriesVisited": "Aumenta il numero di paesi visitati",
+      "decreaseTravelCountriesVisited": "Riduci il numero di paesi visitati",
+      "enterTravelCountriesVisited": "Inserisci il numero di paesi visitati",
+      "selectTravelRegion": "Seleziona la regione",
+      "addTravelRegion": "Aggiungi regione",
+      "removeTravelRegion": "Rimuovi regione"
     },
     "sections": {
       "details": "Dettagli profilo",
@@ -133,6 +139,16 @@
       "medium": "Media (4-7 giorni)",
       "long": "Lunga (8-14 giorni)",
       "extended": "Molto lunga (15+ giorni)"
+    },
+    "travelRegions": {
+      "CH": "Svizzera / nazionale",
+      "EU": "Europa",
+      "NA": "Nord America",
+      "SA": "Sud America",
+      "AS": "Asia",
+      "AF": "Africa",
+      "OC": "Oceania",
+      "ME": "Medio Oriente"
     }
   },
   "settings": {

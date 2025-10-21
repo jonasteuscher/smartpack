@@ -53,7 +53,13 @@
       "saving": "Saving…",
       "selectCountry": "Select your country",
       "selectTravelFrequency": "Select your travel frequency",
-      "selectTravelDuration": "Select your average trip length"
+      "selectTravelDuration": "Select your average trip length",
+      "increaseTravelCountriesVisited": "Increase countries visited",
+      "decreaseTravelCountriesVisited": "Decrease countries visited",
+      "enterTravelCountriesVisited": "Enter number of countries visited",
+      "selectTravelRegion": "Select region",
+      "addTravelRegion": "Add region",
+      "removeTravelRegion": "Remove region"
     },
     "sections": {
       "details": "Profile details",
@@ -133,6 +139,16 @@
       "medium": "Medium (4-7 days)",
       "long": "Long (8-14 days)",
       "extended": "Extended (15+ days)"
+    },
+    "travelRegions": {
+      "CH": "Switzerland / Domestic",
+      "EU": "Europe",
+      "NA": "North America",
+      "SA": "South America",
+      "AS": "Asia",
+      "AF": "Africa",
+      "OC": "Oceania",
+      "ME": "Middle East"
     }
   },
   "settings": {
