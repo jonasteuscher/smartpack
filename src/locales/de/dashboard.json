@@ -39,6 +39,7 @@
     "subheading": "Sieh dir deine Daten an und aktualisiere sie.",
     "description": "Je mehr du über dich verrätst, desto besser können wir deine Packlisten an dich und deine Reisen anpassen. So bekommst du Vorschläge, die wirklich zu deinem Stil, deinen Aktivitäten und deinem Reiseziel passen.",
     "memberSince": "Mitglied seit {{date}}",
+    "lastUpdated": "Zuletzt aktualisiert {{date}}",
     "actions": {
       "refresh": "Aktualisieren",
       "refreshing": "Aktualisieren…",

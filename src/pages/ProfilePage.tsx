@@ -353,6 +353,28 @@ const ProfilePage = () => {
     }
   }, [i18n.language, profile?.created_at]);
 
+  const lastUpdated = useMemo(() => {
+    if (!profile?.updated_at) {
+      return null;
+    }
+
+    const parsedDate = new Date(profile.updated_at);
+    if (Number.isNaN(parsedDate.getTime())) {
+      return null;
+    }
+
+    try {
+      const monthFormatter = new Intl.DateTimeFormat(i18n.language ?? 'en', { month: 'long' });
+      const month = monthFormatter.format(parsedDate);
+      const day = parsedDate.getDate();
+      const year = parsedDate.getFullYear();
+      return `${day} ${month} ${year}`;
+    } catch {
+      const fallbackMonth = parsedDate.toLocaleString(undefined, { month: 'long' });
+      return `${parsedDate.getDate()} ${fallbackMonth} ${parsedDate.getFullYear()}`;
+    }
+  }, [i18n.language, profile?.updated_at]);
+
   const secondarySections = useMemo<DetailSection[]>(
     () => [
       {
@@ -705,17 +727,27 @@ const ProfilePage = () => {
                 <h2 className="text-3xl font-semibold">
                   {t('profile.sections.details', { defaultValue: 'Profile' })}
                 </h2>
-                <button
-                  type="button"
-                  onClick={handleRefreshProfile}
-                  className="flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
-                  disabled={refreshing || loading || isEditingCore}
-                >
-                  <ArrowPathIcon className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} aria-hidden="true" />
-                  {refreshing
-                    ? t('profile.actions.refreshing', { defaultValue: 'Refreshing…' })
-                    : t('profile.actions.refresh', { defaultValue: 'Refresh' })}
-                </button>
+                <div className="flex flex-col items-start gap-1 text-left sm:flex-row sm:items-center sm:gap-3">
+                  <button
+                    type="button"
+                    onClick={handleRefreshProfile}
+                    className="flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                    disabled={refreshing || loading || isEditingCore}
+                  >
+                    <ArrowPathIcon className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} aria-hidden="true" />
+                    {refreshing
+                      ? t('profile.actions.refreshing', { defaultValue: 'Refreshing…' })
+                      : t('profile.actions.refresh', { defaultValue: 'Refresh' })}
+                  </button>
+                  {lastUpdated ? (
+                    <span className="text-xs text-[var(--text-secondary)] dark:text-slate-300">
+                      {t('profile.lastUpdated', {
+                        defaultValue: 'Last updated {{date}}',
+                        date: lastUpdated,
+                      })}
+                    </span>
+                  ) : null}
+                </div>
               </div>
               <p className="text-s text-[var(--text-secondary)]">
                 {t('profile.subheading', {
@@ -1058,32 +1090,6 @@ const ProfilePage = () => {
               </dl>
             </article>
           ))}
-
-          <article className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/60 p-6 shadow dark:border-slate-800/60 dark:bg-slate-900/60">
-            <h2 className="text-lg font-semibold">{t('profile.sections.meta')}</h2>
-            <dl className="grid gap-4">
-              <div className="flex flex-col gap-1">
-                <dt className="text-xs uppercase tracking-[0.2em] text-[var(--text-secondary)]">
-                  {t('profile.fields.createdAt')}
-                </dt>
-                <dd className="text-sm font-medium text-[var(--text-primary)]">
-                  {profile.created_at
-                    ? new Date(profile.created_at).toLocaleString()
-                    : t('profile.fallback.notAvailable')}
-                </dd>
-              </div>
-              <div className="flex flex-col gap-1">
-                <dt className="text-xs uppercase tracking-[0.2em] text-[var(--text-secondary)]">
-                  {t('profile.fields.updatedAt')}
-                </dt>
-                <dd className="text-sm font-medium text-[var(--text-primary)]">
-                  {profile.updated_at
-                    ? new Date(profile.updated_at).toLocaleString()
-                    : t('profile.fallback.notAvailable')}
-                </dd>
-              </div>
-            </dl>
-          </article>
         </div>
       ) : (
         <div className="rounded-2xl border border-white/10 bg-white/60 p-6 text-sm text-[var(--text-secondary)] shadow dark:border-slate-800/60 dark:bg-slate-900/60">
