@@ -43,6 +43,12 @@ interface TransportModeOption {
   defaultLabel: string;
 }
 
+interface LuggageOption {
+  value: string;
+  translationKey: string;
+  defaultLabel: string;
+}
+
 interface DetailSectionField {
   label: string;
   value: unknown;
@@ -148,6 +154,16 @@ const TRANSPORT_MODE_OPTIONS: readonly TransportModeOption[] = [
   { value: 'foot', translationKey: 'profile.transportModes.foot', defaultLabel: '🚶 On foot' },
 ];
 
+const LUGGAGE_OPTIONS: readonly LuggageOption[] = [
+  { value: 'carry_on', translationKey: 'profile.luggageTypes.carry_on', defaultLabel: '💼 Carry-on (Trolley / Backpack)' },
+  { value: 'checked_suitcase', translationKey: 'profile.luggageTypes.checked_suitcase', defaultLabel: '🧳 Checked suitcase' },
+  { value: 'travel_backpack', translationKey: 'profile.luggageTypes.travel_backpack', defaultLabel: '🎒 Travel backpack' },
+  { value: 'duffle_bag', translationKey: 'profile.luggageTypes.duffle_bag', defaultLabel: '👝 Duffle bag / Travel bag' },
+  { value: 'hiking_backpack', translationKey: 'profile.luggageTypes.hiking_backpack', defaultLabel: '🥾 Hiking backpack' },
+  { value: 'weekender', translationKey: 'profile.luggageTypes.weekender', defaultLabel: '👜 Weekender' },
+  { value: 'special_equipment', translationKey: 'profile.luggageTypes.special_equipment', defaultLabel: '🎿 Special equipment (e.g. sports gear)' },
+];
+
 const toFlagEmoji = (countryCode: string) => {
   if (!countryCode || countryCode.length !== 2) {
     return '';
@@ -201,6 +217,17 @@ const normalizeTransportModes = (modes: string[]): string[] => {
   return TRANSPORT_MODE_OPTIONS.map((option) => option.value).filter((value) => chosen.has(value));
 };
 
+const normalizeLuggageTypes = (types: string[]): string[] => {
+  const allowedValues = new Set(LUGGAGE_OPTIONS.map((option) => option.value));
+  const chosen = new Set(
+    types
+      .map((type) => (typeof type === 'string' ? type.trim().toLowerCase() : ''))
+      .filter((type) => type.length > 0 && allowedValues.has(type))
+  );
+
+  return LUGGAGE_OPTIONS.map((option) => option.value).filter((value) => chosen.has(value));
+};
+
 const languagesEqual = (a: string[], b: string[]): boolean => {
   if (a.length !== b.length) {
     return false;
@@ -216,6 +243,20 @@ const languagesEqual = (a: string[], b: string[]): boolean => {
 };
 
 const transportModesEqual = (a: string[], b: string[]): boolean => {
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  for (let index = 0; index < a.length; index += 1) {
+    if (a[index] !== b[index]) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+const luggageTypesEqual = (a: string[], b: string[]): boolean => {
   if (a.length !== b.length) {
     return false;
   }
@@ -297,6 +338,9 @@ const ProfilePage = () => {
   const [transportModes, setTransportModes] = useState<string[]>([]);
   const [originalTransportModes, setOriginalTransportModes] = useState<string[]>([]);
   const [transportModeToAdd, setTransportModeToAdd] = useState('');
+  const [luggageTypes, setLuggageTypes] = useState<string[]>([]);
+  const [originalLuggageTypes, setOriginalLuggageTypes] = useState<string[]>([]);
+  const [luggageTypeToAdd, setLuggageTypeToAdd] = useState('');
 
   useEffect(() => {
     setLocalAvatarUrl(avatarUrl);
@@ -417,6 +461,19 @@ const ProfilePage = () => {
       setTransportModeToAdd('');
     }
   }, [profile?.transport_usual_transport_modes, isEditingTransport]);
+
+  useEffect(() => {
+    const luggageArray = Array.isArray(profile?.transport_preferred_luggage_types)
+      ? normalizeLuggageTypes(profile.transport_preferred_luggage_types as string[])
+      : [];
+
+    setOriginalLuggageTypes(luggageArray);
+
+    if (!isEditingTransport) {
+      setLuggageTypes(luggageArray);
+      setLuggageTypeToAdd('');
+    }
+  }, [profile?.transport_preferred_luggage_types, isEditingTransport]);
 
   const resolveCountryOption = useCallback(
     (value: string | null | undefined) => {
@@ -689,6 +746,28 @@ const ProfilePage = () => {
     [transportModeOptions, transportModes]
   );
 
+  const luggageTypeOptions = useMemo(
+    () =>
+      LUGGAGE_OPTIONS.map((option) => ({
+        value: option.value,
+        label: t(option.translationKey, { defaultValue: option.defaultLabel }),
+      })),
+    [t]
+  );
+
+  const luggageTypeLabelByValue = useMemo(() => {
+    const map = new Map<string, string>();
+    luggageTypeOptions.forEach((option) => {
+      map.set(option.value, option.label);
+    });
+    return map;
+  }, [luggageTypeOptions]);
+
+  const availableLuggageTypes = useMemo(
+    () => luggageTypeOptions.filter((option) => !luggageTypes.includes(option.value)),
+    [luggageTypeOptions, luggageTypes]
+  );
+
   const trimmedFirstName = coreFirstName.trim();
   const trimmedLastName = coreLastName.trim();
   const normalizedSelectedCountry = selectedCountry?.name ?? null;
@@ -721,7 +800,8 @@ const ProfilePage = () => {
     isTravelSeasonDirty ||
     isTravelCountriesVisitedDirty;
   const isTransportModesDirty = !transportModesEqual(transportModes, originalTransportModes);
-  const isTransportDirty = isTransportModesDirty;
+  const isLuggageTypesDirty = !luggageTypesEqual(luggageTypes, originalLuggageTypes);
+  const isTransportDirty = isTransportModesDirty || isLuggageTypesDirty;
   const travelFrequencyDisplayLabel = normalizedTravelFrequency
     ? travelFrequencyLabelByValue.get(normalizedTravelFrequency) ?? null
     : null;
@@ -759,6 +839,14 @@ const ProfilePage = () => {
   const originalTransportModesDisplayLabels = useMemo(
     () => originalTransportModes.map((mode) => transportModeLabelByValue.get(mode) ?? mode),
     [originalTransportModes, transportModeLabelByValue]
+  );
+  const luggageTypesDisplayLabels = useMemo(
+    () => luggageTypes.map((type) => luggageTypeLabelByValue.get(type) ?? type),
+    [luggageTypes, luggageTypeLabelByValue]
+  );
+  const originalLuggageTypesDisplayLabels = useMemo(
+    () => originalLuggageTypes.map((type) => luggageTypeLabelByValue.get(type) ?? type),
+    [originalLuggageTypes, luggageTypeLabelByValue]
   );
 
   const isFirstNameDirty = trimmedFirstName !== originalFirstName;
@@ -1286,6 +1374,8 @@ const ProfilePage = () => {
     setTransportSaveError(null);
     setTransportModes(originalTransportModes);
     setTransportModeToAdd('');
+    setLuggageTypes(originalLuggageTypes);
+    setLuggageTypeToAdd('');
   };
 
   const handleCancelEditingTransport = () => {
@@ -1294,6 +1384,8 @@ const ProfilePage = () => {
     setTransportSaveError(null);
     setTransportModes(originalTransportModes);
     setTransportModeToAdd('');
+    setLuggageTypes(originalLuggageTypes);
+    setLuggageTypeToAdd('');
   };
 
   const handleAddTransportMode = () => {
@@ -1318,6 +1410,28 @@ const ProfilePage = () => {
     setTransportSaveError(null);
   };
 
+  const handleAddLuggageType = () => {
+    if (!luggageTypeToAdd) {
+      return;
+    }
+
+    if (luggageTypes.includes(luggageTypeToAdd)) {
+      setLuggageTypeToAdd('');
+      return;
+    }
+
+    setLuggageTypes((prev) => normalizeLuggageTypes([...prev, luggageTypeToAdd]));
+    setLuggageTypeToAdd('');
+    setTransportSaved(false);
+    setTransportSaveError(null);
+  };
+
+  const handleRemoveLuggageType = (type: string) => {
+    setLuggageTypes((prev) => normalizeLuggageTypes(prev.filter((item) => item !== type)));
+    setTransportSaved(false);
+    setTransportSaveError(null);
+  };
+
   const handleSaveTransport = async () => {
     if (!user?.id) {
       setTransportSaveError(
@@ -1338,10 +1452,16 @@ const ProfilePage = () => {
       setTransportSaveError(null);
 
       const normalizedModes = normalizeTransportModes(transportModes);
+      const normalizedLuggage = normalizeLuggageTypes(luggageTypes);
       const payload: Partial<Profile> = {};
 
       if (isTransportModesDirty) {
         payload.transport_usual_transport_modes = normalizedModes.length > 0 ? normalizedModes : null;
+      }
+
+      if (isLuggageTypesDirty) {
+        payload.transport_preferred_luggage_types =
+          normalizedLuggage.length > 0 ? normalizedLuggage : null;
       }
 
       if (Object.keys(payload).length === 0) {
@@ -1363,6 +1483,9 @@ const ProfilePage = () => {
       setOriginalTransportModes(normalizedModes);
       setTransportModes(normalizedModes);
       setTransportModeToAdd('');
+      setOriginalLuggageTypes(normalizedLuggage);
+      setLuggageTypes(normalizedLuggage);
+      setLuggageTypeToAdd('');
     } catch (saveError) {
       console.error('Failed to save transport preferences', saveError);
       setTransportSaveError(
@@ -2384,6 +2507,87 @@ const ProfilePage = () => {
                                       className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
                                     >
                                       {originalTransportModesDisplayLabels[index]}
+                                    </span>
+                                  ))}
+                                </div>
+                              )
+                        : section.id === 'transport' && field.id === 'transport_preferred_luggage_types'
+                        ? isEditingTransport
+                          ? (
+                              <div className="flex flex-col gap-3">
+                                <div className="flex flex-wrap gap-2">
+                                  {luggageTypes.length === 0 ? (
+                                    <span className="text-xs text-[var(--text-secondary)]">
+                                      {t('profile.fallback.notSet')}
+                                    </span>
+                                  ) : (
+                                    luggageTypes.map((type, index) => (
+                                      <span
+                                        key={type}
+                                        className="flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                      >
+                                        {luggageTypesDisplayLabels[index]}
+                                        <button
+                                          type="button"
+                                          onClick={() => handleRemoveLuggageType(type)}
+                                          className="text-slate-400 transition hover:text-red-500"
+                                          aria-label={t('profile.actions.removeLuggageType', {
+                                            defaultValue: 'Remove luggage type',
+                                          })}
+                                          disabled={savingTransport}
+                                        >
+                                          ×
+                                        </button>
+                                      </span>
+                                    ))
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <select
+                                    value={luggageTypeToAdd}
+                                    onChange={(event) => setLuggageTypeToAdd(event.target.value)}
+                                    className="w-48 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                    disabled={savingTransport}
+                                  >
+                                    <option value="">
+                                      {t('profile.actions.selectLuggageType', {
+                                        defaultValue: 'Select luggage type',
+                                      })}
+                                    </option>
+                                    {availableLuggageTypes.map((option) => (
+                                      <option key={option.value} value={option.value}>
+                                        {option.label}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <button
+                                    type="button"
+                                    onClick={handleAddLuggageType}
+                                    className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-secondary text-lg font-semibold text-brand-secondary transition hover:bg-brand-secondary hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                    disabled={!luggageTypeToAdd || savingTransport}
+                                    aria-label={t('profile.actions.addLuggageType', {
+                                      defaultValue: 'Add luggage type',
+                                    })}
+                                  >
+                                    +
+                                  </button>
+                                </div>
+                              </div>
+                            )
+                          : originalLuggageTypes.length === 0
+                            ? (
+                                <span className="text-xs text-[var(--text-secondary)]">
+                                  {t('profile.fallback.notSet')}
+                                </span>
+                              )
+                            : (
+                                <div className="flex flex-wrap gap-2">
+                                  {originalLuggageTypes.map((type, index) => (
+                                    <span
+                                      key={type}
+                                      className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                    >
+                                      {originalLuggageTypesDisplayLabels[index]}
                                     </span>
                                   ))}
                                 </div>

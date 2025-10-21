@@ -66,7 +66,10 @@
       "selectTravelSeason": "Choisir une saison",
       "selectTransportMode": "Choisir un mode de transport",
       "addTransportMode": "Ajouter un mode de transport",
-      "removeTransportMode": "Supprimer le mode de transport"
+      "removeTransportMode": "Supprimer le mode de transport",
+      "selectLuggageType": "Choisir un type de bagage",
+      "addLuggageType": "Ajouter un type de bagage",
+      "removeLuggageType": "Supprimer le type de bagage"
     },
     "sections": {
       "details": "Details du profil",
@@ -174,6 +177,15 @@
       "autumn": "Automne",
       "winter": "Hiver",
       "all_year": "Toute l'année"
+    },
+    "luggageTypes": {
+      "carry_on": "💼 Bagage cabine (valise / sac à dos)",
+      "checked_suitcase": "🧳 Valise enregistrée",
+      "travel_backpack": "🎒 Sac à dos de voyage",
+      "duffle_bag": "👝 Sac de voyage / Duffle bag",
+      "hiking_backpack": "🥾 Sac à dos de randonnée",
+      "weekender": "👜 Weekender",
+      "special_equipment": "🎿 Équipement spécial (p. ex. matériel de sport)"
     },
     "transportModes": {
       "plane": "✈️ Avion",

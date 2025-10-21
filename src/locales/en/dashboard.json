@@ -66,7 +66,10 @@
       "selectTravelSeason": "Select season",
       "selectTransportMode": "Select transport mode",
       "addTransportMode": "Add transport mode",
-      "removeTransportMode": "Remove transport mode"
+      "removeTransportMode": "Remove transport mode",
+      "selectLuggageType": "Select luggage type",
+      "addLuggageType": "Add luggage type",
+      "removeLuggageType": "Remove luggage type"
     },
     "sections": {
       "details": "Profile details",
@@ -174,6 +177,15 @@
       "autumn": "Autumn",
       "winter": "Winter",
       "all_year": "All year round"
+    },
+    "luggageTypes": {
+      "carry_on": "💼 Carry-on (Trolley / Backpack)",
+      "checked_suitcase": "🧳 Checked suitcase",
+      "travel_backpack": "🎒 Travel backpack",
+      "duffle_bag": "👝 Duffle bag / Travel bag",
+      "hiking_backpack": "🥾 Hiking backpack",
+      "weekender": "👜 Weekender",
+      "special_equipment": "🎿 Special equipment (e.g. sports gear)"
     },
     "transportModes": {
       "plane": "✈️ Plane",
