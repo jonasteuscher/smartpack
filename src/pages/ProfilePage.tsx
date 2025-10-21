@@ -25,6 +25,18 @@ interface TravelRegionOption {
   defaultLabel: string;
 }
 
+interface TravelStyleOption {
+  value: string;
+  translationKey: string;
+  defaultLabel: string;
+}
+
+interface TravelSeasonOption {
+  value: string;
+  translationKey: string;
+  defaultLabel: string;
+}
+
 interface DetailSectionField {
   label: string;
   value: unknown;
@@ -100,6 +112,25 @@ const TRAVEL_REGION_OPTIONS: readonly TravelRegionOption[] = [
   { value: 'ME', translationKey: 'profile.travelRegions.ME', defaultLabel: 'Middle East' },
 ];
 
+const TRAVEL_STYLE_OPTIONS: readonly TravelStyleOption[] = [
+  { value: 'citytrip', translationKey: 'profile.travelStyles.citytrip', defaultLabel: 'City trips' },
+  { value: 'beach', translationKey: 'profile.travelStyles.beach', defaultLabel: 'Beach holidays' },
+  { value: 'outdoor', translationKey: 'profile.travelStyles.outdoor', defaultLabel: 'Adventure & outdoor' },
+  { value: 'business', translationKey: 'profile.travelStyles.business', defaultLabel: 'Business travel' },
+  { value: 'camping', translationKey: 'profile.travelStyles.camping', defaultLabel: 'Camping / Vanlife' },
+  { value: 'luxury', translationKey: 'profile.travelStyles.luxury', defaultLabel: 'Luxury travel' },
+  { value: 'backpacking', translationKey: 'profile.travelStyles.backpacking', defaultLabel: 'Backpacking' },
+  { value: 'culture', translationKey: 'profile.travelStyles.culture', defaultLabel: 'Culture & sightseeing' },
+];
+
+const TRAVEL_SEASON_OPTIONS: readonly TravelSeasonOption[] = [
+  { value: 'spring', translationKey: 'profile.travelSeasons.spring', defaultLabel: 'Spring' },
+  { value: 'summer', translationKey: 'profile.travelSeasons.summer', defaultLabel: 'Summer' },
+  { value: 'autumn', translationKey: 'profile.travelSeasons.autumn', defaultLabel: 'Autumn' },
+  { value: 'winter', translationKey: 'profile.travelSeasons.winter', defaultLabel: 'Winter' },
+  { value: 'all_year', translationKey: 'profile.travelSeasons.all_year', defaultLabel: 'All year round' },
+];
+
 const toFlagEmoji = (countryCode: string) => {
   if (!countryCode || countryCode.length !== 2) {
     return '';
@@ -128,6 +159,18 @@ const normalizeRegions = (regions: string[]): string[] =>
   regions
     .map((code) => (typeof code === 'string' ? code.trim().toUpperCase() : ''))
     .filter((code) => code.length > 0)
+    .sort();
+
+const normalizeStyles = (styles: string[]): string[] =>
+  styles
+    .map((style) => (typeof style === 'string' ? style.trim().toLowerCase() : ''))
+    .filter((style) => style.length > 0)
+    .sort();
+
+const normalizeSeasons = (seasons: string[]): string[] =>
+  seasons
+    .map((season) => (typeof season === 'string' ? season.trim().toLowerCase() : ''))
+    .filter((season) => season.length > 0)
     .sort();
 
 const languagesEqual = (a: string[], b: string[]): boolean => {
@@ -200,6 +243,11 @@ const ProfilePage = () => {
   const [travelRegions, setTravelRegions] = useState<string[]>([]);
   const [originalTravelRegions, setOriginalTravelRegions] = useState<string[]>([]);
   const [travelRegionToAdd, setTravelRegionToAdd] = useState('');
+  const [travelStyles, setTravelStyles] = useState<string[]>([]);
+  const [originalTravelStyles, setOriginalTravelStyles] = useState<string[]>([]);
+  const [travelStyleToAdd, setTravelStyleToAdd] = useState('');
+  const [travelSeason, setTravelSeason] = useState<string | null>(null);
+  const [originalTravelSeason, setOriginalTravelSeason] = useState<string | null>(null);
 
   useEffect(() => {
     setLocalAvatarUrl(avatarUrl);
@@ -280,6 +328,33 @@ const ProfilePage = () => {
       setTravelRegionToAdd('');
     }
   }, [profile?.travel_regions_often_visited, isEditingTravel]);
+
+  useEffect(() => {
+    const stylesArray = Array.isArray(profile?.travel_usual_travel_styles)
+      ? normalizeStyles(profile.travel_usual_travel_styles as string[])
+      : [];
+
+    setOriginalTravelStyles(stylesArray);
+
+    if (!isEditingTravel) {
+      setTravelStyles(stylesArray);
+      setTravelStyleToAdd('');
+    }
+  }, [profile?.travel_usual_travel_styles, isEditingTravel]);
+
+  useEffect(() => {
+    const seasonsArray = Array.isArray(profile?.travel_seasonality_preference)
+      ? normalizeSeasons(profile.travel_seasonality_preference as string[])
+      : [];
+
+    const primarySeason = seasonsArray[0] ?? null;
+
+    setOriginalTravelSeason(primarySeason);
+
+    if (!isEditingTravel) {
+      setTravelSeason(primarySeason);
+    }
+  }, [profile?.travel_seasonality_preference, isEditingTravel]);
 
   const resolveCountryOption = useCallback(
     (value: string | null | undefined) => {
@@ -491,6 +566,45 @@ const ProfilePage = () => {
     return travelRegionOptions.filter((region) => !chosen.has(region.value));
   }, [travelRegionOptions, travelRegions]);
 
+  const travelStyleOptions = useMemo(
+    () =>
+      TRAVEL_STYLE_OPTIONS.map((option) => ({
+        value: option.value,
+        label: t(option.translationKey, { defaultValue: option.defaultLabel }),
+      })),
+    [t]
+  );
+
+  const travelStyleLabelByValue = useMemo(() => {
+    const map = new Map<string, string>();
+    travelStyleOptions.forEach((option) => {
+      map.set(option.value, option.label);
+    });
+    return map;
+  }, [travelStyleOptions]);
+
+  const availableTravelStyles = useMemo(() => {
+    const chosen = new Set(travelStyles);
+    return travelStyleOptions.filter((style) => !chosen.has(style.value));
+  }, [travelStyleOptions, travelStyles]);
+
+  const travelSeasonOptions = useMemo(
+    () =>
+      TRAVEL_SEASON_OPTIONS.map((option) => ({
+        value: option.value,
+        label: t(option.translationKey, { defaultValue: option.defaultLabel }),
+      })),
+    [t]
+  );
+
+  const travelSeasonLabelByValue = useMemo(() => {
+    const map = new Map<string, string>();
+    travelSeasonOptions.forEach((option) => {
+      map.set(option.value, option.label);
+    });
+    return map;
+  }, [travelSeasonOptions]);
+
   const trimmedFirstName = coreFirstName.trim();
   const trimmedLastName = coreLastName.trim();
   const normalizedSelectedCountry = selectedCountry?.name ?? null;
@@ -510,9 +624,18 @@ const ProfilePage = () => {
   const isTravelRegionsDirty =
     travelRegions.length !== originalTravelRegions.length ||
     travelRegions.some((region, index) => region !== originalTravelRegions[index]);
+  const isTravelStylesDirty =
+    travelStyles.length !== originalTravelStyles.length ||
+    travelStyles.some((style, index) => style !== originalTravelStyles[index]);
+  const isTravelSeasonDirty = travelSeason !== originalTravelSeason;
   const isTravelCountriesVisitedDirty = travelCountriesVisitedValue !== originalTravelCountriesVisited;
   const isTravelDirty =
-    isTravelFrequencyDirty || isTravelDurationDirty || isTravelRegionsDirty || isTravelCountriesVisitedDirty;
+    isTravelFrequencyDirty ||
+    isTravelDurationDirty ||
+    isTravelRegionsDirty ||
+    isTravelStylesDirty ||
+    isTravelSeasonDirty ||
+    isTravelCountriesVisitedDirty;
   const travelFrequencyDisplayLabel = normalizedTravelFrequency
     ? travelFrequencyLabelByValue.get(normalizedTravelFrequency) ?? null
     : null;
@@ -529,6 +652,20 @@ const ProfilePage = () => {
       originalTravelRegions.map((code) => travelRegionLabelByValue.get(code) ?? code),
     [originalTravelRegions, travelRegionLabelByValue]
   );
+  const travelStylesDisplayLabels = useMemo(
+    () => travelStyles.map((code) => travelStyleLabelByValue.get(code) ?? code),
+    [travelStyles, travelStyleLabelByValue]
+  );
+  const originalTravelStylesDisplayLabels = useMemo(
+    () => originalTravelStyles.map((code) => travelStyleLabelByValue.get(code) ?? code),
+    [originalTravelStyles, travelStyleLabelByValue]
+  );
+  const travelSeasonDisplayLabel = travelSeason
+    ? travelSeasonLabelByValue.get(travelSeason) ?? travelSeason
+    : null;
+  const originalTravelSeasonDisplayLabel = originalTravelSeason
+    ? travelSeasonLabelByValue.get(originalTravelSeason) ?? originalTravelSeason
+    : null;
 
   const isFirstNameDirty = trimmedFirstName !== originalFirstName;
   const isLastNameDirty = trimmedLastName !== originalLastName;
@@ -655,12 +792,20 @@ const ProfilePage = () => {
             value: profile?.travel_countries_visited_count,
           },
           {
+            id: 'travel_seasonality_preference',
+            label: t('profile.fields.travelSeasonality'),
+            value: profile?.travel_seasonality_preference,
+          },
+          {
+            id: 'travel_usual_travel_styles',
+            label: t('profile.fields.travelStyles'),
+            value: profile?.travel_usual_travel_styles,
+          },
+          {
             id: 'travel_regions_often_visited',
             label: t('profile.fields.regionsVisited'),
             value: profile?.travel_regions_often_visited,
           },
-          { label: t('profile.fields.travelStyles'), value: profile?.travel_usual_travel_styles },
-          { label: t('profile.fields.travelSeasonality'), value: profile?.travel_seasonality_preference },
         ],
       },
       {
@@ -881,6 +1026,31 @@ const ProfilePage = () => {
     setTravelSaveError(null);
   };
 
+  const handleAddTravelStyle = () => {
+    if (!travelStyleToAdd) {
+      return;
+    }
+
+    const normalized = travelStyleToAdd.toLowerCase();
+    if (travelStyles.includes(normalized)) {
+      setTravelStyleToAdd('');
+      return;
+    }
+
+    setTravelStyles((prev) => normalizeStyles([...prev, normalized]));
+    setTravelStyleToAdd('');
+    setTravelSaved(false);
+    setTravelSaveError(null);
+  };
+
+  const handleRemoveTravelStyle = (style: string) => {
+    const normalized = style.toLowerCase();
+    setTravelStyles((prev) => normalizeStyles(prev.filter((item) => item !== normalized)));
+    setTravelSaved(false);
+    setTravelSaveError(null);
+  };
+
+
   const handleStartEditingCore = () => {
     setIsEditingCore(true);
     setCoreSaved(false);
@@ -987,6 +1157,9 @@ const ProfilePage = () => {
     );
     setTravelRegions(originalTravelRegions);
     setTravelRegionToAdd('');
+    setTravelStyles(originalTravelStyles);
+    setTravelStyleToAdd('');
+    setTravelSeason(originalTravelSeason);
   };
 
   const handleCancelEditingTravel = () => {
@@ -1000,6 +1173,9 @@ const ProfilePage = () => {
     );
     setTravelRegions(originalTravelRegions);
     setTravelRegionToAdd('');
+    setTravelStyles(originalTravelStyles);
+    setTravelStyleToAdd('');
+    setTravelSeason(originalTravelSeason);
   };
 
   const handleSaveTravel = async () => {
@@ -1035,6 +1211,14 @@ const ProfilePage = () => {
         payload.travel_regions_often_visited = travelRegions.length > 0 ? travelRegions : null;
       }
 
+      if (isTravelStylesDirty) {
+        payload.travel_usual_travel_styles = travelStyles.length > 0 ? travelStyles : null;
+      }
+
+      if (isTravelSeasonDirty) {
+        payload.travel_seasonality_preference = travelSeason ? [travelSeason] : null;
+      }
+
       if (isTravelCountriesVisitedDirty) {
         payload.travel_countries_visited_count = travelCountriesVisitedValue ?? null;
       }
@@ -1058,6 +1242,8 @@ const ProfilePage = () => {
       setOriginalTravelFrequency(normalizedTravelFrequency ?? null);
       setOriginalTravelDuration(normalizedTravelDuration ?? null);
       setOriginalTravelRegions(travelRegions);
+      setOriginalTravelStyles(travelStyles);
+      setOriginalTravelSeason(travelSeason ?? null);
       setOriginalTravelCountriesVisited(travelCountriesVisitedValue ?? null);
       setTravelCountriesVisited(
         travelCountriesVisitedValue !== null ? String(travelCountriesVisitedValue) : ''
@@ -1678,6 +1864,115 @@ const ProfilePage = () => {
                                   ))}
                                 </div>
                               )
+                        : section.id === 'travel' && field.id === 'travel_usual_travel_styles'
+                        ? isEditingTravel
+                          ? (
+                              <div className="flex flex-col gap-3">
+                                <div className="flex flex-wrap gap-2">
+                                  {travelStyles.length === 0 ? (
+                                    <span className="text-xs text-[var(--text-secondary)]">
+                                      {t('profile.fallback.notSet')}
+                                    </span>
+                                  ) : (
+                                    travelStylesDisplayLabels.map((label, index) => (
+                                      <span
+                                        key={`${travelStyles[index]}-${label}`}
+                                        className="flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold uppercase text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                      >
+                                        {label}
+                                        <button
+                                          type="button"
+                                          onClick={() => handleRemoveTravelStyle(travelStyles[index])}
+                                          className="text-slate-400 transition hover:text-red-500"
+                                          aria-label={t('profile.actions.removeTravelStyle', {
+                                            defaultValue: 'Remove travel style',
+                                          })}
+                                        >
+                                          ×
+                                        </button>
+                                      </span>
+                                    ))
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <select
+                                    value={travelStyleToAdd}
+                                    onChange={(event) => setTravelStyleToAdd(event.target.value)}
+                                    className="w-60 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                    disabled={savingTravel}
+                                  >
+                                    <option value="">
+                                      {t('profile.actions.selectTravelStyle', {
+                                        defaultValue: 'Select travel style',
+                                      })}
+                                    </option>
+                                    {availableTravelStyles.map((option) => (
+                                      <option key={option.value} value={option.value}>
+                                        {option.label}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <button
+                                    type="button"
+                                    onClick={handleAddTravelStyle}
+                                    className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-secondary text-lg font-semibold text-brand-secondary transition hover:bg-brand-secondary hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                    disabled={savingTravel || !travelStyleToAdd}
+                                    aria-label={t('profile.actions.addTravelStyle', {
+                                      defaultValue: 'Add travel style',
+                                    })}
+                                  >
+                                    +
+                                  </button>
+                                </div>
+                              </div>
+                            )
+                          : originalTravelStyles.length === 0
+                            ? (
+                                <span className="text-xs text-[var(--text-secondary)]">
+                                  {t('profile.fallback.notSet')}
+                                </span>
+                              )
+                            : (
+                                <div className="flex flex-wrap gap-2">
+                                  {originalTravelStylesDisplayLabels.map((label, index) => (
+                                    <span
+                                      key={`${originalTravelStyles[index]}-${label}`}
+                                      className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold uppercase text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                    >
+                                      {label}
+                                    </span>
+                                  ))}
+                                </div>
+                              )
+                        : section.id === 'travel' && field.id === 'travel_seasonality_preference'
+                        ? isEditingTravel
+                          ? (
+                              <select
+                                value={travelSeason ?? ''}
+                                onChange={(event) => {
+                                  const nextValue = event.target.value;
+                                  setTravelSeason(nextValue ? nextValue : null);
+                                  setTravelSaved(false);
+                                  setTravelSaveError(null);
+                                }}
+                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                disabled={savingTravel}
+                              >
+                                <option value="">
+                                  {t('profile.actions.selectTravelSeason', {
+                                    defaultValue: 'Select season',
+                                  })}
+                                </option>
+                                {travelSeasonOptions.map((option) => (
+                                  <option key={option.value} value={option.value}>
+                                    {option.label}
+                                  </option>
+                                ))}
+                              </select>
+                            )
+                          : travelSeasonDisplayLabel ??
+                            originalTravelSeasonDisplayLabel ??
+                            t('profile.fallback.notSet')
                         : section.id === 'travel' && field.id === 'travel_countries_visited_count'
                         ? isEditingTravel
                           ? (

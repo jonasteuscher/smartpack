@@ -59,7 +59,11 @@
       "enterTravelCountriesVisited": "Inserisci il numero di paesi visitati",
       "selectTravelRegion": "Seleziona la regione",
       "addTravelRegion": "Aggiungi regione",
-      "removeTravelRegion": "Rimuovi regione"
+      "removeTravelRegion": "Rimuovi regione",
+      "selectTravelStyle": "Seleziona lo stile di viaggio",
+      "addTravelStyle": "Aggiungi stile",
+      "removeTravelStyle": "Rimuovi stile",
+      "selectTravelSeason": "Seleziona la stagione"
     },
     "sections": {
       "details": "Dettagli profilo",
@@ -149,6 +153,23 @@
       "AF": "Africa",
       "OC": "Oceania",
       "ME": "Medio Oriente"
+    },
+    "travelStyles": {
+      "citytrip": "Viaggi in citta",
+      "beach": "Vacanze al mare",
+      "outdoor": "Avventura & outdoor",
+      "business": "Viaggi di lavoro",
+      "camping": "Camping / Vanlife",
+      "luxury": "Viaggi di lusso",
+      "backpacking": "Backpacking",
+      "culture": "Cultura & sightseeing"
+    },
+    "travelSeasons": {
+      "spring": "Primavera",
+      "summer": "Estate",
+      "autumn": "Autunno",
+      "winter": "Inverno",
+      "all_year": "Tutto l'anno"
     }
   },
   "settings": {
