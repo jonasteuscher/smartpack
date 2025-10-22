@@ -178,6 +178,19 @@
       "winter": "Inverno",
       "all_year": "Tutto l'anno"
     },
+    "accommodation": {
+      "types": {
+        "hotel": "🏨 Hotel",
+        "hostel": "🛏️ Ostello",
+        "apartment": "🏠 Airbnb / Casa vacanze",
+        "camping": "⛺️ Campeggio / Area tende",
+        "van": "🚐 Van / Camper",
+        "guesthouse": "🏡 Pensione / B&B",
+        "mountain_lodge": "🏔️ Rifugio di montagna / Lodge",
+        "private_stay": "👥 Amici / Famiglia",
+        "resort": "💎 Resort di lusso"
+      }
+    },
     "luggageTypes": {
       "carry_on": "💼 Bagaglio a mano (trolley / zaino)",
       "checked_suitcase": "🧳 Valigia da stiva",
