@@ -52,6 +52,13 @@ interface LuggageOption {
   defaultLabel: string;
 }
 
+interface AccommodationTypeOption {
+  value: string;
+  translationKey: string;
+  defaultLabel: string;
+  emoji: string;
+}
+
 interface DetailSectionField {
   label: string;
   value: unknown;
@@ -167,6 +174,63 @@ const LUGGAGE_OPTIONS: readonly LuggageOption[] = [
   { value: 'special_equipment', translationKey: 'profile.luggageTypes.special_equipment', defaultLabel: '🎿 Special equipment (e.g. sports gear)' },
 ];
 
+const ACCOMMODATION_TYPE_OPTIONS: readonly AccommodationTypeOption[] = [
+  {
+    value: 'hotel',
+    translationKey: 'profile.accommodation.types.hotel',
+    defaultLabel: 'Hotel',
+    emoji: '🏨',
+  },
+  {
+    value: 'hostel',
+    translationKey: 'profile.accommodation.types.hostel',
+    defaultLabel: 'Hostel',
+    emoji: '🛏️',
+  },
+  {
+    value: 'apartment',
+    translationKey: 'profile.accommodation.types.apartment',
+    defaultLabel: 'Ferienwohnung / Airbnb',
+    emoji: '🏠',
+  },
+  {
+    value: 'camping',
+    translationKey: 'profile.accommodation.types.camping',
+    defaultLabel: 'Camping / Zeltplatz',
+    emoji: '⛺️',
+  },
+  {
+    value: 'van',
+    translationKey: 'profile.accommodation.types.van',
+    defaultLabel: 'Van / Camper',
+    emoji: '🚐',
+  },
+  {
+    value: 'guesthouse',
+    translationKey: 'profile.accommodation.types.guesthouse',
+    defaultLabel: 'Gästehaus / Bed & Breakfast',
+    emoji: '🏡',
+  },
+  {
+    value: 'mountain_lodge',
+    translationKey: 'profile.accommodation.types.mountain_lodge',
+    defaultLabel: 'Berghütte / Lodge',
+    emoji: '🏔️',
+  },
+  {
+    value: 'private_stay',
+    translationKey: 'profile.accommodation.types.private_stay',
+    defaultLabel: 'Freunde / Familie',
+    emoji: '👥',
+  },
+  {
+    value: 'resort',
+    translationKey: 'profile.accommodation.types.resort',
+    defaultLabel: 'Luxusresort',
+    emoji: '💎',
+  },
+];
+
 const toFlagEmoji = (countryCode: string) => {
   if (!countryCode || countryCode.length !== 2) {
     return '';
@@ -233,7 +297,34 @@ const normalizeLuggageTypes = (types: string[]): string[] => {
   return LUGGAGE_OPTIONS.map((option) => option.value).filter((value) => chosen.has(value));
 };
 
+const normalizeAccommodationTypes = (types: string[]): string[] => {
+  const allowedValues = new Map(
+    ACCOMMODATION_TYPE_OPTIONS.map((option, index) => [option.value, index])
+  );
+  const chosen = new Set(
+    types
+      .map((type) => (typeof type === 'string' ? type.trim().toLowerCase() : ''))
+      .filter((type) => type.length > 0 && allowedValues.has(type))
+  );
+
+  return ACCOMMODATION_TYPE_OPTIONS.map((option) => option.value).filter((value) => chosen.has(value));
+};
+
 const languagesEqual = (a: string[], b: string[]): boolean => {
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  for (let index = 0; index < a.length; index += 1) {
+    if (a[index] !== b[index]) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+const accommodationTypesEqual = (a: string[], b: string[]): boolean => {
   if (a.length !== b.length) {
     return false;
   }
@@ -313,6 +404,10 @@ const ProfilePage = () => {
   const [originalLanguages, setOriginalLanguages] = useState<string[]>([]);
   const [languageToAdd, setLanguageToAdd] = useState('');
 
+  const [accommodationTypes, setAccommodationTypes] = useState<string[]>([]);
+  const [originalAccommodationTypes, setOriginalAccommodationTypes] = useState<string[]>([]);
+  const [accommodationTypeToAdd, setAccommodationTypeToAdd] = useState('');
+
   const [isEditingCore, setIsEditingCore] = useState(false);
   const [savingCore, setSavingCore] = useState(false);
   const [coreSaveError, setCoreSaveError] = useState<string | null>(null);
@@ -346,6 +441,10 @@ const ProfilePage = () => {
   const [luggageTypes, setLuggageTypes] = useState<string[]>([]);
   const [originalLuggageTypes, setOriginalLuggageTypes] = useState<string[]>([]);
   const [luggageTypeToAdd, setLuggageTypeToAdd] = useState('');
+  const [isEditingAccommodation, setIsEditingAccommodation] = useState(false);
+  const [savingAccommodation, setSavingAccommodation] = useState(false);
+  const [accommodationSaveError, setAccommodationSaveError] = useState<string | null>(null);
+  const [accommodationSaved, setAccommodationSaved] = useState(false);
 
   useEffect(() => {
     setLocalAvatarUrl(avatarUrl);
@@ -378,6 +477,19 @@ const ProfilePage = () => {
       setLanguageToAdd('');
     }
   }, [profile?.core_languages, isEditingCore]);
+
+  useEffect(() => {
+    const normalized = Array.isArray(profile?.accommodation_common_types)
+      ? normalizeAccommodationTypes(profile.accommodation_common_types as string[])
+      : [];
+
+    setOriginalAccommodationTypes(normalized);
+
+    if (!isEditingAccommodation) {
+      setAccommodationTypes(normalized);
+      setAccommodationTypeToAdd('');
+    }
+  }, [profile?.accommodation_common_types, isEditingAccommodation]);
 
   useEffect(() => {
     const rawFrequency = profile?.travel_frequency_per_year;
@@ -809,6 +921,36 @@ const ProfilePage = () => {
     [luggageTypeOptions, luggageTypes]
   );
 
+  const accommodationTypeOptions = useMemo(
+    () =>
+      ACCOMMODATION_TYPE_OPTIONS.map((option) => {
+        const localized = t(option.translationKey, { defaultValue: option.defaultLabel }).trim();
+        const withoutEmoji =
+          option.emoji !== undefined
+            ? localized.split(option.emoji).join('').trim() || localized
+            : localized;
+        const label = option.emoji ? `${option.emoji} ${withoutEmoji}`.trim() : withoutEmoji;
+        return {
+          value: option.value,
+          label,
+        };
+      }),
+    [t]
+  );
+
+  const accommodationTypeLabelByValue = useMemo(() => {
+    const map = new Map<string, string>();
+    accommodationTypeOptions.forEach((option) => {
+      map.set(option.value, option.label);
+    });
+    return map;
+  }, [accommodationTypeOptions]);
+
+  const availableAccommodationTypes = useMemo(
+    () => accommodationTypeOptions.filter((option) => !accommodationTypes.includes(option.value)),
+    [accommodationTypeOptions, accommodationTypes]
+  );
+
   const trimmedFirstName = coreFirstName.trim();
   const trimmedLastName = coreLastName.trim();
   const normalizedSelectedCountry = selectedCountry?.name ?? null;
@@ -843,6 +985,8 @@ const ProfilePage = () => {
   const isTransportModesDirty = !transportModesEqual(transportModes, originalTransportModes);
   const isLuggageTypesDirty = !luggageTypesEqual(luggageTypes, originalLuggageTypes);
   const isTransportDirty = isTransportModesDirty || isLuggageTypesDirty;
+  const isAccommodationTypesDirty = !accommodationTypesEqual(accommodationTypes, originalAccommodationTypes);
+  const isAccommodationDirty = isAccommodationTypesDirty;
   const travelFrequencyDisplayLabel = normalizedTravelFrequency
     ? travelFrequencyLabelByValue.get(normalizedTravelFrequency) ?? null
     : null;
@@ -866,6 +1010,16 @@ const ProfilePage = () => {
   const originalTravelStylesDisplayLabels = useMemo(
     () => originalTravelStyles.map((code) => travelStyleLabelByValue.get(code) ?? code),
     [originalTravelStyles, travelStyleLabelByValue]
+  );
+  const accommodationTypesDisplayLabels = useMemo(
+    () =>
+      accommodationTypes.map((value) => accommodationTypeLabelByValue.get(value) ?? value),
+    [accommodationTypes, accommodationTypeLabelByValue]
+  );
+  const originalAccommodationTypesDisplayLabels = useMemo(
+    () =>
+      originalAccommodationTypes.map((value) => accommodationTypeLabelByValue.get(value) ?? value),
+    [originalAccommodationTypes, accommodationTypeLabelByValue]
   );
   const travelSeasonDisplayLabel = travelSeason
     ? travelSeasonLabelByValue.get(travelSeason) ?? travelSeason
@@ -1051,7 +1205,11 @@ const ProfilePage = () => {
         id: 'accommodation',
         title: t('profile.sections.accommodation'),
         fields: [
-          { label: t('profile.fields.accommodationTypes'), value: profile?.accommodation_common_types },
+          {
+            id: 'accommodation_common_types',
+            label: t('profile.fields.accommodationTypes'),
+            value: profile?.accommodation_common_types,
+          },
           { label: t('profile.fields.laundryAccess'), value: profile?.accommodation_laundry_access_expectation },
           { label: t('profile.fields.workspaceNeeded'), value: profile?.accommodation_workspace_needed },
         ],
@@ -1231,6 +1389,30 @@ const ProfilePage = () => {
     setCoreLanguages((prev) => normalizeLanguages(prev.filter((item) => item !== normalized)));
     setCoreSaved(false);
     setCoreSaveError(null);
+  };
+
+  const handleAddAccommodationType = () => {
+    if (!accommodationTypeToAdd) {
+      return;
+    }
+
+    const normalized = accommodationTypeToAdd.toLowerCase();
+    if (accommodationTypes.includes(normalized)) {
+      setAccommodationTypeToAdd('');
+      return;
+    }
+
+    setAccommodationTypes((prev) => normalizeAccommodationTypes([...prev, normalized]));
+    setAccommodationTypeToAdd('');
+    setAccommodationSaved(false);
+    setAccommodationSaveError(null);
+  };
+
+  const handleRemoveAccommodationType = (value: string) => {
+    const normalized = value.toLowerCase();
+    setAccommodationTypes((prev) => normalizeAccommodationTypes(prev.filter((item) => item !== normalized)));
+    setAccommodationSaved(false);
+    setAccommodationSaveError(null);
   };
 
   const handleAddTravelRegion = () => {
@@ -1625,6 +1807,81 @@ const ProfilePage = () => {
     }
   };
 
+  const handleStartEditingAccommodation = () => {
+    setIsEditingAccommodation(true);
+    setAccommodationSaved(false);
+    setAccommodationSaveError(null);
+    setAccommodationTypes(originalAccommodationTypes);
+    setAccommodationTypeToAdd('');
+  };
+
+  const handleCancelEditingAccommodation = () => {
+    setIsEditingAccommodation(false);
+    setAccommodationSaved(false);
+    setAccommodationSaveError(null);
+    setAccommodationTypes(originalAccommodationTypes);
+    setAccommodationTypeToAdd('');
+  };
+
+  const handleSaveAccommodation = async () => {
+    if (!user?.id) {
+      setAccommodationSaveError(
+        t('profile.errors.mustBeSignedIn', {
+          defaultValue: 'Sign in to update your profile.',
+        })
+      );
+      return;
+    }
+
+    if (!isAccommodationDirty) {
+      setIsEditingAccommodation(false);
+      return;
+    }
+
+    try {
+      setSavingAccommodation(true);
+      setAccommodationSaveError(null);
+
+      const normalizedTypes = normalizeAccommodationTypes(accommodationTypes);
+      const payload: Partial<Profile> = {};
+
+      if (isAccommodationTypesDirty) {
+        payload.accommodation_common_types = normalizedTypes.length > 0 ? normalizedTypes : null;
+      }
+
+      if (Object.keys(payload).length === 0) {
+        setIsEditingAccommodation(false);
+        return;
+      }
+
+      const { error: updateError } = await updateRecord<Profile>('profiles', payload, {
+        match: { user_id: user.id },
+      });
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      await refresh();
+      setIsEditingAccommodation(false);
+      setAccommodationSaved(true);
+      setOriginalAccommodationTypes(normalizedTypes);
+      setAccommodationTypes(normalizedTypes);
+      setAccommodationTypeToAdd('');
+    } catch (saveError) {
+      console.error('Failed to save accommodation preferences', saveError);
+      setAccommodationSaveError(
+        saveError instanceof Error
+          ? saveError.message
+          : t('profile.errors.accommodationSaveFailed', {
+              defaultValue: 'We couldn’t save your accommodation preferences. Try again.',
+            })
+      );
+    } finally {
+      setSavingAccommodation(false);
+    }
+  };
+
   const handleRefreshProfile = async () => {
     try {
       setRefreshing(true);
@@ -1633,6 +1890,8 @@ const ProfilePage = () => {
       setAvatarError(null);
       setTravelSaved(false);
       setTravelSaveError(null);
+      setAccommodationSaved(false);
+      setAccommodationSaveError(null);
       await refresh();
     } finally {
       setRefreshing(false);
@@ -2130,6 +2389,38 @@ const ProfilePage = () => {
                       {t('profile.actions.edit', { defaultValue: 'Edit' })}
                     </button>
                   )
+                ) : section.id === 'accommodation' ? (
+                  isEditingAccommodation ? (
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={handleCancelEditingAccommodation}
+                        className="rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                        disabled={savingAccommodation}
+                      >
+                        {t('profile.actions.cancel', { defaultValue: 'Cancel' })}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleSaveAccommodation}
+                        className="rounded-full border border-brand-secondary bg-brand-secondary px-4 py-2 text-xs font-semibold text-white transition hover:bg-brand-secondary/90 disabled:cursor-not-allowed disabled:opacity-60 dark:border-brand-secondary"
+                        disabled={savingAccommodation || !isAccommodationDirty}
+                      >
+                        {savingAccommodation
+                          ? t('profile.actions.saving', { defaultValue: 'Saving…' })
+                          : t('profile.actions.save', { defaultValue: 'Save' })}
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleStartEditingAccommodation}
+                      className="rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                      disabled={savingAccommodation}
+                    >
+                      {t('profile.actions.edit', { defaultValue: 'Edit' })}
+                    </button>
+                  )
                 ) : null}
               </div>
               {section.id === 'travel' ? (
@@ -2149,6 +2440,17 @@ const ProfilePage = () => {
                     <p className="text-xs text-red-500">{transportSaveError}</p>
                   ) : null}
                   {!transportSaveError && transportSaved ? (
+                    <p className="text-xs text-emerald-600">
+                      {t('profile.state.settingsSaved', { defaultValue: 'Your settings have been saved.' })}
+                    </p>
+                  ) : null}
+                </>
+              ) : section.id === 'accommodation' ? (
+                <>
+                  {accommodationSaveError ? (
+                    <p className="text-xs text-red-500">{accommodationSaveError}</p>
+                  ) : null}
+                  {!accommodationSaveError && accommodationSaved ? (
                     <p className="text-xs text-emerald-600">
                       {t('profile.state.settingsSaved', { defaultValue: 'Your settings have been saved.' })}
                     </p>
@@ -2630,6 +2932,87 @@ const ProfilePage = () => {
                                       className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
                                     >
                                       {originalLuggageTypesDisplayLabels[index]}
+                                    </span>
+                                  ))}
+                                </div>
+                              )
+                        : section.id === 'accommodation' && field.id === 'accommodation_common_types'
+                        ? isEditingAccommodation
+                          ? (
+                              <div className="flex flex-col gap-3">
+                                <div className="flex flex-wrap gap-2">
+                                  {accommodationTypes.length === 0 ? (
+                                    <span className="text-xs text-[var(--text-secondary)]">
+                                      {t('profile.fallback.notSet')}
+                                    </span>
+                                  ) : (
+                                    accommodationTypes.map((type, index) => (
+                                      <span
+                                        key={type}
+                                        className="flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                      >
+                                        {accommodationTypesDisplayLabels[index]}
+                                        <button
+                                          type="button"
+                                          onClick={() => handleRemoveAccommodationType(type)}
+                                          className="text-slate-400 transition hover:text-red-500"
+                                          aria-label={t('profile.actions.removeAccommodationType', {
+                                            defaultValue: 'Remove accommodation type',
+                                          })}
+                                          disabled={savingAccommodation}
+                                        >
+                                          ×
+                                        </button>
+                                      </span>
+                                    ))
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <select
+                                    value={accommodationTypeToAdd}
+                                    onChange={(event) => setAccommodationTypeToAdd(event.target.value)}
+                                    className="w-64 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                    disabled={savingAccommodation}
+                                  >
+                                    <option value="">
+                                      {t('profile.actions.selectAccommodationType', {
+                                        defaultValue: 'Select accommodation type',
+                                      })}
+                                    </option>
+                                    {availableAccommodationTypes.map((option) => (
+                                      <option key={option.value} value={option.value}>
+                                        {option.label}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <button
+                                    type="button"
+                                    onClick={handleAddAccommodationType}
+                                    className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-secondary text-lg font-semibold text-brand-secondary transition hover:bg-brand-secondary hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                    disabled={!accommodationTypeToAdd || savingAccommodation}
+                                    aria-label={t('profile.actions.addAccommodationType', {
+                                      defaultValue: 'Add accommodation type',
+                                    })}
+                                  >
+                                    +
+                                  </button>
+                                </div>
+                              </div>
+                            )
+                          : originalAccommodationTypes.length === 0
+                            ? (
+                                <span className="text-xs text-[var(--text-secondary)]">
+                                  {t('profile.fallback.notSet')}
+                                </span>
+                              )
+                            : (
+                                <div className="flex flex-wrap gap-2">
+                                  {originalAccommodationTypes.map((type, index) => (
+                                    <span
+                                      key={type}
+                                      className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                    >
+                                      {originalAccommodationTypesDisplayLabels[index]}
                                     </span>
                                   ))}
                                 </div>
