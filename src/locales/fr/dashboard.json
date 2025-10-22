@@ -69,7 +69,8 @@
       "removeTransportMode": "Supprimer le mode de transport",
       "selectLuggageType": "Choisir un type de bagage",
       "addLuggageType": "Ajouter un type de bagage",
-      "removeLuggageType": "Supprimer le type de bagage"
+      "removeLuggageType": "Supprimer le type de bagage",
+      "selectLaundryAccessExpectation": "Choisir la disponibilite de la buanderie"
     },
     "sections": {
       "details": "Details du profil",
@@ -189,6 +190,12 @@
         "mountain_lodge": "🏔️ Refuge de montagne / Chalet",
         "private_stay": "👥 Chez amis ou famille",
         "resort": "💎 Complexe hôtelier de luxe"
+      },
+      "laundry": {
+        "none": "Pas necessaire",
+        "sometimes": "Disponible occasionnellement",
+        "usually": "Generalement disponible",
+        "always": "Indispensable"
       }
     },
     "luggageTypes": {

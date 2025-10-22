@@ -69,7 +69,8 @@
       "removeTransportMode": "Verkehrsmittel entfernen",
       "selectLuggageType": "Gepäcktyp auswählen",
       "addLuggageType": "Gepäcktyp hinzufügen",
-      "removeLuggageType": "Gepäcktyp entfernen"
+      "removeLuggageType": "Gepäcktyp entfernen",
+      "selectLaundryAccessExpectation": "Waschmöglichkeit auswählen"
     },
     "sections": {
       "details": "Profildetails",
@@ -189,6 +190,12 @@
         "mountain_lodge": "🏔️ Berghütte / Lodge",
         "private_stay": "👥 Freunde / Familie",
         "resort": "💎 Luxusresort"
+      },
+      "laundry": {
+        "none": "Nicht nötig",
+        "sometimes": "Gelegentlich vorhanden",
+        "usually": "Meistens vorhanden",
+        "always": "Unbedingt erforderlich"
       }
     },
     "luggageTypes": {

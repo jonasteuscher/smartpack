@@ -69,7 +69,8 @@
       "removeTransportMode": "Rimuovi mezzo di trasporto",
       "selectLuggageType": "Seleziona il tipo di bagaglio",
       "addLuggageType": "Aggiungi tipo di bagaglio",
-      "removeLuggageType": "Rimuovi tipo di bagaglio"
+      "removeLuggageType": "Rimuovi tipo di bagaglio",
+      "selectLaundryAccessExpectation": "Seleziona disponibilita lavanderia"
     },
     "sections": {
       "details": "Dettagli profilo",
@@ -189,6 +190,12 @@
         "mountain_lodge": "🏔️ Rifugio di montagna / Lodge",
         "private_stay": "👥 Amici / Famiglia",
         "resort": "💎 Resort di lusso"
+      },
+      "laundry": {
+        "none": "Non necessario",
+        "sometimes": "Occasionalmente disponibile",
+        "usually": "Generalmente disponibile",
+        "always": "Assolutamente indispensabile"
       }
     },
     "luggageTypes": {

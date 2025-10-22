@@ -69,7 +69,8 @@
       "removeTransportMode": "Remove transport mode",
       "selectLuggageType": "Select luggage type",
       "addLuggageType": "Add luggage type",
-      "removeLuggageType": "Remove luggage type"
+      "removeLuggageType": "Remove luggage type",
+      "selectLaundryAccessExpectation": "Select laundry access expectation"
     },
     "sections": {
       "details": "Profile details",
@@ -189,6 +190,12 @@
         "mountain_lodge": "🏔️ Mountain lodge / Cabin",
         "private_stay": "👥 Friends & family stay",
         "resort": "💎 Luxury resort"
+      },
+      "laundry": {
+        "none": "Not needed",
+        "sometimes": "Occasionally available",
+        "usually": "Usually available",
+        "always": "Absolutely required"
       }
     },
     "luggageTypes": {

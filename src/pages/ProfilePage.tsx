@@ -59,6 +59,17 @@ interface AccommodationTypeOption {
   emoji: string;
 }
 
+const ACCOMMODATION_LAUNDRY_VALUES = ['none', 'sometimes', 'usually', 'always'] as const;
+
+type AccommodationLaundryAccessExpectationValue = (typeof ACCOMMODATION_LAUNDRY_VALUES)[number];
+
+interface AccommodationLaundryOption {
+  value: AccommodationLaundryAccessExpectationValue;
+  translationKey: string;
+  defaultLabel: string;
+  emoji: string;
+}
+
 interface DetailSectionField {
   label: string;
   value: unknown;
@@ -230,6 +241,39 @@ const ACCOMMODATION_TYPE_OPTIONS: readonly AccommodationTypeOption[] = [
     emoji: '💎',
   },
 ];
+
+const ACCOMMODATION_LAUNDRY_OPTIONS: readonly AccommodationLaundryOption[] = [
+  {
+    value: 'none',
+    translationKey: 'profile.accommodation.laundry.none',
+    defaultLabel: 'Not needed',
+    emoji: '🚫',
+  },
+  {
+    value: 'sometimes',
+    translationKey: 'profile.accommodation.laundry.sometimes',
+    defaultLabel: 'Occasionally available',
+    emoji: '🔄',
+  },
+  {
+    value: 'usually',
+    translationKey: 'profile.accommodation.laundry.usually',
+    defaultLabel: 'Usually available',
+    emoji: '🧺',
+  },
+  {
+    value: 'always',
+    translationKey: 'profile.accommodation.laundry.always',
+    defaultLabel: 'Absolutely required',
+    emoji: '✅',
+  },
+];
+
+const isAccommodationLaundryAccessExpectationValue = (
+  value: unknown
+): value is AccommodationLaundryAccessExpectationValue =>
+  typeof value === 'string' &&
+  (ACCOMMODATION_LAUNDRY_VALUES as readonly string[]).includes(value);
 
 const toFlagEmoji = (countryCode: string) => {
   if (!countryCode || countryCode.length !== 2) {
@@ -407,6 +451,12 @@ const ProfilePage = () => {
   const [accommodationTypes, setAccommodationTypes] = useState<string[]>([]);
   const [originalAccommodationTypes, setOriginalAccommodationTypes] = useState<string[]>([]);
   const [accommodationTypeToAdd, setAccommodationTypeToAdd] = useState('');
+  const [accommodationLaundryExpectation, setAccommodationLaundryExpectation] =
+    useState<AccommodationLaundryAccessExpectationValue | null>(null);
+  const [
+    originalAccommodationLaundryExpectation,
+    setOriginalAccommodationLaundryExpectation,
+  ] = useState<AccommodationLaundryAccessExpectationValue | null>(null);
 
   const [isEditingCore, setIsEditingCore] = useState(false);
   const [savingCore, setSavingCore] = useState(false);
@@ -490,6 +540,17 @@ const ProfilePage = () => {
       setAccommodationTypeToAdd('');
     }
   }, [profile?.accommodation_common_types, isEditingAccommodation]);
+
+  useEffect(() => {
+    const raw = profile?.accommodation_laundry_access_expectation;
+    const normalized = isAccommodationLaundryAccessExpectationValue(raw) ? raw : null;
+
+    setOriginalAccommodationLaundryExpectation(normalized);
+
+    if (!isEditingAccommodation) {
+      setAccommodationLaundryExpectation(normalized);
+    }
+  }, [profile?.accommodation_laundry_access_expectation, isEditingAccommodation]);
 
   useEffect(() => {
     const rawFrequency = profile?.travel_frequency_per_year;
@@ -938,6 +999,20 @@ const ProfilePage = () => {
     [t]
   );
 
+  const accommodationLaundryOptions = useMemo(
+    () =>
+      ACCOMMODATION_LAUNDRY_OPTIONS.map((option) => {
+        const localized = t(option.translationKey, { defaultValue: option.defaultLabel }).trim();
+        const withoutEmoji = localized.split(option.emoji).join('').trim() || localized;
+        const label = option.emoji ? `${option.emoji} ${withoutEmoji}`.trim() : withoutEmoji;
+        return {
+          value: option.value,
+          label,
+        };
+      }),
+    [t]
+  );
+
   const accommodationTypeLabelByValue = useMemo(() => {
     const map = new Map<string, string>();
     accommodationTypeOptions.forEach((option) => {
@@ -945,6 +1020,14 @@ const ProfilePage = () => {
     });
     return map;
   }, [accommodationTypeOptions]);
+
+  const accommodationLaundryLabelByValue = useMemo(() => {
+    const map = new Map<AccommodationLaundryAccessExpectationValue, string>();
+    accommodationLaundryOptions.forEach((option) => {
+      map.set(option.value, option.label);
+    });
+    return map;
+  }, [accommodationLaundryOptions]);
 
   const availableAccommodationTypes = useMemo(
     () => accommodationTypeOptions.filter((option) => !accommodationTypes.includes(option.value)),
@@ -986,7 +1069,9 @@ const ProfilePage = () => {
   const isLuggageTypesDirty = !luggageTypesEqual(luggageTypes, originalLuggageTypes);
   const isTransportDirty = isTransportModesDirty || isLuggageTypesDirty;
   const isAccommodationTypesDirty = !accommodationTypesEqual(accommodationTypes, originalAccommodationTypes);
-  const isAccommodationDirty = isAccommodationTypesDirty;
+  const isAccommodationLaundryExpectationDirty =
+    accommodationLaundryExpectation !== originalAccommodationLaundryExpectation;
+  const isAccommodationDirty = isAccommodationTypesDirty || isAccommodationLaundryExpectationDirty;
   const travelFrequencyDisplayLabel = normalizedTravelFrequency
     ? travelFrequencyLabelByValue.get(normalizedTravelFrequency) ?? null
     : null;
@@ -1021,6 +1106,11 @@ const ProfilePage = () => {
       originalAccommodationTypes.map((value) => accommodationTypeLabelByValue.get(value) ?? value),
     [originalAccommodationTypes, accommodationTypeLabelByValue]
   );
+  const originalAccommodationLaundryExpectationDisplayLabel =
+    originalAccommodationLaundryExpectation
+      ? accommodationLaundryLabelByValue.get(originalAccommodationLaundryExpectation) ??
+        originalAccommodationLaundryExpectation
+      : null;
   const travelSeasonDisplayLabel = travelSeason
     ? travelSeasonLabelByValue.get(travelSeason) ?? travelSeason
     : null;
@@ -1210,8 +1300,16 @@ const ProfilePage = () => {
             label: t('profile.fields.accommodationTypes'),
             value: profile?.accommodation_common_types,
           },
-          { label: t('profile.fields.laundryAccess'), value: profile?.accommodation_laundry_access_expectation },
-          { label: t('profile.fields.workspaceNeeded'), value: profile?.accommodation_workspace_needed },
+          {
+            id: 'accommodation_laundry_access_expectation',
+            label: t('profile.fields.laundryAccess'),
+            value: profile?.accommodation_laundry_access_expectation,
+          },
+          {
+            id: 'accommodation_workspace_needed',
+            label: t('profile.fields.workspaceNeeded'),
+            value: profile?.accommodation_workspace_needed,
+          },
         ],
       },
       {
@@ -1813,6 +1911,7 @@ const ProfilePage = () => {
     setAccommodationSaveError(null);
     setAccommodationTypes(originalAccommodationTypes);
     setAccommodationTypeToAdd('');
+    setAccommodationLaundryExpectation(originalAccommodationLaundryExpectation);
   };
 
   const handleCancelEditingAccommodation = () => {
@@ -1821,6 +1920,7 @@ const ProfilePage = () => {
     setAccommodationSaveError(null);
     setAccommodationTypes(originalAccommodationTypes);
     setAccommodationTypeToAdd('');
+    setAccommodationLaundryExpectation(originalAccommodationLaundryExpectation);
   };
 
   const handleSaveAccommodation = async () => {
@@ -1843,10 +1943,15 @@ const ProfilePage = () => {
       setAccommodationSaveError(null);
 
       const normalizedTypes = normalizeAccommodationTypes(accommodationTypes);
+      const normalizedLaundryExpectation = accommodationLaundryExpectation ?? null;
       const payload: Partial<Profile> = {};
 
       if (isAccommodationTypesDirty) {
         payload.accommodation_common_types = normalizedTypes.length > 0 ? normalizedTypes : null;
+      }
+
+      if (isAccommodationLaundryExpectationDirty) {
+        payload.accommodation_laundry_access_expectation = normalizedLaundryExpectation;
       }
 
       if (Object.keys(payload).length === 0) {
@@ -1868,6 +1973,8 @@ const ProfilePage = () => {
       setOriginalAccommodationTypes(normalizedTypes);
       setAccommodationTypes(normalizedTypes);
       setAccommodationTypeToAdd('');
+      setOriginalAccommodationLaundryExpectation(normalizedLaundryExpectation);
+      setAccommodationLaundryExpectation(normalizedLaundryExpectation);
     } catch (saveError) {
       console.error('Failed to save accommodation preferences', saveError);
       setAccommodationSaveError(
@@ -3016,6 +3123,43 @@ const ProfilePage = () => {
                                     </span>
                                   ))}
                                 </div>
+                              )
+                        : section.id === 'accommodation' && field.id === 'accommodation_laundry_access_expectation'
+                        ? isEditingAccommodation
+                          ? (
+                              <select
+                                value={accommodationLaundryExpectation ?? ''}
+                                onChange={(event) => {
+                                  const nextValue = event.target.value;
+                                  let sanitized: AccommodationLaundryAccessExpectationValue | null = null;
+                                  if (isAccommodationLaundryAccessExpectationValue(nextValue)) {
+                                    sanitized = nextValue;
+                                  }
+                                  setAccommodationLaundryExpectation(sanitized);
+                                  setAccommodationSaved(false);
+                                  setAccommodationSaveError(null);
+                                }}
+                                className="w-64 max-w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                disabled={savingAccommodation}
+                              >
+                                <option value="">
+                                  {t('profile.actions.selectLaundryAccessExpectation', {
+                                    defaultValue: 'Select laundry access expectation',
+                                  })}
+                                </option>
+                                {accommodationLaundryOptions.map((option) => (
+                                  <option key={option.value} value={option.value}>
+                                    {option.label}
+                                  </option>
+                                ))}
+                              </select>
+                            )
+                          : originalAccommodationLaundryExpectationDisplayLabel
+                            ? originalAccommodationLaundryExpectationDisplayLabel
+                            : (
+                                <span className="text-xs text-[var(--text-secondary)]">
+                                  {t('profile.fallback.notSet')}
+                                </span>
                               )
                         : (
                           formatValue(field.value)
