@@ -39,7 +39,7 @@
     "subheading": "Consultez et mettez a jour vos informations personnelles.",
     "description": "Plus vous en dites sur vous, mieux nous pouvons adapter vos listes de bagages a vous et a vos voyages. Ainsi, vous recevez des suggestions qui correspondent vraiment a votre style, vos activites et votre destination.",
     "memberSince": "Membre depuis {{date}}",
-    "lastUpdated": "Dernière mise à jour {{date}}",
+    "lastUpdated": "Dernière modification: {{date}}",
     "actions": {
       "refresh": "Actualiser",
       "refreshing": "Actualisation en cours…",
