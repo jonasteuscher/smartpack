@@ -492,6 +492,99 @@ const ACTIVITY_ADVENTURE_OPTIONS: readonly ActivityOption[] = [
   },
 ];
 
+const ACTIVITY_CULTURAL_OPTIONS: readonly ActivityOption[] = [
+  {
+    value: 'museums',
+    translationKey: 'profile.activities.cultural.museums',
+    defaultLabel: '🏛️ Museums',
+    emoji: '🏛️',
+  },
+  {
+    value: 'galleries',
+    translationKey: 'profile.activities.cultural.galleries',
+    defaultLabel: '🖼️ Art galleries',
+    emoji: '🖼️',
+  },
+  {
+    value: 'historical_sites',
+    translationKey: 'profile.activities.cultural.historical_sites',
+    defaultLabel: '🏰 Historical sites',
+    emoji: '🏰',
+  },
+  {
+    value: 'architecture_tours',
+    translationKey: 'profile.activities.cultural.architecture_tours',
+    defaultLabel: '🏛️ Architecture tours',
+    emoji: '🏛️',
+  },
+  {
+    value: 'performing_arts',
+    translationKey: 'profile.activities.cultural.performing_arts',
+    defaultLabel: '🎭 Theater, opera & ballet',
+    emoji: '🎭',
+  },
+  {
+    value: 'live_music',
+    translationKey: 'profile.activities.cultural.live_music',
+    defaultLabel: '🎶 Concerts & live music',
+    emoji: '🎶',
+  },
+  {
+    value: 'festivals',
+    translationKey: 'profile.activities.cultural.festivals',
+    defaultLabel: '🎉 Festivals',
+    emoji: '🎉',
+  },
+  {
+    value: 'local_markets',
+    translationKey: 'profile.activities.cultural.local_markets',
+    defaultLabel: '🛍️ Local markets',
+    emoji: '🛍️',
+  },
+  {
+    value: 'food_tours_cooking',
+    translationKey: 'profile.activities.cultural.food_tours_cooking',
+    defaultLabel: '🍜 Food tours & cooking classes',
+    emoji: '🍜',
+  },
+  {
+    value: 'wine_beer_tastings',
+    translationKey: 'profile.activities.cultural.wine_beer_tastings',
+    defaultLabel: '🍷 Wine & beer tastings',
+    emoji: '🍷',
+  },
+  {
+    value: 'religious_sites',
+    translationKey: 'profile.activities.cultural.religious_sites',
+    defaultLabel: '⛪ Religious sites',
+    emoji: '⛪',
+  },
+  {
+    value: 'street_art',
+    translationKey: 'profile.activities.cultural.street_art',
+    defaultLabel: '🎨 Street art & graffiti',
+    emoji: '🎨',
+  },
+  {
+    value: 'craft_workshops',
+    translationKey: 'profile.activities.cultural.craft_workshops',
+    defaultLabel: '🧵 Craft workshops',
+    emoji: '🧵',
+  },
+  {
+    value: 'cinema_film',
+    translationKey: 'profile.activities.cultural.cinema_film',
+    defaultLabel: '🎬 Cinema & film culture',
+    emoji: '🎬',
+  },
+  {
+    value: 'literature_bookshops',
+    translationKey: 'profile.activities.cultural.literature_bookshops',
+    defaultLabel: '📚 Literature & bookshops',
+    emoji: '📚',
+  },
+];
+
 const isAccommodationLaundryAccessExpectationValue = (
   value: unknown
 ): value is AccommodationLaundryAccessExpectationValue =>
@@ -630,6 +723,19 @@ const normalizeActivityAdventures = (adventures: string[]): string[] => {
   );
 
   return ACTIVITY_ADVENTURE_OPTIONS.map((option) => option.value).filter((value) => chosen.has(value));
+};
+
+const normalizeActivityCultural = (activities: string[]): string[] => {
+  const allowedValues = new Map(
+    ACTIVITY_CULTURAL_OPTIONS.map((option, index) => [option.value, index])
+  );
+  const chosen = new Set(
+    activities
+      .map((activity) => (typeof activity === 'string' ? activity.trim().toLowerCase() : ''))
+      .filter((activity) => activity.length > 0 && allowedValues.has(activity))
+  );
+
+  return ACTIVITY_CULTURAL_OPTIONS.map((option) => option.value).filter((value) => chosen.has(value));
 };
 
 const languagesEqual = (a: string[], b: string[]): boolean => {
@@ -799,6 +905,9 @@ const ProfilePage = () => {
   const [activityAdventure, setActivityAdventure] = useState<string[]>([]);
   const [originalActivityAdventure, setOriginalActivityAdventure] = useState<string[]>([]);
   const [activityAdventureToAdd, setActivityAdventureToAdd] = useState('');
+  const [activityCultural, setActivityCultural] = useState<string[]>([]);
+  const [originalActivityCultural, setOriginalActivityCultural] = useState<string[]>([]);
+  const [activityCulturalToAdd, setActivityCulturalToAdd] = useState('');
   const [isEditingActivities, setIsEditingActivities] = useState(false);
   const [savingActivities, setSavingActivities] = useState(false);
   const [activitiesSaveError, setActivitiesSaveError] = useState<string | null>(null);
@@ -895,6 +1004,19 @@ const ProfilePage = () => {
       setActivityAdventureToAdd('');
     }
   }, [profile?.activity_adventure_activities, isEditingActivities]);
+
+  useEffect(() => {
+    const normalized = Array.isArray(profile?.activity_cultural_activities)
+      ? normalizeActivityCultural(profile.activity_cultural_activities as string[])
+      : [];
+
+    setOriginalActivityCultural(normalized);
+
+    if (!isEditingActivities) {
+      setActivityCultural(normalized);
+      setActivityCulturalToAdd('');
+    }
+  }, [profile?.activity_cultural_activities, isEditingActivities]);
 
   useEffect(() => {
     const rawFrequency = profile?.travel_frequency_per_year;
@@ -1399,6 +1521,20 @@ const ProfilePage = () => {
     [t]
   );
 
+  const activityCulturalOptions = useMemo(
+    () =>
+      ACTIVITY_CULTURAL_OPTIONS.map((option) => {
+        const localized = t(option.translationKey, { defaultValue: option.defaultLabel }).trim();
+        const withoutEmoji = localized.split(option.emoji).join('').trim() || localized;
+        const label = option.emoji ? `${option.emoji} ${withoutEmoji}`.trim() : withoutEmoji;
+        return {
+          value: option.value,
+          label,
+        };
+      }),
+    [t]
+  );
+
   const accommodationTypeLabelByValue = useMemo(() => {
     const map = new Map<string, string>();
     accommodationTypeOptions.forEach((option) => {
@@ -1439,6 +1575,14 @@ const ProfilePage = () => {
     return map;
   }, [activityAdventureOptions]);
 
+  const activityCulturalLabelByValue = useMemo(() => {
+    const map = new Map<string, string>();
+    activityCulturalOptions.forEach((option) => {
+      map.set(option.value, option.label);
+    });
+    return map;
+  }, [activityCulturalOptions]);
+
   const availableAccommodationTypes = useMemo(
     () => accommodationTypeOptions.filter((option) => !accommodationTypes.includes(option.value)),
     [accommodationTypeOptions, accommodationTypes]
@@ -1452,6 +1596,11 @@ const ProfilePage = () => {
   const availableActivityAdventureOptions = useMemo(
     () => activityAdventureOptions.filter((option) => !activityAdventure.includes(option.value)),
     [activityAdventureOptions, activityAdventure]
+  );
+
+  const availableActivityCulturalOptions = useMemo(
+    () => activityCulturalOptions.filter((option) => !activityCultural.includes(option.value)),
+    [activityCulturalOptions, activityCultural]
   );
 
   const trimmedFirstName = coreFirstName.trim();
@@ -1497,7 +1646,8 @@ const ProfilePage = () => {
     isAccommodationTypesDirty || isAccommodationLaundryExpectationDirty || isAccommodationWorkspaceDirty;
   const isActivitiesSportsDirty = !activitySelectionsEqual(activitySports, originalActivitySports);
   const isActivitiesAdventureDirty = !activitySelectionsEqual(activityAdventure, originalActivityAdventure);
-  const isActivitiesDirty = isActivitiesSportsDirty || isActivitiesAdventureDirty;
+  const isActivitiesCulturalDirty = !activitySelectionsEqual(activityCultural, originalActivityCultural);
+  const isActivitiesDirty = isActivitiesSportsDirty || isActivitiesAdventureDirty || isActivitiesCulturalDirty;
   const travelFrequencyDisplayLabel = normalizedTravelFrequency
     ? travelFrequencyLabelByValue.get(normalizedTravelFrequency) ?? null
     : null;
@@ -1560,6 +1710,16 @@ const ProfilePage = () => {
     () =>
       originalActivityAdventure.map((value) => activityAdventureLabelByValue.get(value) ?? value),
     [originalActivityAdventure, activityAdventureLabelByValue]
+  );
+  const activityCulturalDisplayLabels = useMemo(
+    () =>
+      activityCultural.map((value) => activityCulturalLabelByValue.get(value) ?? value),
+    [activityCultural, activityCulturalLabelByValue]
+  );
+  const originalActivityCulturalDisplayLabels = useMemo(
+    () =>
+      originalActivityCultural.map((value) => activityCulturalLabelByValue.get(value) ?? value),
+    [originalActivityCultural, activityCulturalLabelByValue]
   );
   const travelSeasonDisplayLabel = travelSeason
     ? travelSeasonLabelByValue.get(travelSeason) ?? travelSeason
@@ -1776,7 +1936,11 @@ const ProfilePage = () => {
             label: t('profile.fields.activitiesAdventure'),
             value: profile?.activity_adventure_activities,
           },
-          { label: t('profile.fields.activitiesCultural'), value: profile?.activity_cultural_activities },
+          {
+            id: 'activity_cultural_activities',
+            label: t('profile.fields.activitiesCultural'),
+            value: profile?.activity_cultural_activities,
+          },
         ],
       },
       {
@@ -1988,10 +2152,10 @@ const ProfilePage = () => {
     setActivitiesSaveError(null);
   };
 
-  const handleAddActivityAdventure = () => {
-    if (!activityAdventureToAdd) {
-      return;
-    }
+const handleAddActivityAdventure = () => {
+  if (!activityAdventureToAdd) {
+    return;
+  }
 
     const normalized = activityAdventureToAdd.toLowerCase();
     if (activityAdventure.includes(normalized)) {
@@ -2001,16 +2165,40 @@ const ProfilePage = () => {
 
     setActivityAdventure((prev) => normalizeActivityAdventures([...prev, normalized]));
     setActivityAdventureToAdd('');
-    setActivitiesSaved(false);
-    setActivitiesSaveError(null);
-  };
+  setActivitiesSaved(false);
+  setActivitiesSaveError(null);
+};
 
-  const handleRemoveActivityAdventure = (value: string) => {
-    const normalized = value.toLowerCase();
-    setActivityAdventure((prev) => normalizeActivityAdventures(prev.filter((item) => item !== normalized)));
-    setActivitiesSaved(false);
-    setActivitiesSaveError(null);
-  };
+const handleRemoveActivityAdventure = (value: string) => {
+  const normalized = value.toLowerCase();
+  setActivityAdventure((prev) => normalizeActivityAdventures(prev.filter((item) => item !== normalized)));
+  setActivitiesSaved(false);
+  setActivitiesSaveError(null);
+};
+
+const handleAddActivityCultural = () => {
+  if (!activityCulturalToAdd) {
+    return;
+  }
+
+  const normalized = activityCulturalToAdd.toLowerCase();
+  if (activityCultural.includes(normalized)) {
+    setActivityCulturalToAdd('');
+    return;
+  }
+
+  setActivityCultural((prev) => normalizeActivityCultural([...prev, normalized]));
+  setActivityCulturalToAdd('');
+  setActivitiesSaved(false);
+  setActivitiesSaveError(null);
+};
+
+const handleRemoveActivityCultural = (value: string) => {
+  const normalized = value.toLowerCase();
+  setActivityCultural((prev) => normalizeActivityCultural(prev.filter((item) => item !== normalized)));
+  setActivitiesSaved(false);
+  setActivitiesSaveError(null);
+};
 
   const handleRemoveAccommodationType = (value: string) => {
     const normalized = value.toLowerCase();
@@ -2439,6 +2627,8 @@ const ProfilePage = () => {
     setActivitySportToAdd('');
     setActivityAdventure(originalActivityAdventure);
     setActivityAdventureToAdd('');
+    setActivityCultural(originalActivityCultural);
+    setActivityCulturalToAdd('');
   };
 
   const handleCancelEditingActivities = () => {
@@ -2449,6 +2639,8 @@ const ProfilePage = () => {
     setActivitySportToAdd('');
     setActivityAdventure(originalActivityAdventure);
     setActivityAdventureToAdd('');
+    setActivityCultural(originalActivityCultural);
+    setActivityCulturalToAdd('');
   };
 
   const handleSaveAccommodation = async () => {
@@ -2545,6 +2737,7 @@ const ProfilePage = () => {
 
       const normalizedSports = normalizeActivitySports(activitySports);
       const normalizedAdventure = normalizeActivityAdventures(activityAdventure);
+      const normalizedCultural = normalizeActivityCultural(activityCultural);
       const payload: Partial<Profile> = {};
 
       if (isActivitiesSportsDirty) {
@@ -2553,6 +2746,10 @@ const ProfilePage = () => {
 
       if (isActivitiesAdventureDirty) {
         payload.activity_adventure_activities = normalizedAdventure.length > 0 ? normalizedAdventure : null;
+      }
+
+      if (isActivitiesCulturalDirty) {
+        payload.activity_cultural_activities = normalizedCultural.length > 0 ? normalizedCultural : null;
       }
 
       if (Object.keys(payload).length === 0) {
@@ -2577,6 +2774,9 @@ const ProfilePage = () => {
       setOriginalActivityAdventure(normalizedAdventure);
       setActivityAdventure(normalizedAdventure);
       setActivityAdventureToAdd('');
+      setOriginalActivityCultural(normalizedCultural);
+      setActivityCultural(normalizedCultural);
+      setActivityCulturalToAdd('');
     } catch (saveError) {
       console.error('Failed to save activity preferences', saveError);
       setActivitiesSaveError(
@@ -4003,6 +4203,87 @@ const ProfilePage = () => {
                                       className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
                                     >
                                       {originalActivityAdventureDisplayLabels[index]}
+                                    </span>
+                                  ))}
+                                </div>
+                              )
+                        : section.id === 'activities' && field.id === 'activity_cultural_activities'
+                        ? isEditingActivities
+                          ? (
+                              <div className="flex flex-col gap-3">
+                                <div className="flex flex-wrap gap-2">
+                                  {activityCultural.length === 0 ? (
+                                    <span className="text-xs text-[var(--text-secondary)]">
+                                      {t('profile.fallback.notSet')}
+                                    </span>
+                                  ) : (
+                                    activityCultural.map((activity, index) => (
+                                      <span
+                                        key={activity}
+                                        className="flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                      >
+                                        {activityCulturalDisplayLabels[index]}
+                                        <button
+                                          type="button"
+                                          onClick={() => handleRemoveActivityCultural(activity)}
+                                          className="text-slate-400 transition hover:text-red-500"
+                                          aria-label={t('profile.actions.removeActivityCultural', {
+                                            defaultValue: 'Remove activity',
+                                          })}
+                                          disabled={savingActivities}
+                                        >
+                                          ×
+                                        </button>
+                                      </span>
+                                    ))
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <select
+                                    value={activityCulturalToAdd}
+                                    onChange={(event) => setActivityCulturalToAdd(event.target.value)}
+                                    className="w-72 max-w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                    disabled={savingActivities}
+                                  >
+                                    <option value="">
+                                      {t('profile.actions.selectCulturalActivity', {
+                                        defaultValue: 'Select cultural activity',
+                                      })}
+                                    </option>
+                                    {availableActivityCulturalOptions.map((option) => (
+                                      <option key={option.value} value={option.value}>
+                                        {option.label}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <button
+                                    type="button"
+                                    onClick={handleAddActivityCultural}
+                                    className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-secondary text-lg font-semibold text-brand-secondary transition hover:bg-brand-secondary hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                    disabled={!activityCulturalToAdd || savingActivities}
+                                    aria-label={t('profile.actions.addActivityCultural', {
+                                      defaultValue: 'Add cultural activity',
+                                    })}
+                                  >
+                                    +
+                                  </button>
+                                </div>
+                              </div>
+                            )
+                          : originalActivityCultural.length === 0
+                            ? (
+                                <span className="text-xs text-[var(--text-secondary)]">
+                                  {t('profile.fallback.notSet')}
+                                </span>
+                              )
+                            : (
+                                <div className="flex flex-wrap gap-2">
+                                  {originalActivityCultural.map((activity, index) => (
+                                    <span
+                                      key={activity}
+                                      className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                    >
+                                      {originalActivityCulturalDisplayLabels[index]}
                                     </span>
                                   ))}
                                 </div>

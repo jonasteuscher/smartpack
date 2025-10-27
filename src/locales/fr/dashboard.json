@@ -77,7 +77,10 @@
       "removeActivitySport": "Supprimer l'activité",
       "selectAdventureActivity": "Choisir une aventure",
       "addAdventureActivity": "Ajouter une aventure",
-      "removeAdventureActivity": "Supprimer l'aventure"
+      "removeAdventureActivity": "Supprimer l'aventure",
+      "selectCulturalActivity": "Choisir une activité culturelle",
+      "addActivityCultural": "Ajouter une activité culturelle",
+      "removeActivityCultural": "Supprimer l'activité culturelle"
     },
     "sections": {
       "details": "Details du profil",
@@ -237,14 +240,31 @@
         "bungee": "🪢 Saut à l'élastique",
         "canyoning": "🌊 Canyoning",
         "whitewater_rafting": "🚣 Rafting en eaux vives",
-        "zipline": "⛓️ Tyrolienne",
+        "zipline": "🧗 Tyrolienne",
         "caving": "🕳️ Spéléologie / grottes",
         "offroad_4x4": "🚙 Off-road / 4x4",
         "glacier_ice": "🧊 Excursion glacier / glace",
         "volcano_desert": "🌋 Expédition volcan / désert",
         "hot_air_balloon": "🎈 Montgolfière",
-        "helicopter": "🚁 Vol en hélicoptère",
-        "shark_cage_diving": "🦈 Plongée en cage aux requins"
+      "helicopter": "🚁 Vol en hélicoptère",
+      "shark_cage_diving": "🦈 Plongée en cage aux requins"
+      },
+      "cultural": {
+        "museums": "🏛️ Musées",
+        "galleries": "🖼️ Galeries",
+        "historical_sites": "🏰 Sites historiques",
+        "architecture_tours": "🏛️ Visites architecturales",
+        "performing_arts": "🎭 Théâtre / Opéra / Ballet",
+        "live_music": "🎶 Concerts / musique live",
+        "festivals": "🎉 Festivals",
+        "local_markets": "🛍️ Marchés locaux",
+        "food_tours_cooking": "🍜 Food tour / cours de cuisine",
+        "wine_beer_tastings": "🍷 Dégustations de vin / bière",
+        "religious_sites": "⛪ Sites religieux",
+        "street_art": "🎨 Street art / graffiti",
+        "craft_workshops": "🧵 Ateliers artisanaux",
+        "cinema_film": "🎬 Cinéma / culture film",
+        "literature_bookshops": "📚 Littérature / librairies"
       }
     },
     "luggageTypes": {

@@ -77,7 +77,10 @@
       "removeActivitySport": "Remove activity",
       "selectAdventureActivity": "Select adventure",
       "addAdventureActivity": "Add adventure",
-      "removeAdventureActivity": "Remove adventure"
+      "removeAdventureActivity": "Remove adventure",
+      "selectCulturalActivity": "Select cultural activity",
+      "addActivityCultural": "Add cultural activity",
+      "removeActivityCultural": "Remove cultural activity"
     },
     "sections": {
       "details": "Profile details",
@@ -237,14 +240,31 @@
         "bungee": "🪢 Bungee jump",
         "canyoning": "🌊 Canyoning",
         "whitewater_rafting": "🚣 Whitewater rafting",
-        "zipline": "⛓️ Zipline",
+        "zipline": "🧗 Zipline",
         "caving": "🕳️ Caving & spelunking",
         "offroad_4x4": "🚙 Off-road 4x4",
         "glacier_ice": "🧊 Glacier & ice tours",
         "volcano_desert": "🌋 Volcano & desert expeditions",
-        "hot_air_balloon": "🎈 Hot air balloon rides",
-        "helicopter": "🚁 Helicopter flights",
-        "shark_cage_diving": "🦈 Shark cage diving"
+      "hot_air_balloon": "🎈 Hot air balloon rides",
+      "helicopter": "🚁 Helicopter flights",
+      "shark_cage_diving": "🦈 Shark cage diving"
+      },
+      "cultural": {
+        "museums": "🏛️ Museums",
+        "galleries": "🖼️ Art galleries",
+        "historical_sites": "🏰 Historical sites",
+        "architecture_tours": "🏛️ Architecture tours",
+        "performing_arts": "🎭 Theater, opera & ballet",
+        "live_music": "🎶 Concerts & live music",
+        "festivals": "🎉 Festivals",
+        "local_markets": "🛍️ Local markets",
+        "food_tours_cooking": "🍜 Food tours & cooking classes",
+        "wine_beer_tastings": "🍷 Wine & beer tastings",
+        "religious_sites": "⛪ Religious sites",
+        "street_art": "🎨 Street art & graffiti",
+        "craft_workshops": "🧵 Craft workshops",
+        "cinema_film": "🎬 Cinema & film culture",
+        "literature_bookshops": "📚 Literature & bookshops"
       }
     },
     "luggageTypes": {

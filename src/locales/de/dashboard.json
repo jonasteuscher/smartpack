@@ -77,7 +77,10 @@
       "removeActivitySport": "Sportaktivität entfernen",
       "selectAdventureActivity": "Abenteuer auswählen",
       "addAdventureActivity": "Abenteuer hinzufügen",
-      "removeAdventureActivity": "Abenteuer entfernen"
+      "removeAdventureActivity": "Abenteuer entfernen",
+      "selectCulturalActivity": "Kulturaktivität auswählen",
+      "addActivityCultural": "Kulturaktivität hinzufügen",
+      "removeActivityCultural": "Kulturaktivität entfernen"
     },
     "sections": {
       "details": "Profildetails",
@@ -237,14 +240,31 @@
         "bungee": "🪢 Bungee Jump",
         "canyoning": "🌊 Canyoning",
         "whitewater_rafting": "🚣 Wildwasser-Rafting",
-        "zipline": "⛓️ Zipline",
+        "zipline": "🧗 Zipline",
         "caving": "🕳️ Speläologie / Höhle",
         "offroad_4x4": "🚙 Offroad / 4x4",
         "glacier_ice": "🧊 Gletscher- / Eistour",
         "volcano_desert": "🌋 Vulkan- / Wüstenexpedition",
         "hot_air_balloon": "🎈 Heissluftballon",
-        "helicopter": "🚁 Helikopterflug",
-        "shark_cage_diving": "🦈 Haikäfig / Spezialtauchen"
+      "helicopter": "🚁 Helikopterflug",
+      "shark_cage_diving": "🦈 Haikäfig / Spezialtauchen"
+      },
+      "cultural": {
+        "museums": "🏛️ Museen",
+        "galleries": "🖼️ Galerien",
+        "historical_sites": "🏰 Historische Stätten",
+        "architecture_tours": "🏛️ Architekturtouren",
+        "performing_arts": "🎭 Theater / Oper / Ballett",
+        "live_music": "🎶 Konzerte / Live-Musik",
+        "festivals": "🎉 Festivals",
+        "local_markets": "🛍️ Lokale Märkte",
+        "food_tours_cooking": "🍜 Food-Tour / Kochkurs",
+        "wine_beer_tastings": "🍷 Wein- / Bierdegustation",
+        "religious_sites": "⛪ Religiöse Stätten",
+        "street_art": "🎨 Street-Art / Graffiti",
+        "craft_workshops": "🧵 Handwerk-Workshops",
+        "cinema_film": "🎬 Kinos / Filmkultur",
+        "literature_bookshops": "📚 Bücher / Literatur"
       }
     },
     "luggageTypes": {

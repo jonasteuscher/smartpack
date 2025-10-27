@@ -77,7 +77,10 @@
       "removeActivitySport": "Rimuovi attività",
       "selectAdventureActivity": "Seleziona avventura",
       "addAdventureActivity": "Aggiungi avventura",
-      "removeAdventureActivity": "Rimuovi avventura"
+      "removeAdventureActivity": "Rimuovi avventura",
+      "selectCulturalActivity": "Seleziona attività culturale",
+      "addActivityCultural": "Aggiungi attività culturale",
+      "removeActivityCultural": "Rimuovi attività culturale"
     },
     "sections": {
       "details": "Dettagli profilo",
@@ -237,14 +240,31 @@
         "bungee": "🪢 Bungee jumping",
         "canyoning": "🌊 Canyoning",
         "whitewater_rafting": "🚣 Rafting in acque bianche",
-        "zipline": "⛓️ Zipline",
+        "zipline": "🧗 Zipline",
         "caving": "🕳️ Speleologia / grotte",
         "offroad_4x4": "🚙 Fuoristrada / 4x4",
         "glacier_ice": "🧊 Tour su ghiacciaio / ghiaccio",
         "volcano_desert": "🌋 Spedizione vulcano / deserto",
         "hot_air_balloon": "🎈 Mongolfiera",
-        "helicopter": "🚁 Volo in elicottero",
-        "shark_cage_diving": "🦈 Immersioni in gabbia con squali"
+      "helicopter": "🚁 Volo in elicottero",
+      "shark_cage_diving": "🦈 Immersioni in gabbia con squali"
+      },
+      "cultural": {
+        "museums": "🏛️ Musei",
+        "galleries": "🖼️ Gallerie",
+        "historical_sites": "🏰 Siti storici",
+        "architecture_tours": "🏛️ Tour architettonici",
+        "performing_arts": "🎭 Teatro / Opera / Balletto",
+        "live_music": "🎶 Concerti / musica live",
+        "festivals": "🎉 Festival",
+        "local_markets": "🛍️ Mercati locali",
+        "food_tours_cooking": "🍜 Food tour / corso di cucina",
+        "wine_beer_tastings": "🍷 Degustazione vino / birra",
+        "religious_sites": "⛪ Siti religiosi",
+        "street_art": "🎨 Street art / graffiti",
+        "craft_workshops": "🧵 Laboratori artigianali",
+        "cinema_film": "🎬 Cinema / cultura film",
+        "literature_bookshops": "📚 Libri / librerie"
       }
     },
     "luggageTypes": {
