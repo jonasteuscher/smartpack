@@ -72,6 +72,7 @@
       "removeLuggageType": "Remove luggage type",
       "selectLaundryAccessExpectation": "Select laundry access expectation",
       "selectSustainabilityFocus": "Select sustainability focus",
+      "selectSustainabilityWeightPriority": "Choose your pack weight priority",
       "selectWorkspacePreference": "Select workspace preference",
       "selectActivitySport": "Select activity",
       "addActivitySport": "Add activity",
@@ -282,6 +283,12 @@
         "sustainable_gear": "🧭 Sustainable gear",
         "nature_protection": "🌿 Nature & biodiversity",
         "paperless": "📱 Paperless travel"
+      },
+      "weightPriority": {
+        "comfort_first": "🛋️ Comfort-first (no weight limits)",
+        "balanced": "⚖️ Balanced: mindful weight & comfort",
+        "lightweight": "🎒 Lightweight: as light as possible",
+        "ultralight": "🪶 Ultralight mission: every gram counts"
       }
     },
     "luggageTypes": {

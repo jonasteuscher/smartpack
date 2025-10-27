@@ -1,5 +1,6 @@
 export type TravelFrequencyPerYear = 'rarely' | 'sometimes' | 'often' | 'frequent';
 export type TravelTripDurationDays = 'short' | 'medium' | 'long' | 'extended';
+export type SustainabilityWeightPriority = 'comfort_first' | 'balanced' | 'lightweight' | 'ultralight';
 
 export interface Profile {
   user_id: string;
@@ -23,7 +24,7 @@ export interface Profile {
   activity_adventure_activities?: string[] | null;
   activity_cultural_activities?: string[] | null;
   sustainability_focus?: string[] | null;
-  sustainability_weight_priority?: string | null;
+  sustainability_weight_priority?: SustainabilityWeightPriority | null;
   budget_level?: string | null;
   budget_buy_at_destination_preference?: string | null;
   budget_souvenir_space_preference?: string | null;

@@ -72,6 +72,7 @@
       "removeLuggageType": "Gepäcktyp entfernen",
       "selectLaundryAccessExpectation": "Waschmöglichkeit auswählen",
       "selectSustainabilityFocus": "Nachhaltigkeitsfokus auswählen",
+      "selectSustainabilityWeightPriority": "Gewichtspriorität auswählen",
       "selectWorkspacePreference": "Arbeitsplatzbedarf auswählen",
       "selectActivitySport": "Sportaktivität auswählen",
       "addActivitySport": "Sportaktivität hinzufügen",
@@ -282,6 +283,12 @@
         "sustainable_gear": "🧭 Nachhaltige Outdoor-Ausrüstung",
         "nature_protection": "🌿 Naturschutz & Biodiversität",
         "paperless": "📱 Digitale statt gedruckte Tickets"
+      },
+      "weightPriority": {
+        "comfort_first": "🛋️ Ohne Einschränkung",
+        "balanced": "⚖️ Etwas Gewichtsoptimierung",
+        "lightweight": "🎒 So leicht wie möglich",
+        "ultralight": "🪶 Ultraleicht unterwegs"
       }
     },
     "luggageTypes": {

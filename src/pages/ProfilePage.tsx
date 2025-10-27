@@ -6,7 +6,12 @@ import { useAuth } from '../context/AuthContext';
 import { useProfile } from '../hooks/useProfile';
 import { removeProfileAvatar, uploadProfileAvatar } from '../services/profileAvatar';
 import { updateRecord } from '../services/supabaseCrud';
-import type { Profile, TravelFrequencyPerYear, TravelTripDurationDays } from '../types/profile';
+import type {
+  Profile,
+  SustainabilityWeightPriority,
+  TravelFrequencyPerYear,
+  TravelTripDurationDays,
+} from '../types/profile';
 
 interface CountryOption {
   name: string;
@@ -81,6 +86,13 @@ interface AccommodationWorkspaceOption {
 
 interface ActivityOption {
   value: string;
+  translationKey: string;
+  defaultLabel: string;
+  emoji: string;
+}
+
+interface SustainabilityWeightPriorityOption {
+  value: SustainabilityWeightPriority;
   translationKey: string;
   defaultLabel: string;
   emoji: string;
@@ -257,6 +269,46 @@ const SUSTAINABILITY_FOCUS_OPTIONS: readonly ActivityOption[] = [
     emoji: '📱',
   },
 ];
+
+const SUSTAINABILITY_WEIGHT_PRIORITY_VALUES: readonly SustainabilityWeightPriority[] = [
+  'comfort_first',
+  'balanced',
+  'lightweight',
+  'ultralight',
+];
+
+const SUSTAINABILITY_WEIGHT_PRIORITY_OPTIONS: readonly SustainabilityWeightPriorityOption[] = [
+  {
+    value: 'comfort_first',
+    translationKey: 'profile.sustainability.weightPriority.comfort_first',
+    defaultLabel: '🛋️ Comfort-first (no weight limits)',
+    emoji: '🛋️',
+  },
+  {
+    value: 'balanced',
+    translationKey: 'profile.sustainability.weightPriority.balanced',
+    defaultLabel: '⚖️ Balanced: mindful weight & comfort',
+    emoji: '⚖️',
+  },
+  {
+    value: 'lightweight',
+    translationKey: 'profile.sustainability.weightPriority.lightweight',
+    defaultLabel: '🎒 Lightweight: as light as possible',
+    emoji: '🎒',
+  },
+  {
+    value: 'ultralight',
+    translationKey: 'profile.sustainability.weightPriority.ultralight',
+    defaultLabel: '🪶 Ultralight mission: every gram counts',
+    emoji: '🪶',
+  },
+];
+
+const isSustainabilityWeightPriorityValue = (
+  value: unknown
+): value is SustainabilityWeightPriority =>
+  typeof value === 'string' &&
+  (SUSTAINABILITY_WEIGHT_PRIORITY_VALUES as readonly string[]).includes(value);
 
 const ACCOMMODATION_TYPE_OPTIONS: readonly AccommodationTypeOption[] = [
   {
@@ -981,6 +1033,12 @@ const ProfilePage = () => {
   const [sustainabilityFocus, setSustainabilityFocus] = useState<string[]>([]);
   const [originalSustainabilityFocus, setOriginalSustainabilityFocus] = useState<string[]>([]);
   const [sustainabilityFocusToAdd, setSustainabilityFocusToAdd] = useState('');
+  const [sustainabilityWeightPriority, setSustainabilityWeightPriority] =
+    useState<SustainabilityWeightPriority | null>(null);
+  const [
+    originalSustainabilityWeightPriority,
+    setOriginalSustainabilityWeightPriority,
+  ] = useState<SustainabilityWeightPriority | null>(null);
   const [isEditingSustainability, setIsEditingSustainability] = useState(false);
   const [savingSustainability, setSavingSustainability] = useState(false);
   const [sustainabilitySaveError, setSustainabilitySaveError] = useState<string | null>(null);
@@ -1107,6 +1165,17 @@ const ProfilePage = () => {
       setSustainabilityFocusToAdd('');
     }
   }, [profile?.sustainability_focus, isEditingSustainability]);
+
+  useEffect(() => {
+    const rawPriority = profile?.sustainability_weight_priority;
+    const normalizedPriority = isSustainabilityWeightPriorityValue(rawPriority) ? rawPriority : null;
+
+    setOriginalSustainabilityWeightPriority(normalizedPriority);
+
+    if (!isEditingSustainability) {
+      setSustainabilityWeightPriority(normalizedPriority);
+    }
+  }, [profile?.sustainability_weight_priority, isEditingSustainability]);
 
   useEffect(() => {
     const rawFrequency = profile?.travel_frequency_per_year;
@@ -1639,6 +1708,20 @@ const ProfilePage = () => {
     [t]
   );
 
+  const sustainabilityWeightPriorityOptions = useMemo(
+    () =>
+      SUSTAINABILITY_WEIGHT_PRIORITY_OPTIONS.map((option) => {
+        const localized = t(option.translationKey, { defaultValue: option.defaultLabel }).trim();
+        const withoutEmoji = localized.split(option.emoji).join('').trim() || localized;
+        const label = option.emoji ? `${option.emoji} ${withoutEmoji}`.trim() : withoutEmoji;
+        return {
+          value: option.value,
+          label,
+        };
+      }),
+    [t]
+  );
+
   const accommodationTypeLabelByValue = useMemo(() => {
     const map = new Map<string, string>();
     accommodationTypeOptions.forEach((option) => {
@@ -1695,6 +1778,23 @@ const ProfilePage = () => {
     return map;
   }, [sustainabilityFocusOptions]);
 
+  const sustainabilityWeightPriorityLabelByValue = useMemo(() => {
+    const map = new Map<SustainabilityWeightPriority, string>();
+    sustainabilityWeightPriorityOptions.forEach((option) => {
+      map.set(option.value, option.label);
+    });
+    return map;
+  }, [sustainabilityWeightPriorityOptions]);
+
+  const sustainabilityWeightPriorityProfileLabel = useMemo(() => {
+    const value = profile?.sustainability_weight_priority;
+    if (!isSustainabilityWeightPriorityValue(value)) {
+      return null;
+    }
+
+    return sustainabilityWeightPriorityLabelByValue.get(value) ?? null;
+  }, [profile?.sustainability_weight_priority, sustainabilityWeightPriorityLabelByValue]);
+
   const availableAccommodationTypes = useMemo(
     () => accommodationTypeOptions.filter((option) => !accommodationTypes.includes(option.value)),
     [accommodationTypeOptions, accommodationTypes]
@@ -1724,6 +1824,7 @@ const ProfilePage = () => {
   const trimmedLastName = coreLastName.trim();
   const normalizedSelectedCountry = selectedCountry?.name ?? null;
 
+  const normalizedSustainabilityWeightPriority = sustainabilityWeightPriority;
   const normalizedTravelFrequency = travelFrequency;
   const normalizedTravelDuration = travelDuration;
   const trimmedTravelCountriesVisited = travelCountriesVisited.trim();
@@ -1766,12 +1867,17 @@ const ProfilePage = () => {
   const isActivitiesCulturalDirty = !activitySelectionsEqual(activityCultural, originalActivityCultural);
   const isActivitiesDirty = isActivitiesSportsDirty || isActivitiesAdventureDirty || isActivitiesCulturalDirty;
   const isSustainabilityFocusDirty = !activitySelectionsEqual(sustainabilityFocus, originalSustainabilityFocus);
-  const isSustainabilityDirty = isSustainabilityFocusDirty;
+  const isSustainabilityWeightPriorityDirty =
+    normalizedSustainabilityWeightPriority !== originalSustainabilityWeightPriority;
+  const isSustainabilityDirty = isSustainabilityFocusDirty || isSustainabilityWeightPriorityDirty;
   const travelFrequencyDisplayLabel = normalizedTravelFrequency
     ? travelFrequencyLabelByValue.get(normalizedTravelFrequency) ?? null
     : null;
   const travelDurationDisplayLabel = normalizedTravelDuration
     ? travelDurationLabelByValue.get(normalizedTravelDuration) ?? null
+    : null;
+  const originalSustainabilityWeightPriorityDisplayLabel = originalSustainabilityWeightPriority
+    ? sustainabilityWeightPriorityLabelByValue.get(originalSustainabilityWeightPriority) ?? null
     : null;
   const travelRegionsDisplayLabels = useMemo(
     () =>
@@ -2081,7 +2187,11 @@ const ProfilePage = () => {
             label: t('profile.fields.sustainabilityFocus'),
             value: profile?.sustainability_focus,
           },
-          { label: t('profile.fields.sustainabilityWeight'), value: profile?.sustainability_weight_priority },
+          {
+            id: 'sustainability_weight_priority',
+            label: t('profile.fields.sustainabilityWeight'),
+            value: profile?.sustainability_weight_priority,
+          },
         ],
       },
       {
@@ -2806,6 +2916,7 @@ const handleRemoveActivityCultural = (value: string) => {
     setSustainabilitySaveError(null);
     setSustainabilityFocus(originalSustainabilityFocus);
     setSustainabilityFocusToAdd('');
+    setSustainabilityWeightPriority(originalSustainabilityWeightPriority);
   };
 
   const handleCancelEditingSustainability = () => {
@@ -2814,6 +2925,7 @@ const handleRemoveActivityCultural = (value: string) => {
     setSustainabilitySaveError(null);
     setSustainabilityFocus(originalSustainabilityFocus);
     setSustainabilityFocusToAdd('');
+    setSustainabilityWeightPriority(originalSustainabilityWeightPriority);
   };
 
   const handleSaveAccommodation = async () => {
@@ -2984,10 +3096,15 @@ const handleRemoveActivityCultural = (value: string) => {
       setSustainabilitySaveError(null);
 
       const normalizedFocus = normalizeSustainabilityFocus(sustainabilityFocus);
+      const normalizedWeightPriority = normalizedSustainabilityWeightPriority;
       const payload: Partial<Profile> = {};
 
       if (isSustainabilityFocusDirty) {
         payload.sustainability_focus = normalizedFocus.length > 0 ? normalizedFocus : null;
+      }
+
+      if (isSustainabilityWeightPriorityDirty) {
+        payload.sustainability_weight_priority = normalizedWeightPriority ?? null;
       }
 
       if (Object.keys(payload).length === 0) {
@@ -3009,6 +3126,8 @@ const handleRemoveActivityCultural = (value: string) => {
       setOriginalSustainabilityFocus(normalizedFocus);
       setSustainabilityFocus(normalizedFocus);
       setSustainabilityFocusToAdd('');
+      setOriginalSustainabilityWeightPriority(normalizedWeightPriority ?? null);
+      setSustainabilityWeightPriority(normalizedWeightPriority ?? null);
     } catch (saveError) {
       console.error('Failed to save sustainability preferences', saveError);
       setSustainabilitySaveError(
@@ -4646,6 +4765,37 @@ const handleRemoveActivityCultural = (value: string) => {
                                   ))}
                                 </div>
                               )
+                        : section.id === 'sustainability' && field.id === 'sustainability_weight_priority'
+                        ? isEditingSustainability
+                          ? (
+                              <select
+                                value={sustainabilityWeightPriority ?? ''}
+                                onChange={(event) => {
+                                  const nextValue = event.target.value;
+                                  setSustainabilityWeightPriority(
+                                    isSustainabilityWeightPriorityValue(nextValue) ? nextValue : null
+                                  );
+                                  setSustainabilitySaved(false);
+                                  setSustainabilitySaveError(null);
+                                }}
+                                className="w-72 max-w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                disabled={savingSustainability}
+                              >
+                                <option value="">
+                                  {t('profile.actions.selectSustainabilityWeightPriority', {
+                                    defaultValue: 'Choose your pack weight priority',
+                                  })}
+                                </option>
+                                {sustainabilityWeightPriorityOptions.map((option) => (
+                                  <option key={option.value} value={option.value}>
+                                    {option.label}
+                                  </option>
+                                ))}
+                              </select>
+                            )
+                          : originalSustainabilityWeightPriorityDisplayLabel ??
+                            sustainabilityWeightPriorityProfileLabel ??
+                            t('profile.fallback.notSet')
                         : (
                           formatValue(field.value)
                         )}
