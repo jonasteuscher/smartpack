@@ -79,7 +79,7 @@ interface AccommodationWorkspaceOption {
   emoji: string;
 }
 
-interface ActivitySportsOption {
+interface ActivityOption {
   value: string;
   translationKey: string;
   defaultLabel: string;
@@ -300,7 +300,7 @@ const ACCOMMODATION_WORKSPACE_OPTIONS: readonly AccommodationWorkspaceOption[] =
   },
 ];
 
-const ACTIVITY_SPORTS_OPTIONS: readonly ActivitySportsOption[] = [
+const ACTIVITY_SPORTS_OPTIONS: readonly ActivityOption[] = [
   {
     value: 'hiking',
     translationKey: 'profile.activities.sports.hiking',
@@ -402,6 +402,93 @@ const ACTIVITY_SPORTS_OPTIONS: readonly ActivitySportsOption[] = [
     translationKey: 'profile.activities.sports.outdoor_fitness',
     defaultLabel: '💪 Outdoor fitness',
     emoji: '💪',
+  },
+];
+
+const ACTIVITY_ADVENTURE_OPTIONS: readonly ActivityOption[] = [
+  {
+    value: 'skydiving',
+    translationKey: 'profile.activities.adventure.skydiving',
+    defaultLabel: '🪂 Skydiving',
+    emoji: '🪂',
+  },
+  {
+    value: 'basejump',
+    translationKey: 'profile.activities.adventure.basejump',
+    defaultLabel: '🪂 BASE jump',
+    emoji: '🪂',
+  },
+  {
+    value: 'paragliding',
+    translationKey: 'profile.activities.adventure.paragliding',
+    defaultLabel: '🏔️ Paragliding',
+    emoji: '🏔️',
+  },
+  {
+    value: 'bungee',
+    translationKey: 'profile.activities.adventure.bungee',
+    defaultLabel: '🪢 Bungee jump',
+    emoji: '🪢',
+  },
+  {
+    value: 'canyoning',
+    translationKey: 'profile.activities.adventure.canyoning',
+    defaultLabel: '🌊 Canyoning',
+    emoji: '🌊',
+  },
+  {
+    value: 'whitewater_rafting',
+    translationKey: 'profile.activities.adventure.whitewater_rafting',
+    defaultLabel: '🚣 Whitewater rafting',
+    emoji: '🚣',
+  },
+  {
+    value: 'zipline',
+    translationKey: 'profile.activities.adventure.zipline',
+    defaultLabel: '⛓️ Zipline',
+    emoji: '⛓️',
+  },
+  {
+    value: 'caving',
+    translationKey: 'profile.activities.adventure.caving',
+    defaultLabel: '🕳️ Caving & spelunking',
+    emoji: '🕳️',
+  },
+  {
+    value: 'offroad_4x4',
+    translationKey: 'profile.activities.adventure.offroad_4x4',
+    defaultLabel: '🚙 Off-road 4x4',
+    emoji: '🚙',
+  },
+  {
+    value: 'glacier_ice',
+    translationKey: 'profile.activities.adventure.glacier_ice',
+    defaultLabel: '🧊 Glacier & ice tours',
+    emoji: '🧊',
+  },
+  {
+    value: 'volcano_desert',
+    translationKey: 'profile.activities.adventure.volcano_desert',
+    defaultLabel: '🌋 Volcano & desert expeditions',
+    emoji: '🌋',
+  },
+  {
+    value: 'hot_air_balloon',
+    translationKey: 'profile.activities.adventure.hot_air_balloon',
+    defaultLabel: '🎈 Hot air balloon rides',
+    emoji: '🎈',
+  },
+  {
+    value: 'helicopter',
+    translationKey: 'profile.activities.adventure.helicopter',
+    defaultLabel: '🚁 Helicopter flights',
+    emoji: '🚁',
+  },
+  {
+    value: 'shark_cage_diving',
+    translationKey: 'profile.activities.adventure.shark_cage_diving',
+    defaultLabel: '🦈 Shark cage diving',
+    emoji: '🦈',
   },
 ];
 
@@ -532,6 +619,19 @@ const normalizeActivitySports = (sports: string[]): string[] => {
   return ACTIVITY_SPORTS_OPTIONS.map((option) => option.value).filter((value) => chosen.has(value));
 };
 
+const normalizeActivityAdventures = (adventures: string[]): string[] => {
+  const allowedValues = new Map(
+    ACTIVITY_ADVENTURE_OPTIONS.map((option, index) => [option.value, index])
+  );
+  const chosen = new Set(
+    adventures
+      .map((activity) => (typeof activity === 'string' ? activity.trim().toLowerCase() : ''))
+      .filter((activity) => activity.length > 0 && allowedValues.has(activity))
+  );
+
+  return ACTIVITY_ADVENTURE_OPTIONS.map((option) => option.value).filter((value) => chosen.has(value));
+};
+
 const languagesEqual = (a: string[], b: string[]): boolean => {
   if (a.length !== b.length) {
     return false;
@@ -588,7 +688,7 @@ const luggageTypesEqual = (a: string[], b: string[]): boolean => {
   return true;
 };
 
-const activitySportsEqual = (a: string[], b: string[]): boolean => {
+const activitySelectionsEqual = (a: string[], b: string[]): boolean => {
   if (a.length !== b.length) {
     return false;
   }
@@ -696,6 +796,9 @@ const ProfilePage = () => {
   const [activitySports, setActivitySports] = useState<string[]>([]);
   const [originalActivitySports, setOriginalActivitySports] = useState<string[]>([]);
   const [activitySportToAdd, setActivitySportToAdd] = useState('');
+  const [activityAdventure, setActivityAdventure] = useState<string[]>([]);
+  const [originalActivityAdventure, setOriginalActivityAdventure] = useState<string[]>([]);
+  const [activityAdventureToAdd, setActivityAdventureToAdd] = useState('');
   const [isEditingActivities, setIsEditingActivities] = useState(false);
   const [savingActivities, setSavingActivities] = useState(false);
   const [activitiesSaveError, setActivitiesSaveError] = useState<string | null>(null);
@@ -779,6 +882,19 @@ const ProfilePage = () => {
       setActivitySportToAdd('');
     }
   }, [profile?.activity_sports_outdoor, isEditingActivities]);
+
+  useEffect(() => {
+    const normalized = Array.isArray(profile?.activity_adventure_activities)
+      ? normalizeActivityAdventures(profile.activity_adventure_activities as string[])
+      : [];
+
+    setOriginalActivityAdventure(normalized);
+
+    if (!isEditingActivities) {
+      setActivityAdventure(normalized);
+      setActivityAdventureToAdd('');
+    }
+  }, [profile?.activity_adventure_activities, isEditingActivities]);
 
   useEffect(() => {
     const rawFrequency = profile?.travel_frequency_per_year;
@@ -1269,6 +1385,20 @@ const ProfilePage = () => {
     [t]
   );
 
+  const activityAdventureOptions = useMemo(
+    () =>
+      ACTIVITY_ADVENTURE_OPTIONS.map((option) => {
+        const localized = t(option.translationKey, { defaultValue: option.defaultLabel }).trim();
+        const withoutEmoji = localized.split(option.emoji).join('').trim() || localized;
+        const label = option.emoji ? `${option.emoji} ${withoutEmoji}`.trim() : withoutEmoji;
+        return {
+          value: option.value,
+          label,
+        };
+      }),
+    [t]
+  );
+
   const accommodationTypeLabelByValue = useMemo(() => {
     const map = new Map<string, string>();
     accommodationTypeOptions.forEach((option) => {
@@ -1301,6 +1431,14 @@ const ProfilePage = () => {
     return map;
   }, [activitySportsOptions]);
 
+  const activityAdventureLabelByValue = useMemo(() => {
+    const map = new Map<string, string>();
+    activityAdventureOptions.forEach((option) => {
+      map.set(option.value, option.label);
+    });
+    return map;
+  }, [activityAdventureOptions]);
+
   const availableAccommodationTypes = useMemo(
     () => accommodationTypeOptions.filter((option) => !accommodationTypes.includes(option.value)),
     [accommodationTypeOptions, accommodationTypes]
@@ -1309,6 +1447,11 @@ const ProfilePage = () => {
   const availableActivitySportsOptions = useMemo(
     () => activitySportsOptions.filter((option) => !activitySports.includes(option.value)),
     [activitySportsOptions, activitySports]
+  );
+
+  const availableActivityAdventureOptions = useMemo(
+    () => activityAdventureOptions.filter((option) => !activityAdventure.includes(option.value)),
+    [activityAdventureOptions, activityAdventure]
   );
 
   const trimmedFirstName = coreFirstName.trim();
@@ -1352,8 +1495,9 @@ const ProfilePage = () => {
     accommodationWorkspaceNeeded !== originalAccommodationWorkspaceNeeded;
   const isAccommodationDirty =
     isAccommodationTypesDirty || isAccommodationLaundryExpectationDirty || isAccommodationWorkspaceDirty;
-  const isActivitiesSportsDirty = !activitySportsEqual(activitySports, originalActivitySports);
-  const isActivitiesDirty = isActivitiesSportsDirty;
+  const isActivitiesSportsDirty = !activitySelectionsEqual(activitySports, originalActivitySports);
+  const isActivitiesAdventureDirty = !activitySelectionsEqual(activityAdventure, originalActivityAdventure);
+  const isActivitiesDirty = isActivitiesSportsDirty || isActivitiesAdventureDirty;
   const travelFrequencyDisplayLabel = normalizedTravelFrequency
     ? travelFrequencyLabelByValue.get(normalizedTravelFrequency) ?? null
     : null;
@@ -1406,6 +1550,16 @@ const ProfilePage = () => {
     () =>
       originalActivitySports.map((value) => activitySportsLabelByValue.get(value) ?? value),
     [originalActivitySports, activitySportsLabelByValue]
+  );
+  const activityAdventureDisplayLabels = useMemo(
+    () =>
+      activityAdventure.map((value) => activityAdventureLabelByValue.get(value) ?? value),
+    [activityAdventure, activityAdventureLabelByValue]
+  );
+  const originalActivityAdventureDisplayLabels = useMemo(
+    () =>
+      originalActivityAdventure.map((value) => activityAdventureLabelByValue.get(value) ?? value),
+    [originalActivityAdventure, activityAdventureLabelByValue]
   );
   const travelSeasonDisplayLabel = travelSeason
     ? travelSeasonLabelByValue.get(travelSeason) ?? travelSeason
@@ -1617,7 +1771,11 @@ const ProfilePage = () => {
             label: t('profile.fields.activitiesSports'),
             value: profile?.activity_sports_outdoor,
           },
-          { label: t('profile.fields.activitiesAdventure'), value: profile?.activity_adventure_activities },
+          {
+            id: 'activity_adventure_activities',
+            label: t('profile.fields.activitiesAdventure'),
+            value: profile?.activity_adventure_activities,
+          },
           { label: t('profile.fields.activitiesCultural'), value: profile?.activity_cultural_activities },
         ],
       },
@@ -1826,6 +1984,30 @@ const ProfilePage = () => {
   const handleRemoveActivitySport = (value: string) => {
     const normalized = value.toLowerCase();
     setActivitySports((prev) => normalizeActivitySports(prev.filter((item) => item !== normalized)));
+    setActivitiesSaved(false);
+    setActivitiesSaveError(null);
+  };
+
+  const handleAddActivityAdventure = () => {
+    if (!activityAdventureToAdd) {
+      return;
+    }
+
+    const normalized = activityAdventureToAdd.toLowerCase();
+    if (activityAdventure.includes(normalized)) {
+      setActivityAdventureToAdd('');
+      return;
+    }
+
+    setActivityAdventure((prev) => normalizeActivityAdventures([...prev, normalized]));
+    setActivityAdventureToAdd('');
+    setActivitiesSaved(false);
+    setActivitiesSaveError(null);
+  };
+
+  const handleRemoveActivityAdventure = (value: string) => {
+    const normalized = value.toLowerCase();
+    setActivityAdventure((prev) => normalizeActivityAdventures(prev.filter((item) => item !== normalized)));
     setActivitiesSaved(false);
     setActivitiesSaveError(null);
   };
@@ -2255,6 +2437,8 @@ const ProfilePage = () => {
     setActivitiesSaveError(null);
     setActivitySports(originalActivitySports);
     setActivitySportToAdd('');
+    setActivityAdventure(originalActivityAdventure);
+    setActivityAdventureToAdd('');
   };
 
   const handleCancelEditingActivities = () => {
@@ -2263,6 +2447,8 @@ const ProfilePage = () => {
     setActivitiesSaveError(null);
     setActivitySports(originalActivitySports);
     setActivitySportToAdd('');
+    setActivityAdventure(originalActivityAdventure);
+    setActivityAdventureToAdd('');
   };
 
   const handleSaveAccommodation = async () => {
@@ -2358,10 +2544,15 @@ const ProfilePage = () => {
       setActivitiesSaveError(null);
 
       const normalizedSports = normalizeActivitySports(activitySports);
+      const normalizedAdventure = normalizeActivityAdventures(activityAdventure);
       const payload: Partial<Profile> = {};
 
       if (isActivitiesSportsDirty) {
         payload.activity_sports_outdoor = normalizedSports.length > 0 ? normalizedSports : null;
+      }
+
+      if (isActivitiesAdventureDirty) {
+        payload.activity_adventure_activities = normalizedAdventure.length > 0 ? normalizedAdventure : null;
       }
 
       if (Object.keys(payload).length === 0) {
@@ -2383,6 +2574,9 @@ const ProfilePage = () => {
       setOriginalActivitySports(normalizedSports);
       setActivitySports(normalizedSports);
       setActivitySportToAdd('');
+      setOriginalActivityAdventure(normalizedAdventure);
+      setActivityAdventure(normalizedAdventure);
+      setActivityAdventureToAdd('');
     } catch (saveError) {
       console.error('Failed to save activity preferences', saveError);
       setActivitiesSaveError(
@@ -3728,6 +3922,87 @@ const ProfilePage = () => {
                                       className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
                                     >
                                       {originalActivitySportsDisplayLabels[index]}
+                                    </span>
+                                  ))}
+                                </div>
+                              )
+                        : section.id === 'activities' && field.id === 'activity_adventure_activities'
+                        ? isEditingActivities
+                          ? (
+                              <div className="flex flex-col gap-3">
+                                <div className="flex flex-wrap gap-2">
+                                  {activityAdventure.length === 0 ? (
+                                    <span className="text-xs text-[var(--text-secondary)]">
+                                      {t('profile.fallback.notSet')}
+                                    </span>
+                                  ) : (
+                                    activityAdventure.map((activity, index) => (
+                                      <span
+                                        key={activity}
+                                        className="flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                      >
+                                        {activityAdventureDisplayLabels[index]}
+                                        <button
+                                          type="button"
+                                          onClick={() => handleRemoveActivityAdventure(activity)}
+                                          className="text-slate-400 transition hover:text-red-500"
+                                          aria-label={t('profile.actions.removeActivityAdventure', {
+                                            defaultValue: 'Remove activity',
+                                          })}
+                                          disabled={savingActivities}
+                                        >
+                                          ×
+                                        </button>
+                                      </span>
+                                    ))
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <select
+                                    value={activityAdventureToAdd}
+                                    onChange={(event) => setActivityAdventureToAdd(event.target.value)}
+                                    className="w-72 max-w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                    disabled={savingActivities}
+                                  >
+                                    <option value="">
+                                      {t('profile.actions.selectAdventureActivity', {
+                                        defaultValue: 'Select adventure',
+                                      })}
+                                    </option>
+                                    {availableActivityAdventureOptions.map((option) => (
+                                      <option key={option.value} value={option.value}>
+                                        {option.label}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <button
+                                    type="button"
+                                    onClick={handleAddActivityAdventure}
+                                    className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-secondary text-lg font-semibold text-brand-secondary transition hover:bg-brand-secondary hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                    disabled={!activityAdventureToAdd || savingActivities}
+                                    aria-label={t('profile.actions.addAdventureActivity', {
+                                      defaultValue: 'Add adventure',
+                                    })}
+                                  >
+                                    +
+                                  </button>
+                                </div>
+                              </div>
+                            )
+                          : originalActivityAdventure.length === 0
+                            ? (
+                                <span className="text-xs text-[var(--text-secondary)]">
+                                  {t('profile.fallback.notSet')}
+                                </span>
+                              )
+                            : (
+                                <div className="flex flex-wrap gap-2">
+                                  {originalActivityAdventure.map((activity, index) => (
+                                    <span
+                                      key={activity}
+                                      className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                    >
+                                      {originalActivityAdventureDisplayLabels[index]}
                                     </span>
                                   ))}
                                 </div>

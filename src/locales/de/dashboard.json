@@ -74,7 +74,10 @@
       "selectWorkspacePreference": "Arbeitsplatzbedarf auswählen",
       "selectActivitySport": "Sportaktivität auswählen",
       "addActivitySport": "Sportaktivität hinzufügen",
-      "removeActivitySport": "Sportaktivität entfernen"
+      "removeActivitySport": "Sportaktivität entfernen",
+      "selectAdventureActivity": "Abenteuer auswählen",
+      "addAdventureActivity": "Abenteuer hinzufügen",
+      "removeAdventureActivity": "Abenteuer entfernen"
     },
     "sections": {
       "details": "Profildetails",
@@ -226,6 +229,22 @@
         "diving_snorkeling": "🤿 Tauchen / Schnorcheln",
         "gym": "🏋️ Fitnesscenter",
         "outdoor_fitness": "💪 Fitness draussen"
+      },
+      "adventure": {
+        "skydiving": "🪂 Fallschirmspringen",
+        "basejump": "🪂 BASE Jump",
+        "paragliding": "🏔️ Paragliding",
+        "bungee": "🪢 Bungee Jump",
+        "canyoning": "🌊 Canyoning",
+        "whitewater_rafting": "🚣 Wildwasser-Rafting",
+        "zipline": "⛓️ Zipline",
+        "caving": "🕳️ Speläologie / Höhle",
+        "offroad_4x4": "🚙 Offroad / 4x4",
+        "glacier_ice": "🧊 Gletscher- / Eistour",
+        "volcano_desert": "🌋 Vulkan- / Wüstenexpedition",
+        "hot_air_balloon": "🎈 Heissluftballon",
+        "helicopter": "🚁 Helikopterflug",
+        "shark_cage_diving": "🦈 Haikäfig / Spezialtauchen"
       }
     },
     "luggageTypes": {

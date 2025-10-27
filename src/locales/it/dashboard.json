@@ -74,7 +74,10 @@
       "selectWorkspacePreference": "Seleziona preferenza workspace",
       "selectActivitySport": "Seleziona attività",
       "addActivitySport": "Aggiungi attività",
-      "removeActivitySport": "Rimuovi attività"
+      "removeActivitySport": "Rimuovi attività",
+      "selectAdventureActivity": "Seleziona avventura",
+      "addAdventureActivity": "Aggiungi avventura",
+      "removeAdventureActivity": "Rimuovi avventura"
     },
     "sections": {
       "details": "Dettagli profilo",
@@ -226,6 +229,22 @@
         "diving_snorkeling": "🤿 Immersioni / snorkeling",
         "gym": "🏋️ Palestra",
         "outdoor_fitness": "💪 Fitness all'aperto"
+      },
+      "adventure": {
+        "skydiving": "🪂 Paracadutismo",
+        "basejump": "🪂 BASE jump",
+        "paragliding": "🏔️ Parapendio",
+        "bungee": "🪢 Bungee jumping",
+        "canyoning": "🌊 Canyoning",
+        "whitewater_rafting": "🚣 Rafting in acque bianche",
+        "zipline": "⛓️ Zipline",
+        "caving": "🕳️ Speleologia / grotte",
+        "offroad_4x4": "🚙 Fuoristrada / 4x4",
+        "glacier_ice": "🧊 Tour su ghiacciaio / ghiaccio",
+        "volcano_desert": "🌋 Spedizione vulcano / deserto",
+        "hot_air_balloon": "🎈 Mongolfiera",
+        "helicopter": "🚁 Volo in elicottero",
+        "shark_cage_diving": "🦈 Immersioni in gabbia con squali"
       }
     },
     "luggageTypes": {
