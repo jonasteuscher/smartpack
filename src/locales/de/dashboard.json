@@ -70,7 +70,8 @@
       "selectLuggageType": "Gepäcktyp auswählen",
       "addLuggageType": "Gepäcktyp hinzufügen",
       "removeLuggageType": "Gepäcktyp entfernen",
-      "selectLaundryAccessExpectation": "Waschmöglichkeit auswählen"
+      "selectLaundryAccessExpectation": "Waschmöglichkeit auswählen",
+      "selectWorkspacePreference": "Arbeitsplatzbedarf auswählen"
     },
     "sections": {
       "details": "Profildetails",
@@ -196,6 +197,10 @@
         "sometimes": "Gelegentlich vorhanden",
         "usually": "Meistens vorhanden",
         "always": "Unbedingt erforderlich"
+      },
+      "workspace": {
+        "yes": "🧑‍💻 Arbeitsplatz unbedingt erforderlich",
+        "no": "🛋️ Kein Arbeitsplatz nötig"
       }
     },
     "luggageTypes": {

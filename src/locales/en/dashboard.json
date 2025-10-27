@@ -70,7 +70,8 @@
       "selectLuggageType": "Select luggage type",
       "addLuggageType": "Add luggage type",
       "removeLuggageType": "Remove luggage type",
-      "selectLaundryAccessExpectation": "Select laundry access expectation"
+      "selectLaundryAccessExpectation": "Select laundry access expectation",
+      "selectWorkspacePreference": "Select workspace preference"
     },
     "sections": {
       "details": "Profile details",
@@ -196,6 +197,10 @@
         "sometimes": "Occasionally available",
         "usually": "Usually available",
         "always": "Absolutely required"
+      },
+      "workspace": {
+        "yes": "🧑‍💻 Dedicated workspace required",
+        "no": "🛋️ No workspace needed"
       }
     },
     "luggageTypes": {

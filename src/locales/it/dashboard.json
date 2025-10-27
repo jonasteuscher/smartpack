@@ -70,7 +70,8 @@
       "selectLuggageType": "Seleziona il tipo di bagaglio",
       "addLuggageType": "Aggiungi tipo di bagaglio",
       "removeLuggageType": "Rimuovi tipo di bagaglio",
-      "selectLaundryAccessExpectation": "Seleziona disponibilita lavanderia"
+      "selectLaundryAccessExpectation": "Seleziona disponibilita lavanderia",
+      "selectWorkspacePreference": "Seleziona preferenza workspace"
     },
     "sections": {
       "details": "Dettagli profilo",
@@ -196,6 +197,10 @@
         "sometimes": "Occasionalmente disponibile",
         "usually": "Generalmente disponibile",
         "always": "Assolutamente indispensabile"
+      },
+      "workspace": {
+        "yes": "🧑‍💻 Workspace indispensabile",
+        "no": "🛋️ Nessun workspace necessario"
       }
     },
     "luggageTypes": {

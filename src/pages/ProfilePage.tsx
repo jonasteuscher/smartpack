@@ -70,6 +70,15 @@ interface AccommodationLaundryOption {
   emoji: string;
 }
 
+type AccommodationWorkspacePreferenceValue = 'yes' | 'no';
+
+interface AccommodationWorkspaceOption {
+  value: AccommodationWorkspacePreferenceValue;
+  translationKey: string;
+  defaultLabel: string;
+  emoji: string;
+}
+
 interface DetailSectionField {
   label: string;
   value: unknown;
@@ -269,6 +278,21 @@ const ACCOMMODATION_LAUNDRY_OPTIONS: readonly AccommodationLaundryOption[] = [
   },
 ];
 
+const ACCOMMODATION_WORKSPACE_OPTIONS: readonly AccommodationWorkspaceOption[] = [
+  {
+    value: 'yes',
+    translationKey: 'profile.accommodation.workspace.yes',
+    defaultLabel: 'Dedicated workspace required',
+    emoji: '🧑‍💻',
+  },
+  {
+    value: 'no',
+    translationKey: 'profile.accommodation.workspace.no',
+    defaultLabel: 'No workspace needed',
+    emoji: '🛋️',
+  },
+];
+
 const isAccommodationLaundryAccessExpectationValue = (
   value: unknown
 ): value is AccommodationLaundryAccessExpectationValue =>
@@ -352,6 +376,35 @@ const normalizeAccommodationTypes = (types: string[]): string[] => {
   );
 
   return ACCOMMODATION_TYPE_OPTIONS.map((option) => option.value).filter((value) => chosen.has(value));
+};
+
+const normalizeAccommodationWorkspacePreference = (
+  value: unknown
+): AccommodationWorkspacePreferenceValue | null => {
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (['yes', 'true', '1'].includes(normalized)) {
+      return 'yes';
+    }
+    if (['no', 'false', '0'].includes(normalized)) {
+      return 'no';
+    }
+  }
+
+  if (typeof value === 'boolean') {
+    return value ? 'yes' : 'no';
+  }
+
+  if (typeof value === 'number') {
+    if (value === 1) {
+      return 'yes';
+    }
+    if (value === 0) {
+      return 'no';
+    }
+  }
+
+  return null;
 };
 
 const languagesEqual = (a: string[], b: string[]): boolean => {
@@ -457,6 +510,12 @@ const ProfilePage = () => {
     originalAccommodationLaundryExpectation,
     setOriginalAccommodationLaundryExpectation,
   ] = useState<AccommodationLaundryAccessExpectationValue | null>(null);
+  const [accommodationWorkspaceNeeded, setAccommodationWorkspaceNeeded] =
+    useState<AccommodationWorkspacePreferenceValue | null>(null);
+  const [
+    originalAccommodationWorkspaceNeeded,
+    setOriginalAccommodationWorkspaceNeeded,
+  ] = useState<AccommodationWorkspacePreferenceValue | null>(null);
 
   const [isEditingCore, setIsEditingCore] = useState(false);
   const [savingCore, setSavingCore] = useState(false);
@@ -551,6 +610,16 @@ const ProfilePage = () => {
       setAccommodationLaundryExpectation(normalized);
     }
   }, [profile?.accommodation_laundry_access_expectation, isEditingAccommodation]);
+
+  useEffect(() => {
+    const normalized = normalizeAccommodationWorkspacePreference(profile?.accommodation_workspace_needed);
+
+    setOriginalAccommodationWorkspaceNeeded(normalized);
+
+    if (!isEditingAccommodation) {
+      setAccommodationWorkspaceNeeded(normalized);
+    }
+  }, [profile?.accommodation_workspace_needed, isEditingAccommodation]);
 
   useEffect(() => {
     const rawFrequency = profile?.travel_frequency_per_year;
@@ -1013,6 +1082,20 @@ const ProfilePage = () => {
     [t]
   );
 
+  const accommodationWorkspaceOptions = useMemo(
+    () =>
+      ACCOMMODATION_WORKSPACE_OPTIONS.map((option) => {
+        const localized = t(option.translationKey, { defaultValue: option.defaultLabel }).trim();
+        const withoutEmoji = localized.split(option.emoji).join('').trim() || localized;
+        const label = option.emoji ? `${option.emoji} ${withoutEmoji}`.trim() : withoutEmoji;
+        return {
+          value: option.value,
+          label,
+        };
+      }),
+    [t]
+  );
+
   const accommodationTypeLabelByValue = useMemo(() => {
     const map = new Map<string, string>();
     accommodationTypeOptions.forEach((option) => {
@@ -1028,6 +1111,14 @@ const ProfilePage = () => {
     });
     return map;
   }, [accommodationLaundryOptions]);
+
+  const accommodationWorkspaceLabelByValue = useMemo(() => {
+    const map = new Map<AccommodationWorkspacePreferenceValue, string>();
+    accommodationWorkspaceOptions.forEach((option) => {
+      map.set(option.value, option.label);
+    });
+    return map;
+  }, [accommodationWorkspaceOptions]);
 
   const availableAccommodationTypes = useMemo(
     () => accommodationTypeOptions.filter((option) => !accommodationTypes.includes(option.value)),
@@ -1071,7 +1162,10 @@ const ProfilePage = () => {
   const isAccommodationTypesDirty = !accommodationTypesEqual(accommodationTypes, originalAccommodationTypes);
   const isAccommodationLaundryExpectationDirty =
     accommodationLaundryExpectation !== originalAccommodationLaundryExpectation;
-  const isAccommodationDirty = isAccommodationTypesDirty || isAccommodationLaundryExpectationDirty;
+  const isAccommodationWorkspaceDirty =
+    accommodationWorkspaceNeeded !== originalAccommodationWorkspaceNeeded;
+  const isAccommodationDirty =
+    isAccommodationTypesDirty || isAccommodationLaundryExpectationDirty || isAccommodationWorkspaceDirty;
   const travelFrequencyDisplayLabel = normalizedTravelFrequency
     ? travelFrequencyLabelByValue.get(normalizedTravelFrequency) ?? null
     : null;
@@ -1111,6 +1205,10 @@ const ProfilePage = () => {
       ? accommodationLaundryLabelByValue.get(originalAccommodationLaundryExpectation) ??
         originalAccommodationLaundryExpectation
       : null;
+  const originalAccommodationWorkspaceNeededDisplayLabel =
+    originalAccommodationWorkspaceNeeded === null
+      ? null
+      : accommodationWorkspaceLabelByValue.get(originalAccommodationWorkspaceNeeded) ?? null;
   const travelSeasonDisplayLabel = travelSeason
     ? travelSeasonLabelByValue.get(travelSeason) ?? travelSeason
     : null;
@@ -1912,6 +2010,7 @@ const ProfilePage = () => {
     setAccommodationTypes(originalAccommodationTypes);
     setAccommodationTypeToAdd('');
     setAccommodationLaundryExpectation(originalAccommodationLaundryExpectation);
+    setAccommodationWorkspaceNeeded(originalAccommodationWorkspaceNeeded);
   };
 
   const handleCancelEditingAccommodation = () => {
@@ -1921,6 +2020,7 @@ const ProfilePage = () => {
     setAccommodationTypes(originalAccommodationTypes);
     setAccommodationTypeToAdd('');
     setAccommodationLaundryExpectation(originalAccommodationLaundryExpectation);
+    setAccommodationWorkspaceNeeded(originalAccommodationWorkspaceNeeded);
   };
 
   const handleSaveAccommodation = async () => {
@@ -1944,6 +2044,7 @@ const ProfilePage = () => {
 
       const normalizedTypes = normalizeAccommodationTypes(accommodationTypes);
       const normalizedLaundryExpectation = accommodationLaundryExpectation ?? null;
+      const normalizedWorkspaceNeeded = accommodationWorkspaceNeeded ?? null;
       const payload: Partial<Profile> = {};
 
       if (isAccommodationTypesDirty) {
@@ -1952,6 +2053,10 @@ const ProfilePage = () => {
 
       if (isAccommodationLaundryExpectationDirty) {
         payload.accommodation_laundry_access_expectation = normalizedLaundryExpectation;
+      }
+
+      if (isAccommodationWorkspaceDirty) {
+        payload.accommodation_workspace_needed = normalizedWorkspaceNeeded;
       }
 
       if (Object.keys(payload).length === 0) {
@@ -1975,6 +2080,8 @@ const ProfilePage = () => {
       setAccommodationTypeToAdd('');
       setOriginalAccommodationLaundryExpectation(normalizedLaundryExpectation);
       setAccommodationLaundryExpectation(normalizedLaundryExpectation);
+      setOriginalAccommodationWorkspaceNeeded(normalizedWorkspaceNeeded);
+      setAccommodationWorkspaceNeeded(normalizedWorkspaceNeeded);
     } catch (saveError) {
       console.error('Failed to save accommodation preferences', saveError);
       setAccommodationSaveError(
@@ -3156,6 +3263,43 @@ const ProfilePage = () => {
                             )
                           : originalAccommodationLaundryExpectationDisplayLabel
                             ? originalAccommodationLaundryExpectationDisplayLabel
+                            : (
+                                <span className="text-xs text-[var(--text-secondary)]">
+                                  {t('profile.fallback.notSet')}
+                                </span>
+                              )
+                        : section.id === 'accommodation' && field.id === 'accommodation_workspace_needed'
+                        ? isEditingAccommodation
+                          ? (
+                              <select
+                                value={accommodationWorkspaceNeeded ?? ''}
+                                onChange={(event) => {
+                                  const nextValue = event.target.value;
+                                  let sanitized: AccommodationWorkspacePreferenceValue | null = null;
+                                  if (nextValue === 'yes' || nextValue === 'no') {
+                                    sanitized = nextValue as AccommodationWorkspacePreferenceValue;
+                                  }
+                                  setAccommodationWorkspaceNeeded(sanitized);
+                                  setAccommodationSaved(false);
+                                  setAccommodationSaveError(null);
+                                }}
+                                className="w-64 max-w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                disabled={savingAccommodation}
+                              >
+                                <option value="">
+                                  {t('profile.actions.selectWorkspacePreference', {
+                                    defaultValue: 'Select workspace preference',
+                                  })}
+                                </option>
+                                {accommodationWorkspaceOptions.map((option) => (
+                                  <option key={option.value} value={option.value}>
+                                    {option.label}
+                                  </option>
+                                ))}
+                              </select>
+                            )
+                          : originalAccommodationWorkspaceNeededDisplayLabel
+                            ? originalAccommodationWorkspaceNeededDisplayLabel
                             : (
                                 <span className="text-xs text-[var(--text-secondary)]">
                                   {t('profile.fallback.notSet')}

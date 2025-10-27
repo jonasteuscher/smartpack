@@ -70,7 +70,8 @@
       "selectLuggageType": "Choisir un type de bagage",
       "addLuggageType": "Ajouter un type de bagage",
       "removeLuggageType": "Supprimer le type de bagage",
-      "selectLaundryAccessExpectation": "Choisir la disponibilite de la buanderie"
+      "selectLaundryAccessExpectation": "Choisir la disponibilite de la buanderie",
+      "selectWorkspacePreference": "Choisir la preference d'espace de travail"
     },
     "sections": {
       "details": "Details du profil",
@@ -196,6 +197,10 @@
         "sometimes": "Disponible occasionnellement",
         "usually": "Generalement disponible",
         "always": "Indispensable"
+      },
+      "workspace": {
+        "yes": "🧑‍💻 Espace de travail indispensable",
+        "no": "🛋️ Pas d'espace de travail nécessaire"
       }
     },
     "luggageTypes": {
