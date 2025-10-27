@@ -71,7 +71,10 @@
       "addLuggageType": "Add luggage type",
       "removeLuggageType": "Remove luggage type",
       "selectLaundryAccessExpectation": "Select laundry access expectation",
-      "selectWorkspacePreference": "Select workspace preference"
+      "selectWorkspacePreference": "Select workspace preference",
+      "selectActivitySport": "Select activity",
+      "addActivitySport": "Add activity",
+      "removeActivitySport": "Remove activity"
     },
     "sections": {
       "details": "Profile details",
@@ -139,7 +142,8 @@
       "countrySelectRequired": "Please choose your home country.",
       "mustBeSignedIn": "Sign in to update your profile.",
       "travelSaveFailed": "We couldn’t save your travel preferences. Try again.",
-      "transportSaveFailed": "We couldn’t save your transport preferences. Try again."
+      "transportSaveFailed": "We couldn’t save your transport preferences. Try again.",
+      "activitiesSaveFailed": "We couldn’t save your activities. Try again."
     },
     "travelFrequency": {
       "rarely": "Rarely (1-2 trips)",
@@ -201,6 +205,27 @@
       "workspace": {
         "yes": "🧑‍💻 Dedicated workspace required",
         "no": "🛋️ No workspace needed"
+      }
+    },
+    "activities": {
+      "sports": {
+        "hiking": "🥾 Hiking",
+        "trekking": "⛰️ Trekking & mountain tours",
+        "trailrunning": "🏃 Trail running",
+        "climbing_bouldering": "🧗 Climbing & bouldering",
+        "via_ferrata": "🧗‍♂️ Via ferrata",
+        "mtb": "🚵 Mountain biking",
+        "road_gravel": "🚴 Road & gravel cycling",
+        "running": "🏃‍♀️ Running & jogging",
+        "snowsport": "🎿 Ski & snowboard",
+        "xc_skiing": "⛷️ Cross-country skiing",
+        "snowshoeing": "🥾 Snowshoeing",
+        "paddle_sports": "🛶 SUP & kayaking",
+        "surf_kite": "🏄 Surfing & kitesurfing",
+        "swimming": "🏊 Swimming",
+        "diving_snorkeling": "🤿 Diving & snorkeling",
+        "gym": "🏋️ Gym workouts",
+        "outdoor_fitness": "💪 Outdoor fitness"
       }
     },
     "luggageTypes": {

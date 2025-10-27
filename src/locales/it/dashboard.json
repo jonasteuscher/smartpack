@@ -71,7 +71,10 @@
       "addLuggageType": "Aggiungi tipo di bagaglio",
       "removeLuggageType": "Rimuovi tipo di bagaglio",
       "selectLaundryAccessExpectation": "Seleziona disponibilita lavanderia",
-      "selectWorkspacePreference": "Seleziona preferenza workspace"
+      "selectWorkspacePreference": "Seleziona preferenza workspace",
+      "selectActivitySport": "Seleziona attività",
+      "addActivitySport": "Aggiungi attività",
+      "removeActivitySport": "Rimuovi attività"
     },
     "sections": {
       "details": "Dettagli profilo",
@@ -139,7 +142,8 @@
       "countrySelectRequired": "Seleziona il tuo paese di residenza.",
       "mustBeSignedIn": "Accedi per aggiornare il profilo.",
       "travelSaveFailed": "Impossibile salvare le preferenze di viaggio. Riprova.",
-      "transportSaveFailed": "Impossibile salvare i mezzi di trasporto. Riprova."
+      "transportSaveFailed": "Impossibile salvare i mezzi di trasporto. Riprova.",
+      "activitiesSaveFailed": "Impossibile salvare le attività. Riprova."
     },
     "travelFrequency": {
       "rarely": "Raramente (1-2 viaggi)",
@@ -201,6 +205,27 @@
       "workspace": {
         "yes": "🧑‍💻 Workspace indispensabile",
         "no": "🛋️ Nessun workspace necessario"
+      }
+    },
+    "activities": {
+      "sports": {
+        "hiking": "🥾 Escursionismo",
+        "trekking": "⛰️ Trekking / alpinismo",
+        "trailrunning": "🏃 Trail running",
+        "climbing_bouldering": "🧗 Arrampicata / bouldering",
+        "via_ferrata": "🧗‍♂️ Ferrata",
+        "mtb": "🚵 Mountain bike",
+        "road_gravel": "🚴 Bici da corsa / gravel",
+        "running": "🏃‍♀️ Corsa / jogging",
+        "snowsport": "🎿 Sport invernali (sci / snowboard)",
+        "xc_skiing": "⛷️ Sci di fondo",
+        "snowshoeing": "🥾 Ciaspolate",
+        "paddle_sports": "🛶 Sport acquatici (SUP / kayak)",
+        "surf_kite": "🏄 Surf / kitesurf",
+        "swimming": "🏊 Nuoto",
+        "diving_snorkeling": "🤿 Immersioni / snorkeling",
+        "gym": "🏋️ Palestra",
+        "outdoor_fitness": "💪 Fitness all'aperto"
       }
     },
     "luggageTypes": {

@@ -71,7 +71,10 @@
       "addLuggageType": "Gepäcktyp hinzufügen",
       "removeLuggageType": "Gepäcktyp entfernen",
       "selectLaundryAccessExpectation": "Waschmöglichkeit auswählen",
-      "selectWorkspacePreference": "Arbeitsplatzbedarf auswählen"
+      "selectWorkspacePreference": "Arbeitsplatzbedarf auswählen",
+      "selectActivitySport": "Sportaktivität auswählen",
+      "addActivitySport": "Sportaktivität hinzufügen",
+      "removeActivitySport": "Sportaktivität entfernen"
     },
     "sections": {
       "details": "Profildetails",
@@ -139,7 +142,8 @@
       "countrySelectRequired": "Bitte wähle dein Heimatland.",
       "mustBeSignedIn": "Melde dich an, um dein Profil zu aktualisieren.",
       "travelSaveFailed": "Deine Reisepräferenzen konnten nicht gespeichert werden. Versuche es erneut.",
-      "transportSaveFailed": "Deine Verkehrsmittel konnten nicht gespeichert werden. Versuche es erneut."
+      "transportSaveFailed": "Deine Verkehrsmittel konnten nicht gespeichert werden. Versuche es erneut.",
+      "activitiesSaveFailed": "Deine Aktivitäten konnten nicht gespeichert werden. Versuche es erneut."
     },
     "travelFrequency": {
       "rarely": "Selten (1-2 Reisen)",
@@ -201,6 +205,27 @@
       "workspace": {
         "yes": "🧑‍💻 Arbeitsplatz unbedingt erforderlich",
         "no": "🛋️ Kein Arbeitsplatz nötig"
+      }
+    },
+    "activities": {
+      "sports": {
+        "hiking": "🥾 Wandern",
+        "trekking": "⛰️ Trekking / Bergtour",
+        "trailrunning": "🏃 Trailrunning",
+        "climbing_bouldering": "🧗 Klettern / Bouldern",
+        "via_ferrata": "🧗‍♂️ Klettersteig",
+        "mtb": "🚵 Mountainbike",
+        "road_gravel": "🚴 Rennrad / Gravel",
+        "running": "🏃‍♀️ Laufen / Joggen",
+        "snowsport": "🎿 Wintersport (Ski / Snowboard)",
+        "xc_skiing": "⛷️ Langlauf",
+        "snowshoeing": "🥾 Schneeschuh",
+        "paddle_sports": "🛶 Wassersport (SUP / Kajak)",
+        "surf_kite": "🏄 Surfen / Kitesurfen",
+        "swimming": "🏊 Schwimmen",
+        "diving_snorkeling": "🤿 Tauchen / Schnorcheln",
+        "gym": "🏋️ Fitnesscenter",
+        "outdoor_fitness": "💪 Fitness draussen"
       }
     },
     "luggageTypes": {

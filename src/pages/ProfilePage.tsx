@@ -79,6 +79,13 @@ interface AccommodationWorkspaceOption {
   emoji: string;
 }
 
+interface ActivitySportsOption {
+  value: string;
+  translationKey: string;
+  defaultLabel: string;
+  emoji: string;
+}
+
 interface DetailSectionField {
   label: string;
   value: unknown;
@@ -293,6 +300,111 @@ const ACCOMMODATION_WORKSPACE_OPTIONS: readonly AccommodationWorkspaceOption[] =
   },
 ];
 
+const ACTIVITY_SPORTS_OPTIONS: readonly ActivitySportsOption[] = [
+  {
+    value: 'hiking',
+    translationKey: 'profile.activities.sports.hiking',
+    defaultLabel: '🥾 Hiking',
+    emoji: '🥾',
+  },
+  {
+    value: 'trekking',
+    translationKey: 'profile.activities.sports.trekking',
+    defaultLabel: '⛰️ Trekking & mountain tours',
+    emoji: '⛰️',
+  },
+  {
+    value: 'trailrunning',
+    translationKey: 'profile.activities.sports.trailrunning',
+    defaultLabel: '🏃 Trail running',
+    emoji: '🏃',
+  },
+  {
+    value: 'climbing_bouldering',
+    translationKey: 'profile.activities.sports.climbing_bouldering',
+    defaultLabel: '🧗 Climbing & bouldering',
+    emoji: '🧗',
+  },
+  {
+    value: 'via_ferrata',
+    translationKey: 'profile.activities.sports.via_ferrata',
+    defaultLabel: '🧗‍♂️ Via ferrata',
+    emoji: '🧗‍♂️',
+  },
+  {
+    value: 'mtb',
+    translationKey: 'profile.activities.sports.mtb',
+    defaultLabel: '🚵 Mountain biking',
+    emoji: '🚵',
+  },
+  {
+    value: 'road_gravel',
+    translationKey: 'profile.activities.sports.road_gravel',
+    defaultLabel: '🚴 Road & gravel cycling',
+    emoji: '🚴',
+  },
+  {
+    value: 'running',
+    translationKey: 'profile.activities.sports.running',
+    defaultLabel: '🏃‍♀️ Running & jogging',
+    emoji: '🏃‍♀️',
+  },
+  {
+    value: 'snowsport',
+    translationKey: 'profile.activities.sports.snowsport',
+    defaultLabel: '🎿 Ski & snowboard',
+    emoji: '🎿',
+  },
+  {
+    value: 'xc_skiing',
+    translationKey: 'profile.activities.sports.xc_skiing',
+    defaultLabel: '⛷️ Cross-country skiing',
+    emoji: '⛷️',
+  },
+  {
+    value: 'snowshoeing',
+    translationKey: 'profile.activities.sports.snowshoeing',
+    defaultLabel: '🥾 Snowshoeing',
+    emoji: '🥾',
+  },
+  {
+    value: 'paddle_sports',
+    translationKey: 'profile.activities.sports.paddle_sports',
+    defaultLabel: '🛶 SUP & kayaking',
+    emoji: '🛶',
+  },
+  {
+    value: 'surf_kite',
+    translationKey: 'profile.activities.sports.surf_kite',
+    defaultLabel: '🏄 Surfing & kitesurfing',
+    emoji: '🏄',
+  },
+  {
+    value: 'swimming',
+    translationKey: 'profile.activities.sports.swimming',
+    defaultLabel: '🏊 Swimming',
+    emoji: '🏊',
+  },
+  {
+    value: 'diving_snorkeling',
+    translationKey: 'profile.activities.sports.diving_snorkeling',
+    defaultLabel: '🤿 Diving & snorkeling',
+    emoji: '🤿',
+  },
+  {
+    value: 'gym',
+    translationKey: 'profile.activities.sports.gym',
+    defaultLabel: '🏋️ Gym workouts',
+    emoji: '🏋️',
+  },
+  {
+    value: 'outdoor_fitness',
+    translationKey: 'profile.activities.sports.outdoor_fitness',
+    defaultLabel: '💪 Outdoor fitness',
+    emoji: '💪',
+  },
+];
+
 const isAccommodationLaundryAccessExpectationValue = (
   value: unknown
 ): value is AccommodationLaundryAccessExpectationValue =>
@@ -407,6 +519,19 @@ const normalizeAccommodationWorkspacePreference = (
   return null;
 };
 
+const normalizeActivitySports = (sports: string[]): string[] => {
+  const allowedValues = new Map(
+    ACTIVITY_SPORTS_OPTIONS.map((option, index) => [option.value, index])
+  );
+  const chosen = new Set(
+    sports
+      .map((sport) => (typeof sport === 'string' ? sport.trim().toLowerCase() : ''))
+      .filter((sport) => sport.length > 0 && allowedValues.has(sport))
+  );
+
+  return ACTIVITY_SPORTS_OPTIONS.map((option) => option.value).filter((value) => chosen.has(value));
+};
+
 const languagesEqual = (a: string[], b: string[]): boolean => {
   if (a.length !== b.length) {
     return false;
@@ -450,6 +575,20 @@ const transportModesEqual = (a: string[], b: string[]): boolean => {
 };
 
 const luggageTypesEqual = (a: string[], b: string[]): boolean => {
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  for (let index = 0; index < a.length; index += 1) {
+    if (a[index] !== b[index]) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+const activitySportsEqual = (a: string[], b: string[]): boolean => {
   if (a.length !== b.length) {
     return false;
   }
@@ -554,6 +693,13 @@ const ProfilePage = () => {
   const [savingAccommodation, setSavingAccommodation] = useState(false);
   const [accommodationSaveError, setAccommodationSaveError] = useState<string | null>(null);
   const [accommodationSaved, setAccommodationSaved] = useState(false);
+  const [activitySports, setActivitySports] = useState<string[]>([]);
+  const [originalActivitySports, setOriginalActivitySports] = useState<string[]>([]);
+  const [activitySportToAdd, setActivitySportToAdd] = useState('');
+  const [isEditingActivities, setIsEditingActivities] = useState(false);
+  const [savingActivities, setSavingActivities] = useState(false);
+  const [activitiesSaveError, setActivitiesSaveError] = useState<string | null>(null);
+  const [activitiesSaved, setActivitiesSaved] = useState(false);
 
   useEffect(() => {
     setLocalAvatarUrl(avatarUrl);
@@ -620,6 +766,19 @@ const ProfilePage = () => {
       setAccommodationWorkspaceNeeded(normalized);
     }
   }, [profile?.accommodation_workspace_needed, isEditingAccommodation]);
+
+  useEffect(() => {
+    const normalized = Array.isArray(profile?.activity_sports_outdoor)
+      ? normalizeActivitySports(profile.activity_sports_outdoor as string[])
+      : [];
+
+    setOriginalActivitySports(normalized);
+
+    if (!isEditingActivities) {
+      setActivitySports(normalized);
+      setActivitySportToAdd('');
+    }
+  }, [profile?.activity_sports_outdoor, isEditingActivities]);
 
   useEffect(() => {
     const rawFrequency = profile?.travel_frequency_per_year;
@@ -1096,6 +1255,20 @@ const ProfilePage = () => {
     [t]
   );
 
+  const activitySportsOptions = useMemo(
+    () =>
+      ACTIVITY_SPORTS_OPTIONS.map((option) => {
+        const localized = t(option.translationKey, { defaultValue: option.defaultLabel }).trim();
+        const withoutEmoji = localized.split(option.emoji).join('').trim() || localized;
+        const label = option.emoji ? `${option.emoji} ${withoutEmoji}`.trim() : withoutEmoji;
+        return {
+          value: option.value,
+          label,
+        };
+      }),
+    [t]
+  );
+
   const accommodationTypeLabelByValue = useMemo(() => {
     const map = new Map<string, string>();
     accommodationTypeOptions.forEach((option) => {
@@ -1120,9 +1293,22 @@ const ProfilePage = () => {
     return map;
   }, [accommodationWorkspaceOptions]);
 
+  const activitySportsLabelByValue = useMemo(() => {
+    const map = new Map<string, string>();
+    activitySportsOptions.forEach((option) => {
+      map.set(option.value, option.label);
+    });
+    return map;
+  }, [activitySportsOptions]);
+
   const availableAccommodationTypes = useMemo(
     () => accommodationTypeOptions.filter((option) => !accommodationTypes.includes(option.value)),
     [accommodationTypeOptions, accommodationTypes]
+  );
+
+  const availableActivitySportsOptions = useMemo(
+    () => activitySportsOptions.filter((option) => !activitySports.includes(option.value)),
+    [activitySportsOptions, activitySports]
   );
 
   const trimmedFirstName = coreFirstName.trim();
@@ -1166,6 +1352,8 @@ const ProfilePage = () => {
     accommodationWorkspaceNeeded !== originalAccommodationWorkspaceNeeded;
   const isAccommodationDirty =
     isAccommodationTypesDirty || isAccommodationLaundryExpectationDirty || isAccommodationWorkspaceDirty;
+  const isActivitiesSportsDirty = !activitySportsEqual(activitySports, originalActivitySports);
+  const isActivitiesDirty = isActivitiesSportsDirty;
   const travelFrequencyDisplayLabel = normalizedTravelFrequency
     ? travelFrequencyLabelByValue.get(normalizedTravelFrequency) ?? null
     : null;
@@ -1209,6 +1397,16 @@ const ProfilePage = () => {
     originalAccommodationWorkspaceNeeded === null
       ? null
       : accommodationWorkspaceLabelByValue.get(originalAccommodationWorkspaceNeeded) ?? null;
+  const activitySportsDisplayLabels = useMemo(
+    () =>
+      activitySports.map((value) => activitySportsLabelByValue.get(value) ?? value),
+    [activitySports, activitySportsLabelByValue]
+  );
+  const originalActivitySportsDisplayLabels = useMemo(
+    () =>
+      originalActivitySports.map((value) => activitySportsLabelByValue.get(value) ?? value),
+    [originalActivitySports, activitySportsLabelByValue]
+  );
   const travelSeasonDisplayLabel = travelSeason
     ? travelSeasonLabelByValue.get(travelSeason) ?? travelSeason
     : null;
@@ -1414,7 +1612,11 @@ const ProfilePage = () => {
         id: 'activities',
         title: t('profile.sections.activities'),
         fields: [
-          { label: t('profile.fields.activitiesSports'), value: profile?.activity_sports_outdoor },
+          {
+            id: 'activity_sports_outdoor',
+            label: t('profile.fields.activitiesSports'),
+            value: profile?.activity_sports_outdoor,
+          },
           { label: t('profile.fields.activitiesAdventure'), value: profile?.activity_adventure_activities },
           { label: t('profile.fields.activitiesCultural'), value: profile?.activity_cultural_activities },
         ],
@@ -1602,6 +1804,30 @@ const ProfilePage = () => {
     setAccommodationTypeToAdd('');
     setAccommodationSaved(false);
     setAccommodationSaveError(null);
+  };
+
+  const handleAddActivitySport = () => {
+    if (!activitySportToAdd) {
+      return;
+    }
+
+    const normalized = activitySportToAdd.toLowerCase();
+    if (activitySports.includes(normalized)) {
+      setActivitySportToAdd('');
+      return;
+    }
+
+    setActivitySports((prev) => normalizeActivitySports([...prev, normalized]));
+    setActivitySportToAdd('');
+    setActivitiesSaved(false);
+    setActivitiesSaveError(null);
+  };
+
+  const handleRemoveActivitySport = (value: string) => {
+    const normalized = value.toLowerCase();
+    setActivitySports((prev) => normalizeActivitySports(prev.filter((item) => item !== normalized)));
+    setActivitiesSaved(false);
+    setActivitiesSaveError(null);
   };
 
   const handleRemoveAccommodationType = (value: string) => {
@@ -2023,6 +2249,22 @@ const ProfilePage = () => {
     setAccommodationWorkspaceNeeded(originalAccommodationWorkspaceNeeded);
   };
 
+  const handleStartEditingActivities = () => {
+    setIsEditingActivities(true);
+    setActivitiesSaved(false);
+    setActivitiesSaveError(null);
+    setActivitySports(originalActivitySports);
+    setActivitySportToAdd('');
+  };
+
+  const handleCancelEditingActivities = () => {
+    setIsEditingActivities(false);
+    setActivitiesSaved(false);
+    setActivitiesSaveError(null);
+    setActivitySports(originalActivitySports);
+    setActivitySportToAdd('');
+  };
+
   const handleSaveAccommodation = async () => {
     if (!user?.id) {
       setAccommodationSaveError(
@@ -2096,6 +2338,65 @@ const ProfilePage = () => {
     }
   };
 
+  const handleSaveActivities = async () => {
+    if (!user?.id) {
+      setActivitiesSaveError(
+        t('profile.errors.mustBeSignedIn', {
+          defaultValue: 'Sign in to update your profile.',
+        })
+      );
+      return;
+    }
+
+    if (!isActivitiesDirty) {
+      setIsEditingActivities(false);
+      return;
+    }
+
+    try {
+      setSavingActivities(true);
+      setActivitiesSaveError(null);
+
+      const normalizedSports = normalizeActivitySports(activitySports);
+      const payload: Partial<Profile> = {};
+
+      if (isActivitiesSportsDirty) {
+        payload.activity_sports_outdoor = normalizedSports.length > 0 ? normalizedSports : null;
+      }
+
+      if (Object.keys(payload).length === 0) {
+        setIsEditingActivities(false);
+        return;
+      }
+
+      const { error: updateError } = await updateRecord<Profile>('profiles', payload, {
+        match: { user_id: user.id },
+      });
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      await refresh();
+      setIsEditingActivities(false);
+      setActivitiesSaved(true);
+      setOriginalActivitySports(normalizedSports);
+      setActivitySports(normalizedSports);
+      setActivitySportToAdd('');
+    } catch (saveError) {
+      console.error('Failed to save activity preferences', saveError);
+      setActivitiesSaveError(
+        saveError instanceof Error
+          ? saveError.message
+          : t('profile.errors.activitiesSaveFailed', {
+              defaultValue: 'We couldn’t save your activities. Try again.',
+            })
+      );
+    } finally {
+      setSavingActivities(false);
+    }
+  };
+
   const handleRefreshProfile = async () => {
     try {
       setRefreshing(true);
@@ -2106,6 +2407,8 @@ const ProfilePage = () => {
       setTravelSaveError(null);
       setAccommodationSaved(false);
       setAccommodationSaveError(null);
+      setActivitiesSaved(false);
+      setActivitiesSaveError(null);
       await refresh();
     } finally {
       setRefreshing(false);
@@ -2635,6 +2938,38 @@ const ProfilePage = () => {
                       {t('profile.actions.edit', { defaultValue: 'Edit' })}
                     </button>
                   )
+                ) : section.id === 'activities' ? (
+                  isEditingActivities ? (
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={handleCancelEditingActivities}
+                        className="rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                        disabled={savingActivities}
+                      >
+                        {t('profile.actions.cancel', { defaultValue: 'Cancel' })}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleSaveActivities}
+                        className="rounded-full border border-brand-secondary bg-brand-secondary px-4 py-2 text-xs font-semibold text-white transition hover:bg-brand-secondary/90 disabled:cursor-not-allowed disabled:opacity-60 dark:border-brand-secondary"
+                        disabled={savingActivities || !isActivitiesDirty}
+                      >
+                        {savingActivities
+                          ? t('profile.actions.saving', { defaultValue: 'Saving…' })
+                          : t('profile.actions.save', { defaultValue: 'Save' })}
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleStartEditingActivities}
+                      className="rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                      disabled={savingActivities}
+                    >
+                      {t('profile.actions.edit', { defaultValue: 'Edit' })}
+                    </button>
+                  )
                 ) : null}
               </div>
               {section.id === 'travel' ? (
@@ -2665,6 +3000,17 @@ const ProfilePage = () => {
                     <p className="text-xs text-red-500">{accommodationSaveError}</p>
                   ) : null}
                   {!accommodationSaveError && accommodationSaved ? (
+                    <p className="text-xs text-emerald-600">
+                      {t('profile.state.settingsSaved', { defaultValue: 'Your settings have been saved.' })}
+                    </p>
+                  ) : null}
+                </>
+              ) : section.id === 'activities' ? (
+                <>
+                  {activitiesSaveError ? (
+                    <p className="text-xs text-red-500">{activitiesSaveError}</p>
+                  ) : null}
+                  {!activitiesSaveError && activitiesSaved ? (
                     <p className="text-xs text-emerald-600">
                       {t('profile.state.settingsSaved', { defaultValue: 'Your settings have been saved.' })}
                     </p>
@@ -3304,6 +3650,87 @@ const ProfilePage = () => {
                                 <span className="text-xs text-[var(--text-secondary)]">
                                   {t('profile.fallback.notSet')}
                                 </span>
+                              )
+                        : section.id === 'activities' && field.id === 'activity_sports_outdoor'
+                        ? isEditingActivities
+                          ? (
+                              <div className="flex flex-col gap-3">
+                                <div className="flex flex-wrap gap-2">
+                                  {activitySports.length === 0 ? (
+                                    <span className="text-xs text-[var(--text-secondary)]">
+                                      {t('profile.fallback.notSet')}
+                                    </span>
+                                  ) : (
+                                    activitySports.map((sport, index) => (
+                                      <span
+                                        key={sport}
+                                        className="flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                      >
+                                        {activitySportsDisplayLabels[index]}
+                                        <button
+                                          type="button"
+                                          onClick={() => handleRemoveActivitySport(sport)}
+                                          className="text-slate-400 transition hover:text-red-500"
+                                          aria-label={t('profile.actions.removeActivitySport', {
+                                            defaultValue: 'Remove activity',
+                                          })}
+                                          disabled={savingActivities}
+                                        >
+                                          ×
+                                        </button>
+                                      </span>
+                                    ))
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <select
+                                    value={activitySportToAdd}
+                                    onChange={(event) => setActivitySportToAdd(event.target.value)}
+                                    className="w-72 max-w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                    disabled={savingActivities}
+                                  >
+                                    <option value="">
+                                      {t('profile.actions.selectActivitySport', {
+                                        defaultValue: 'Select activity',
+                                      })}
+                                    </option>
+                                    {availableActivitySportsOptions.map((option) => (
+                                      <option key={option.value} value={option.value}>
+                                        {option.label}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <button
+                                    type="button"
+                                    onClick={handleAddActivitySport}
+                                    className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-secondary text-lg font-semibold text-brand-secondary transition hover:bg-brand-secondary hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                    disabled={!activitySportToAdd || savingActivities}
+                                    aria-label={t('profile.actions.addActivitySport', {
+                                      defaultValue: 'Add activity',
+                                    })}
+                                  >
+                                    +
+                                  </button>
+                                </div>
+                              </div>
+                            )
+                          : originalActivitySports.length === 0
+                            ? (
+                                <span className="text-xs text-[var(--text-secondary)]">
+                                  {t('profile.fallback.notSet')}
+                                </span>
+                              )
+                            : (
+                                <div className="flex flex-wrap gap-2">
+                                  {originalActivitySports.map((sport, index) => (
+                                    <span
+                                      key={sport}
+                                      className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                    >
+                                      {originalActivitySportsDisplayLabels[index]}
+                                    </span>
+                                  ))}
+                                </div>
                               )
                         : (
                           formatValue(field.value)
