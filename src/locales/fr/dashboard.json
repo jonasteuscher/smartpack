@@ -71,6 +71,7 @@
       "addLuggageType": "Ajouter un type de bagage",
       "removeLuggageType": "Supprimer le type de bagage",
       "selectLaundryAccessExpectation": "Choisir la disponibilite de la buanderie",
+      "selectSustainabilityFocus": "Choisir un focus durable",
       "selectWorkspacePreference": "Choisir la preference d'espace de travail",
       "selectActivitySport": "Choisir une activité",
       "addActivitySport": "Ajouter une activité",
@@ -80,7 +81,9 @@
       "removeAdventureActivity": "Supprimer l'aventure",
       "selectCulturalActivity": "Choisir une activité culturelle",
       "addActivityCultural": "Ajouter une activité culturelle",
-      "removeActivityCultural": "Supprimer l'activité culturelle"
+      "removeActivityCultural": "Supprimer l'activité culturelle",
+      "addSustainabilityFocus": "Ajouter un focus durable",
+      "removeSustainabilityFocus": "Supprimer le focus durable"
     },
     "sections": {
       "details": "Details du profil",
@@ -149,7 +152,8 @@
       "mustBeSignedIn": "Connectez-vous pour mettre a jour votre profil.",
       "travelSaveFailed": "Impossible d'enregistrer vos preferences de voyage. Veuillez reessayer.",
       "transportSaveFailed": "Impossible d'enregistrer vos modes de transport. Veuillez reessayer.",
-      "activitiesSaveFailed": "Impossible d'enregistrer vos activités. Veuillez réessayer."
+      "activitiesSaveFailed": "Impossible d'enregistrer vos activités. Veuillez réessayer.",
+      "sustainabilitySaveFailed": "Impossible d'enregistrer vos préférences durables. Veuillez réessayer."
     },
     "travelFrequency": {
       "rarely": "🌱 Rarement (1-2 voyages)",
@@ -265,6 +269,19 @@
         "craft_workshops": "🧵 Ateliers artisanaux",
         "cinema_film": "🎬 Cinéma / culture film",
         "literature_bookshops": "📚 Littérature / librairies"
+      }
+    },
+    "sustainability": {
+      "focus": {
+        "eco_transport": "🚆 Moyens de transport écologiques",
+        "local_food": "🍲 Produits & gastronomie locaux",
+        "fair_tourism": "🤝 Tourisme équitable & responsable",
+        "waste_reduction": "♻️ Réduction des déchets & du plastique",
+        "eco_accommodation": "🏡 Hébergements économes en ressources",
+        "carbon_offset": "🌍 Compensation des émissions de CO₂",
+        "sustainable_gear": "🧭 Équipement outdoor durable",
+        "nature_protection": "🌿 Protection de la nature & biodiversité",
+        "paperless": "📱 Billets numériques plutôt qu'imprimés"
       }
     },
     "luggageTypes": {

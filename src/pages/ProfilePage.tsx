@@ -201,6 +201,63 @@ const LUGGAGE_OPTIONS: readonly LuggageOption[] = [
   { value: 'special_equipment', translationKey: 'profile.luggageTypes.special_equipment', defaultLabel: '🎿 Special equipment (e.g. sports gear)' },
 ];
 
+const SUSTAINABILITY_FOCUS_OPTIONS: readonly ActivityOption[] = [
+  {
+    value: 'eco_transport',
+    translationKey: 'profile.sustainability.focus.eco_transport',
+    defaultLabel: '🚆 Eco-friendly transport',
+    emoji: '🚆',
+  },
+  {
+    value: 'local_food',
+    translationKey: 'profile.sustainability.focus.local_food',
+    defaultLabel: '🍲 Local food & gastronomy',
+    emoji: '🍲',
+  },
+  {
+    value: 'fair_tourism',
+    translationKey: 'profile.sustainability.focus.fair_tourism',
+    defaultLabel: '🤝 Fair & responsible tourism',
+    emoji: '🤝',
+  },
+  {
+    value: 'waste_reduction',
+    translationKey: 'profile.sustainability.focus.waste_reduction',
+    defaultLabel: '♻️ Waste & plastic reduction',
+    emoji: '♻️',
+  },
+  {
+    value: 'eco_accommodation',
+    translationKey: 'profile.sustainability.focus.eco_accommodation',
+    defaultLabel: '🏡 Eco-conscious stays',
+    emoji: '🏡',
+  },
+  {
+    value: 'carbon_offset',
+    translationKey: 'profile.sustainability.focus.carbon_offset',
+    defaultLabel: '🌍 CO₂ offsetting',
+    emoji: '🌍',
+  },
+  {
+    value: 'sustainable_gear',
+    translationKey: 'profile.sustainability.focus.sustainable_gear',
+    defaultLabel: '🧭 Sustainable gear',
+    emoji: '🧭',
+  },
+  {
+    value: 'nature_protection',
+    translationKey: 'profile.sustainability.focus.nature_protection',
+    defaultLabel: '🌿 Nature & biodiversity',
+    emoji: '🌿',
+  },
+  {
+    value: 'paperless',
+    translationKey: 'profile.sustainability.focus.paperless',
+    defaultLabel: '📱 Paperless travel',
+    emoji: '📱',
+  },
+];
+
 const ACCOMMODATION_TYPE_OPTIONS: readonly AccommodationTypeOption[] = [
   {
     value: 'hotel',
@@ -738,6 +795,19 @@ const normalizeActivityCultural = (activities: string[]): string[] => {
   return ACTIVITY_CULTURAL_OPTIONS.map((option) => option.value).filter((value) => chosen.has(value));
 };
 
+const normalizeSustainabilityFocus = (focus: string[]): string[] => {
+  const allowedValues = new Map(
+    SUSTAINABILITY_FOCUS_OPTIONS.map((option, index) => [option.value, index])
+  );
+  const chosen = new Set(
+    focus
+      .map((item) => (typeof item === 'string' ? item.trim().toLowerCase() : ''))
+      .filter((item) => item.length > 0 && allowedValues.has(item))
+  );
+
+  return SUSTAINABILITY_FOCUS_OPTIONS.map((option) => option.value).filter((value) => chosen.has(value));
+};
+
 const languagesEqual = (a: string[], b: string[]): boolean => {
   if (a.length !== b.length) {
     return false;
@@ -908,6 +978,13 @@ const ProfilePage = () => {
   const [activityCultural, setActivityCultural] = useState<string[]>([]);
   const [originalActivityCultural, setOriginalActivityCultural] = useState<string[]>([]);
   const [activityCulturalToAdd, setActivityCulturalToAdd] = useState('');
+  const [sustainabilityFocus, setSustainabilityFocus] = useState<string[]>([]);
+  const [originalSustainabilityFocus, setOriginalSustainabilityFocus] = useState<string[]>([]);
+  const [sustainabilityFocusToAdd, setSustainabilityFocusToAdd] = useState('');
+  const [isEditingSustainability, setIsEditingSustainability] = useState(false);
+  const [savingSustainability, setSavingSustainability] = useState(false);
+  const [sustainabilitySaveError, setSustainabilitySaveError] = useState<string | null>(null);
+  const [sustainabilitySaved, setSustainabilitySaved] = useState(false);
   const [isEditingActivities, setIsEditingActivities] = useState(false);
   const [savingActivities, setSavingActivities] = useState(false);
   const [activitiesSaveError, setActivitiesSaveError] = useState<string | null>(null);
@@ -1017,6 +1094,19 @@ const ProfilePage = () => {
       setActivityCulturalToAdd('');
     }
   }, [profile?.activity_cultural_activities, isEditingActivities]);
+
+  useEffect(() => {
+    const normalized = Array.isArray(profile?.sustainability_focus)
+      ? normalizeSustainabilityFocus(profile.sustainability_focus as string[])
+      : [];
+
+    setOriginalSustainabilityFocus(normalized);
+
+    if (!isEditingSustainability) {
+      setSustainabilityFocus(normalized);
+      setSustainabilityFocusToAdd('');
+    }
+  }, [profile?.sustainability_focus, isEditingSustainability]);
 
   useEffect(() => {
     const rawFrequency = profile?.travel_frequency_per_year;
@@ -1535,6 +1625,20 @@ const ProfilePage = () => {
     [t]
   );
 
+  const sustainabilityFocusOptions = useMemo(
+    () =>
+      SUSTAINABILITY_FOCUS_OPTIONS.map((option) => {
+        const localized = t(option.translationKey, { defaultValue: option.defaultLabel }).trim();
+        const withoutEmoji = localized.split(option.emoji).join('').trim() || localized;
+        const label = option.emoji ? `${option.emoji} ${withoutEmoji}`.trim() : withoutEmoji;
+        return {
+          value: option.value,
+          label,
+        };
+      }),
+    [t]
+  );
+
   const accommodationTypeLabelByValue = useMemo(() => {
     const map = new Map<string, string>();
     accommodationTypeOptions.forEach((option) => {
@@ -1583,6 +1687,14 @@ const ProfilePage = () => {
     return map;
   }, [activityCulturalOptions]);
 
+  const sustainabilityFocusLabelByValue = useMemo(() => {
+    const map = new Map<string, string>();
+    sustainabilityFocusOptions.forEach((option) => {
+      map.set(option.value, option.label);
+    });
+    return map;
+  }, [sustainabilityFocusOptions]);
+
   const availableAccommodationTypes = useMemo(
     () => accommodationTypeOptions.filter((option) => !accommodationTypes.includes(option.value)),
     [accommodationTypeOptions, accommodationTypes]
@@ -1601,6 +1713,11 @@ const ProfilePage = () => {
   const availableActivityCulturalOptions = useMemo(
     () => activityCulturalOptions.filter((option) => !activityCultural.includes(option.value)),
     [activityCulturalOptions, activityCultural]
+  );
+
+  const availableSustainabilityFocusOptions = useMemo(
+    () => sustainabilityFocusOptions.filter((option) => !sustainabilityFocus.includes(option.value)),
+    [sustainabilityFocusOptions, sustainabilityFocus]
   );
 
   const trimmedFirstName = coreFirstName.trim();
@@ -1648,6 +1765,8 @@ const ProfilePage = () => {
   const isActivitiesAdventureDirty = !activitySelectionsEqual(activityAdventure, originalActivityAdventure);
   const isActivitiesCulturalDirty = !activitySelectionsEqual(activityCultural, originalActivityCultural);
   const isActivitiesDirty = isActivitiesSportsDirty || isActivitiesAdventureDirty || isActivitiesCulturalDirty;
+  const isSustainabilityFocusDirty = !activitySelectionsEqual(sustainabilityFocus, originalSustainabilityFocus);
+  const isSustainabilityDirty = isSustainabilityFocusDirty;
   const travelFrequencyDisplayLabel = normalizedTravelFrequency
     ? travelFrequencyLabelByValue.get(normalizedTravelFrequency) ?? null
     : null;
@@ -1720,6 +1839,16 @@ const ProfilePage = () => {
     () =>
       originalActivityCultural.map((value) => activityCulturalLabelByValue.get(value) ?? value),
     [originalActivityCultural, activityCulturalLabelByValue]
+  );
+  const sustainabilityFocusDisplayLabels = useMemo(
+    () =>
+      sustainabilityFocus.map((value) => sustainabilityFocusLabelByValue.get(value) ?? value),
+    [sustainabilityFocus, sustainabilityFocusLabelByValue]
+  );
+  const originalSustainabilityFocusDisplayLabels = useMemo(
+    () =>
+      originalSustainabilityFocus.map((value) => sustainabilityFocusLabelByValue.get(value) ?? value),
+    [originalSustainabilityFocus, sustainabilityFocusLabelByValue]
   );
   const travelSeasonDisplayLabel = travelSeason
     ? travelSeasonLabelByValue.get(travelSeason) ?? travelSeason
@@ -1947,7 +2076,11 @@ const ProfilePage = () => {
         id: 'sustainability',
         title: t('profile.sections.sustainability'),
         fields: [
-          { label: t('profile.fields.sustainabilityFocus'), value: profile?.sustainability_focus },
+          {
+            id: 'sustainability_focus',
+            label: t('profile.fields.sustainabilityFocus'),
+            value: profile?.sustainability_focus,
+          },
           { label: t('profile.fields.sustainabilityWeight'), value: profile?.sustainability_weight_priority },
         ],
       },
@@ -2199,6 +2332,30 @@ const handleRemoveActivityCultural = (value: string) => {
   setActivitiesSaved(false);
   setActivitiesSaveError(null);
 };
+
+  const handleAddSustainabilityFocus = () => {
+    if (!sustainabilityFocusToAdd) {
+      return;
+    }
+
+    const normalized = sustainabilityFocusToAdd.toLowerCase();
+    if (sustainabilityFocus.includes(normalized)) {
+      setSustainabilityFocusToAdd('');
+      return;
+    }
+
+    setSustainabilityFocus((prev) => normalizeSustainabilityFocus([...prev, normalized]));
+    setSustainabilityFocusToAdd('');
+    setSustainabilitySaved(false);
+    setSustainabilitySaveError(null);
+  };
+
+  const handleRemoveSustainabilityFocus = (value: string) => {
+    const normalized = value.toLowerCase();
+    setSustainabilityFocus((prev) => normalizeSustainabilityFocus(prev.filter((item) => item !== normalized)));
+    setSustainabilitySaved(false);
+    setSustainabilitySaveError(null);
+  };
 
   const handleRemoveAccommodationType = (value: string) => {
     const normalized = value.toLowerCase();
@@ -2643,6 +2800,22 @@ const handleRemoveActivityCultural = (value: string) => {
     setActivityCulturalToAdd('');
   };
 
+  const handleStartEditingSustainability = () => {
+    setIsEditingSustainability(true);
+    setSustainabilitySaved(false);
+    setSustainabilitySaveError(null);
+    setSustainabilityFocus(originalSustainabilityFocus);
+    setSustainabilityFocusToAdd('');
+  };
+
+  const handleCancelEditingSustainability = () => {
+    setIsEditingSustainability(false);
+    setSustainabilitySaved(false);
+    setSustainabilitySaveError(null);
+    setSustainabilityFocus(originalSustainabilityFocus);
+    setSustainabilityFocusToAdd('');
+  };
+
   const handleSaveAccommodation = async () => {
     if (!user?.id) {
       setAccommodationSaveError(
@@ -2791,6 +2964,65 @@ const handleRemoveActivityCultural = (value: string) => {
     }
   };
 
+  const handleSaveSustainability = async () => {
+    if (!user?.id) {
+      setSustainabilitySaveError(
+        t('profile.errors.mustBeSignedIn', {
+          defaultValue: 'Sign in to update your profile.',
+        })
+      );
+      return;
+    }
+
+    if (!isSustainabilityDirty) {
+      setIsEditingSustainability(false);
+      return;
+    }
+
+    try {
+      setSavingSustainability(true);
+      setSustainabilitySaveError(null);
+
+      const normalizedFocus = normalizeSustainabilityFocus(sustainabilityFocus);
+      const payload: Partial<Profile> = {};
+
+      if (isSustainabilityFocusDirty) {
+        payload.sustainability_focus = normalizedFocus.length > 0 ? normalizedFocus : null;
+      }
+
+      if (Object.keys(payload).length === 0) {
+        setIsEditingSustainability(false);
+        return;
+      }
+
+      const { error: updateError } = await updateRecord<Profile>('profiles', payload, {
+        match: { user_id: user.id },
+      });
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      await refresh();
+      setIsEditingSustainability(false);
+      setSustainabilitySaved(true);
+      setOriginalSustainabilityFocus(normalizedFocus);
+      setSustainabilityFocus(normalizedFocus);
+      setSustainabilityFocusToAdd('');
+    } catch (saveError) {
+      console.error('Failed to save sustainability preferences', saveError);
+      setSustainabilitySaveError(
+        saveError instanceof Error
+          ? saveError.message
+          : t('profile.errors.sustainabilitySaveFailed', {
+              defaultValue: 'We couldn’t save your sustainability preferences. Try again.',
+            })
+      );
+    } finally {
+      setSavingSustainability(false);
+    }
+  };
+
   const handleRefreshProfile = async () => {
     try {
       setRefreshing(true);
@@ -2803,6 +3035,8 @@ const handleRemoveActivityCultural = (value: string) => {
       setAccommodationSaveError(null);
       setActivitiesSaved(false);
       setActivitiesSaveError(null);
+      setSustainabilitySaved(false);
+      setSustainabilitySaveError(null);
       await refresh();
     } finally {
       setRefreshing(false);
@@ -3364,6 +3598,38 @@ const handleRemoveActivityCultural = (value: string) => {
                       {t('profile.actions.edit', { defaultValue: 'Edit' })}
                     </button>
                   )
+                ) : section.id === 'sustainability' ? (
+                  isEditingSustainability ? (
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={handleCancelEditingSustainability}
+                        className="rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                        disabled={savingSustainability}
+                      >
+                        {t('profile.actions.cancel', { defaultValue: 'Cancel' })}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleSaveSustainability}
+                        className="rounded-full border border-brand-secondary bg-brand-secondary px-4 py-2 text-xs font-semibold text-white transition hover:bg-brand-secondary/90 disabled:cursor-not-allowed disabled:opacity-60 dark:border-brand-secondary"
+                        disabled={savingSustainability || !isSustainabilityDirty}
+                      >
+                        {savingSustainability
+                          ? t('profile.actions.saving', { defaultValue: 'Saving…' })
+                          : t('profile.actions.save', { defaultValue: 'Save' })}
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleStartEditingSustainability}
+                      className="rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                      disabled={savingSustainability}
+                    >
+                      {t('profile.actions.edit', { defaultValue: 'Edit' })}
+                    </button>
+                  )
                 ) : null}
               </div>
               {section.id === 'travel' ? (
@@ -3405,6 +3671,17 @@ const handleRemoveActivityCultural = (value: string) => {
                     <p className="text-xs text-red-500">{activitiesSaveError}</p>
                   ) : null}
                   {!activitiesSaveError && activitiesSaved ? (
+                    <p className="text-xs text-emerald-600">
+                      {t('profile.state.settingsSaved', { defaultValue: 'Your settings have been saved.' })}
+                    </p>
+                  ) : null}
+                </>
+              ) : section.id === 'sustainability' ? (
+                <>
+                  {sustainabilitySaveError ? (
+                    <p className="text-xs text-red-500">{sustainabilitySaveError}</p>
+                  ) : null}
+                  {!sustainabilitySaveError && sustainabilitySaved ? (
                     <p className="text-xs text-emerald-600">
                       {t('profile.state.settingsSaved', { defaultValue: 'Your settings have been saved.' })}
                     </p>
@@ -4284,6 +4561,87 @@ const handleRemoveActivityCultural = (value: string) => {
                                       className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
                                     >
                                       {originalActivityCulturalDisplayLabels[index]}
+                                    </span>
+                                  ))}
+                                </div>
+                              )
+                        : section.id === 'sustainability' && field.id === 'sustainability_focus'
+                        ? isEditingSustainability
+                          ? (
+                              <div className="flex flex-col gap-3">
+                                <div className="flex flex-wrap gap-2">
+                                  {sustainabilityFocus.length === 0 ? (
+                                    <span className="text-xs text-[var(--text-secondary)]">
+                                      {t('profile.fallback.notSet')}
+                                    </span>
+                                  ) : (
+                                    sustainabilityFocus.map((item, index) => (
+                                      <span
+                                        key={item}
+                                        className="flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                      >
+                                        {sustainabilityFocusDisplayLabels[index]}
+                                        <button
+                                          type="button"
+                                          onClick={() => handleRemoveSustainabilityFocus(item)}
+                                          className="text-slate-400 transition hover:text-red-500"
+                                          aria-label={t('profile.actions.removeSustainabilityFocus', {
+                                            defaultValue: 'Remove sustainability focus',
+                                          })}
+                                          disabled={savingSustainability}
+                                        >
+                                          ×
+                                        </button>
+                                      </span>
+                                    ))
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <select
+                                    value={sustainabilityFocusToAdd}
+                                    onChange={(event) => setSustainabilityFocusToAdd(event.target.value)}
+                                    className="w-72 max-w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                    disabled={savingSustainability}
+                                  >
+                                    <option value="">
+                                      {t('profile.actions.selectSustainabilityFocus', {
+                                        defaultValue: 'Select sustainability focus',
+                                      })}
+                                    </option>
+                                    {availableSustainabilityFocusOptions.map((option) => (
+                                      <option key={option.value} value={option.value}>
+                                        {option.label}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <button
+                                    type="button"
+                                    onClick={handleAddSustainabilityFocus}
+                                    className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-secondary text-lg font-semibold text-brand-secondary transition hover:bg-brand-secondary hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                    disabled={!sustainabilityFocusToAdd || savingSustainability}
+                                    aria-label={t('profile.actions.addSustainabilityFocus', {
+                                      defaultValue: 'Add sustainability focus',
+                                    })}
+                                  >
+                                    +
+                                  </button>
+                                </div>
+                              </div>
+                            )
+                          : originalSustainabilityFocus.length === 0
+                            ? (
+                                <span className="text-xs text-[var(--text-secondary)]">
+                                  {t('profile.fallback.notSet')}
+                                </span>
+                              )
+                            : (
+                                <div className="flex flex-wrap gap-2">
+                                  {originalSustainabilityFocus.map((item, index) => (
+                                    <span
+                                      key={item}
+                                      className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200"
+                                    >
+                                      {originalSustainabilityFocusDisplayLabels[index]}
                                     </span>
                                   ))}
                                 </div>

@@ -71,6 +71,7 @@
       "addLuggageType": "Add luggage type",
       "removeLuggageType": "Remove luggage type",
       "selectLaundryAccessExpectation": "Select laundry access expectation",
+      "selectSustainabilityFocus": "Select sustainability focus",
       "selectWorkspacePreference": "Select workspace preference",
       "selectActivitySport": "Select activity",
       "addActivitySport": "Add activity",
@@ -80,7 +81,9 @@
       "removeAdventureActivity": "Remove adventure",
       "selectCulturalActivity": "Select cultural activity",
       "addActivityCultural": "Add cultural activity",
-      "removeActivityCultural": "Remove cultural activity"
+      "removeActivityCultural": "Remove cultural activity",
+      "addSustainabilityFocus": "Add sustainability focus",
+      "removeSustainabilityFocus": "Remove sustainability focus"
     },
     "sections": {
       "details": "Profile details",
@@ -149,7 +152,8 @@
       "mustBeSignedIn": "Sign in to update your profile.",
       "travelSaveFailed": "We couldn’t save your travel preferences. Try again.",
       "transportSaveFailed": "We couldn’t save your transport preferences. Try again.",
-      "activitiesSaveFailed": "We couldn’t save your activities. Try again."
+      "activitiesSaveFailed": "We couldn’t save your activities. Try again.",
+      "sustainabilitySaveFailed": "We couldn’t save your sustainability preferences. Try again."
     },
     "travelFrequency": {
       "rarely": "🌱 Rarely (1-2 trips)",
@@ -245,9 +249,9 @@
         "offroad_4x4": "🚙 Off-road 4x4",
         "glacier_ice": "🧊 Glacier & ice tours",
         "volcano_desert": "🌋 Volcano & desert expeditions",
-      "hot_air_balloon": "🎈 Hot air balloon rides",
-      "helicopter": "🚁 Helicopter flights",
-      "shark_cage_diving": "🦈 Shark cage diving"
+        "hot_air_balloon": "🎈 Hot air balloon rides",
+        "helicopter": "🚁 Helicopter flights",
+        "shark_cage_diving": "🦈 Shark cage diving"
       },
       "cultural": {
         "museums": "🏛️ Museums",
@@ -265,6 +269,19 @@
         "craft_workshops": "🧵 Craft workshops",
         "cinema_film": "🎬 Cinema & film culture",
         "literature_bookshops": "📚 Literature & bookshops"
+      }
+    },
+    "sustainability": {
+      "focus": {
+        "eco_transport": "🚆 Eco-friendly transport",
+        "local_food": "🍲 Local food & gastronomy",
+        "fair_tourism": "🤝 Fair & responsible tourism",
+        "waste_reduction": "♻️ Waste & plastic reduction",
+        "eco_accommodation": "🏡 Eco-conscious stays",
+        "carbon_offset": "🌍 CO₂ offsetting",
+        "sustainable_gear": "🧭 Sustainable gear",
+        "nature_protection": "🌿 Nature & biodiversity",
+        "paperless": "📱 Paperless travel"
       }
     },
     "luggageTypes": {
