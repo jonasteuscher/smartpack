@@ -149,16 +149,16 @@
       "activitiesSaveFailed": "We couldn’t save your activities. Try again."
     },
     "travelFrequency": {
-      "rarely": "Rarely (1-2 trips)",
-      "sometimes": "Sometimes (3-5 trips)",
-      "often": "Often (6-10 trips)",
-      "frequent": "Very often (10+ trips)"
+      "rarely": "🌱 Rarely (1-2 trips)",
+      "sometimes": "🌤️ Sometimes (3-5 trips)",
+      "often": "✈️ Often (6-10 trips)",
+      "frequent": "🌍 Very often (10+ trips)"
     },
     "travelDuration": {
-      "short": "Short (1-3 days)",
-      "medium": "Medium (4-7 days)",
-      "long": "Long (8-14 days)",
-      "extended": "Extended (15+ days)"
+      "short": "📅 Short (1-3 days)",
+      "medium": "🧳 Medium (4-7 days)",
+      "long": "🌏 Long (8-14 days)",
+      "extended": "🗺️ Extended (15+ days)"
     },
     "travelRegions": {
       "CH": "🇨🇭 Switzerland / Domestic",
@@ -181,11 +181,11 @@
       "culture": "🗺️ Culture & sightseeing"
     },
     "travelSeasons": {
-      "spring": "Spring",
-      "summer": "Summer",
-      "autumn": "Autumn",
-      "winter": "Winter",
-      "all_year": "All year round"
+      "spring": "🌸 Spring",
+      "summer": "☀️ Summer",
+      "autumn": "🍂 Autumn",
+      "winter": "❄️ Winter",
+      "all_year": "🗓️ All year round"
     },
     "accommodation": {
       "types": {

@@ -129,10 +129,10 @@ const TRAVEL_FREQUENCY_VALUES: readonly TravelFrequencyPerYear[] = [
 ];
 
 const TRAVEL_FREQUENCY_FALLBACK_LABELS: Record<TravelFrequencyPerYear, string> = {
-  rarely: 'Rarely (1-2 trips)',
-  sometimes: 'Sometimes (3-5 trips)',
-  often: 'Often (6-10 trips)',
-  frequent: 'Very often (10+ trips)',
+  rarely: '🌱 Rarely (1-2 trips)',
+  sometimes: '🌤️ Sometimes (3-5 trips)',
+  often: '✈️ Often (6-10 trips)',
+  frequent: '🌍 Very often (10+ trips)',
 };
 
 const isTravelFrequencyValue = (value: unknown): value is TravelFrequencyPerYear =>
@@ -141,10 +141,10 @@ const isTravelFrequencyValue = (value: unknown): value is TravelFrequencyPerYear
 const TRAVEL_DURATION_VALUES: readonly TravelTripDurationDays[] = ['short', 'medium', 'long', 'extended'];
 
 const TRAVEL_DURATION_FALLBACK_LABELS: Record<TravelTripDurationDays, string> = {
-  short: 'Short (1-3 days)',
-  medium: 'Medium (4-7 days)',
-  long: 'Long (8-14 days)',
-  extended: 'Extended (15+ days)',
+  short: '📅 Short (1-3 days)',
+  medium: '🧳 Medium (4-7 days)',
+  long: '🌏 Long (8-14 days)',
+  extended: '🗺️ Extended (15+ days)',
 };
 
 const isTravelDurationValue = (value: unknown): value is TravelTripDurationDays =>
@@ -173,11 +173,11 @@ const TRAVEL_STYLE_OPTIONS: readonly TravelStyleOption[] = [
 ];
 
 const TRAVEL_SEASON_OPTIONS: readonly TravelSeasonOption[] = [
-  { value: 'spring', translationKey: 'profile.travelSeasons.spring', defaultLabel: 'Spring' },
-  { value: 'summer', translationKey: 'profile.travelSeasons.summer', defaultLabel: 'Summer' },
-  { value: 'autumn', translationKey: 'profile.travelSeasons.autumn', defaultLabel: 'Autumn' },
-  { value: 'winter', translationKey: 'profile.travelSeasons.winter', defaultLabel: 'Winter' },
-  { value: 'all_year', translationKey: 'profile.travelSeasons.all_year', defaultLabel: 'All year round' },
+  { value: 'spring', translationKey: 'profile.travelSeasons.spring', defaultLabel: '🌸 Spring' },
+  { value: 'summer', translationKey: 'profile.travelSeasons.summer', defaultLabel: '☀️ Summer' },
+  { value: 'autumn', translationKey: 'profile.travelSeasons.autumn', defaultLabel: '🍂 Autumn' },
+  { value: 'winter', translationKey: 'profile.travelSeasons.winter', defaultLabel: '❄️ Winter' },
+  { value: 'all_year', translationKey: 'profile.travelSeasons.all_year', defaultLabel: '🗓️ All year round' },
 ];
 
 const TRANSPORT_MODE_OPTIONS: readonly TransportModeOption[] = [

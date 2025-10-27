@@ -149,16 +149,16 @@
       "activitiesSaveFailed": "Impossibile salvare le attività. Riprova."
     },
     "travelFrequency": {
-      "rarely": "Raramente (1-2 viaggi)",
-      "sometimes": "A volte (3-5 viaggi)",
-      "often": "Spesso (6-10 viaggi)",
-      "frequent": "Molto spesso (10+ viaggi)"
+      "rarely": "🌱 Raramente (1-2 viaggi)",
+      "sometimes": "🌤️ A volte (3-5 viaggi)",
+      "often": "✈️ Spesso (6-10 viaggi)",
+      "frequent": "🌍 Molto spesso (10+ viaggi)"
     },
     "travelDuration": {
-      "short": "Breve (1-3 giorni)",
-      "medium": "Media (4-7 giorni)",
-      "long": "Lunga (8-14 giorni)",
-      "extended": "Molto lunga (15+ giorni)"
+      "short": "📅 Breve (1-3 giorni)",
+      "medium": "🧳 Media (4-7 giorni)",
+      "long": "🌏 Lunga (8-14 giorni)",
+      "extended": "🗺️ Molto lunga (15+ giorni)"
     },
     "travelRegions": {
       "CH": "Svizzera / nazionale",
@@ -181,11 +181,11 @@
       "culture": "🗺️ Cultura & sightseeing"
     },
     "travelSeasons": {
-      "spring": "Primavera",
-      "summer": "Estate",
-      "autumn": "Autunno",
-      "winter": "Inverno",
-      "all_year": "Tutto l'anno"
+      "spring": "🌸 Primavera",
+      "summer": "☀️ Estate",
+      "autumn": "🍂 Autunno",
+      "winter": "❄️ Inverno",
+      "all_year": "🗓️ Tutto l'anno"
     },
     "accommodation": {
       "types": {
