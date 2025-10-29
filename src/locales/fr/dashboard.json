@@ -137,6 +137,7 @@
       "empty": "Aucune information de profil pour le moment.",
       "countriesLoading": "Chargement des pays…",
       "noCountriesFound": "Aucun pays correspondant.",
+      "noLanguagesFound": "Aucune langue correspondante.",
       "settingsSaved": "Vos paramètres ont été enregistrés."
     },
     "fallback": {

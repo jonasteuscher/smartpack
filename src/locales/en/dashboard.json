@@ -137,6 +137,7 @@
       "empty": "We couldn't find any profile information yet.",
       "countriesLoading": "Loading countries…",
       "noCountriesFound": "No countries match your search.",
+      "noLanguagesFound": "No languages match your search.",
       "settingsSaved": "Your settings have been saved."
     },
     "fallback": {

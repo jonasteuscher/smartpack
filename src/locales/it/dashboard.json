@@ -137,6 +137,7 @@
       "empty": "Nessuna informazione di profilo trovata.",
       "countriesLoading": "Caricamento paesi…",
       "noCountriesFound": "Nessun paese corrisponde alla ricerca.",
+      "noLanguagesFound": "Nessuna lingua corrisponde alla ricerca.",
       "settingsSaved": "Le impostazioni sono state salvate."
     },
     "fallback": {

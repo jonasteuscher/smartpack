@@ -1102,7 +1102,8 @@ const ProfilePage = () => {
 
   const [coreLanguages, setCoreLanguages] = useState<string[]>([]);
   const [originalLanguages, setOriginalLanguages] = useState<string[]>([]);
-  const [languageToAdd, setLanguageToAdd] = useState('');
+  const [languageToAddOption, setLanguageToAddOption] = useState<LanguageOption | null>(null);
+  const [languageQuery, setLanguageQuery] = useState('');
 
   const [accommodationTypes, setAccommodationTypes] = useState<string[]>([]);
   const [originalAccommodationTypes, setOriginalAccommodationTypes] = useState<string[]>([]);
@@ -1225,7 +1226,8 @@ const ProfilePage = () => {
 
     if (!isEditingCore) {
       setCoreLanguages(normalized);
-      setLanguageToAdd('');
+      setLanguageToAddOption(null);
+      setLanguageQuery('');
     }
   }, [profile?.core_languages, isEditingCore]);
 
@@ -1615,6 +1617,20 @@ const ProfilePage = () => {
       a.name.localeCompare(b.name)
     );
   }, [coreLanguages]);
+
+  const filteredAvailableLanguages = useMemo(() => {
+    if (!languageQuery.trim()) {
+      return availableLanguages;
+    }
+
+    const normalizedQuery = languageQuery.trim().toLowerCase();
+    return availableLanguages.filter((language) => {
+      const nameMatch = language.name.toLowerCase().includes(normalizedQuery);
+      const codeMatch = language.code.toLowerCase().includes(normalizedQuery);
+      const emojiMatch = language.emoji?.includes(languageQuery.trim()) ?? false;
+      return nameMatch || codeMatch || emojiMatch;
+    });
+  }, [availableLanguages, languageQuery]);
 
   const travelFrequencyOptions = useMemo(
     (): { value: TravelFrequencyPerYear; label: string }[] =>
@@ -2635,18 +2651,20 @@ const ProfilePage = () => {
   };
 
   const handleAddLanguage = () => {
-    if (!languageToAdd) {
+    if (!languageToAddOption) {
       return;
     }
 
-    const normalized = languageToAdd.toLowerCase();
+    const normalized = languageToAddOption.code.toLowerCase();
     if (coreLanguages.includes(normalized)) {
-      setLanguageToAdd('');
+      setLanguageToAddOption(null);
+      setLanguageQuery('');
       return;
     }
 
     setCoreLanguages((prev) => normalizeLanguages([...prev, normalized]));
-    setLanguageToAdd('');
+    setLanguageToAddOption(null);
+    setLanguageQuery('');
     setCoreSaved(false);
     setCoreSaveError(null);
   };
@@ -2836,7 +2854,8 @@ const handleRemoveActivityCultural = (value: string) => {
     setCoreLanguages(originalLanguages);
     setSelectedCountry(resolveCountryOption(originalCountry));
     setCountryQuery('');
-    setLanguageToAdd('');
+    setLanguageToAddOption(null);
+    setLanguageQuery('');
   };
 
   const handleCancelEditingCore = () => {
@@ -2848,7 +2867,8 @@ const handleRemoveActivityCultural = (value: string) => {
     setCoreLanguages(originalLanguages);
     setSelectedCountry(resolveCountryOption(originalCountry));
     setCountryQuery('');
-    setLanguageToAdd('');
+    setLanguageToAddOption(null);
+    setLanguageQuery('');
   };
 
   const handleSaveCore = async () => {
@@ -3888,26 +3908,72 @@ const handleRemoveActivityCultural = (value: string) => {
                         )}
                       </div>
                       <div className="flex items-center gap-2">
-                        <select
-                          value={languageToAdd}
-                          onChange={(event) => setLanguageToAdd(event.target.value)}
-                          className="w-40 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
-                        >
-                          <option value="">
-                            {t('onboard.actions.selectLanguage', { defaultValue: 'Select language' })}
-                          </option>
-                          {availableLanguages.map((language) => (
-                            <option key={language.code} value={language.code}>
-                              {language.emoji ? `${language.emoji} ` : ''}
-                              {language.name} ({language.code.toUpperCase()})
-                            </option>
-                          ))}
-                        </select>
+                        <div className="relative max-w-xs">
+                          <Combobox
+                            value={languageToAddOption}
+                            onChange={(option: LanguageOption | null) => {
+                              setLanguageToAddOption(option);
+                              setLanguageQuery('');
+                            }}
+                            by={(a, b) => (a?.code ?? '').toLowerCase() === (b?.code ?? '').toLowerCase()}
+                          >
+                            <div className="relative">
+                              <Combobox.Input
+                                className="w-44 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                displayValue={(option: LanguageOption | null) =>
+                                  option
+                                    ? `${option.emoji ? `${option.emoji} ` : ''}${option.name} (${option.code.toUpperCase()})`
+                                    : languageQuery
+                                }
+                                placeholder={t('onboard.actions.selectLanguage', {
+                                  defaultValue: 'Select language',
+                                })}
+                                onChange={(event) => {
+                                  setLanguageQuery(event.target.value);
+                                  setLanguageToAddOption(null);
+                                }}
+                              />
+                              <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500">
+                                <ChevronUpDownIcon className="h-5 w-5" aria-hidden="true" />
+                              </Combobox.Button>
+                            </div>
+                            <Combobox.Options className="absolute z-10 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                              {filteredAvailableLanguages.length === 0 ? (
+                                <p className="px-3 py-2 text-xs text-[var(--text-secondary)]">
+                                  {t('profile.state.noLanguagesFound', {
+                                    defaultValue: 'No languages match your search.',
+                                  })}
+                                </p>
+                              ) : (
+                                filteredAvailableLanguages.map((language) => (
+                                  <Combobox.Option
+                                    key={language.code}
+                                    value={language}
+                                    className={({ active }) =>
+                                      `flex cursor-pointer items-center gap-2 px-3 py-2 ${
+                                        active
+                                          ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                          : 'text-[var(--text-primary)]'
+                                      }`
+                                    }
+                                  >
+                                    {language.emoji ? (
+                                      <span className="text-lg leading-none">{language.emoji}</span>
+                                    ) : null}
+                                    <span className="flex-1 text-left">
+                                      {language.name} ({language.code.toUpperCase()})
+                                    </span>
+                                  </Combobox.Option>
+                                ))
+                              )}
+                            </Combobox.Options>
+                          </Combobox>
+                        </div>
                         <button
                           type="button"
                           onClick={handleAddLanguage}
                           className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-secondary text-lg font-semibold text-brand-secondary transition hover:bg-brand-secondary hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
-                          disabled={!languageToAdd}
+                          disabled={!languageToAddOption}
                           aria-label={t('onboard.actions.addLanguage', { defaultValue: 'Add language' })}
                         >
                           +

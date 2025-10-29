@@ -137,6 +137,7 @@
       "empty": "Noch keine Profildaten vorhanden.",
       "countriesLoading": "Lade Länder…",
       "noCountriesFound": "Keine passenden Länder gefunden.",
+      "noLanguagesFound": "Keine passenden Sprachen gefunden.",
       "settingsSaved": "Deine Einstellungen wurden gespeichert."
     },
     "fallback": {
