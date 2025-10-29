@@ -138,7 +138,8 @@
       "countriesLoading": "Caricamento paesi…",
       "noCountriesFound": "Nessun paese corrisponde alla ricerca.",
       "noLanguagesFound": "Nessuna lingua corrisponde alla ricerca.",
-      "settingsSaved": "Le impostazioni sono state salvate."
+      "settingsSaved": "Le impostazioni sono state salvate.",
+      "emptyOptions": "Nessuna opzione disponibile."
     },
     "fallback": {
       "notSet": "Non impostato",
@@ -256,8 +257,8 @@
         "glacier_ice": "🧊 Tour su ghiacciaio / ghiaccio",
         "volcano_desert": "🌋 Spedizione vulcano / deserto",
         "hot_air_balloon": "🎈 Mongolfiera",
-      "helicopter": "🚁 Volo in elicottero",
-      "shark_cage_diving": "🦈 Immersioni in gabbia con squali"
+        "helicopter": "🚁 Volo in elicottero",
+        "shark_cage_diving": "🦈 Immersioni in gabbia con squali"
       },
       "cultural": {
         "museums": "🏛️ Musei",

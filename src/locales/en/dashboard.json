@@ -138,7 +138,8 @@
       "countriesLoading": "Loading countries…",
       "noCountriesFound": "No countries match your search.",
       "noLanguagesFound": "No languages match your search.",
-      "settingsSaved": "Your settings have been saved."
+      "settingsSaved": "Your settings have been saved.",
+      "emptyOptions": "No options available."
     },
     "fallback": {
       "notSet": "Not set",

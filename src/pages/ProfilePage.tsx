@@ -4319,28 +4319,63 @@ const handleRemoveActivityCultural = (value: string) => {
                       {section.id === 'travel' && field.id === 'travel_frequency_per_year'
                         ? isEditingTravel
                           ? (
-                              <select
-                                value={travelFrequency ?? ''}
-                                onChange={(event) => {
-                                  const nextValue = event.target.value;
-                                  setTravelFrequency(isTravelFrequencyValue(nextValue) ? nextValue : null);
+                              <Combobox
+                                value={travelFrequency}
+                                onChange={(value: TravelFrequencyPerYear | null) => {
+                                  setTravelFrequency(value);
                                   setTravelSaved(false);
                                   setTravelSaveError(null);
                                 }}
-                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
                                 disabled={savingTravel}
                               >
-                                <option value="">
-                                  {t('profile.actions.selectTravelFrequency', {
-                                    defaultValue: 'Select your travel frequency',
-                                  })}
-                                </option>
-                                {travelFrequencyOptions.map((option) => (
-                                  <option key={option.value} value={option.value}>
-                                    {option.label}
-                                  </option>
-                                ))}
-                              </select>
+                                <div className="relative">
+                                  <Combobox.Button className="flex w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                    <span
+                                      className={
+                                        travelFrequency ? '' : 'text-[var(--text-secondary)] dark:text-slate-400'
+                                      }
+                                    >
+                                      {travelFrequencyDisplayLabel ??
+                                        travelFrequencyProfileLabel ??
+                                        t('profile.actions.selectTravelFrequency', {
+                                          defaultValue: 'Select your travel frequency',
+                                        })}
+                                    </span>
+                                    <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                                  </Combobox.Button>
+                                  <Combobox.Options className="absolute z-10 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                                    <Combobox.Option
+                                      value={null}
+                                      className={({ active }) =>
+                                        `cursor-pointer px-3 py-2 ${
+                                          active
+                                            ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                            : 'text-[var(--text-primary)]'
+                                        }`
+                                      }
+                                    >
+                                      {t('profile.actions.selectTravelFrequency', {
+                                        defaultValue: 'Select your travel frequency',
+                                      })}
+                                    </Combobox.Option>
+                                    {travelFrequencyOptions.map((option) => (
+                                      <Combobox.Option
+                                        key={option.value}
+                                        value={option.value}
+                                        className={({ active }) =>
+                                          `cursor-pointer px-3 py-2 ${
+                                            active
+                                              ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                              : 'text-[var(--text-primary)]'
+                                          }`
+                                        }
+                                      >
+                                        {option.label}
+                                      </Combobox.Option>
+                                    ))}
+                                  </Combobox.Options>
+                                </div>
+                              </Combobox>
                             )
                           : travelFrequencyDisplayLabel ??
                             travelFrequencyProfileLabel ??
@@ -4376,23 +4411,67 @@ const handleRemoveActivityCultural = (value: string) => {
                                   )}
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <select
-                                    value={travelRegionToAdd}
-                                    onChange={(event) => setTravelRegionToAdd(event.target.value)}
-                                    className="w-60 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
-                                    disabled={savingTravel}
-                                  >
-                                    <option value="">
-                                      {t('profile.actions.selectTravelRegion', {
-                                        defaultValue: 'Select region',
-                                      })}
-                                    </option>
-                                    {availableTravelRegions.map((option) => (
-                                      <option key={option.value} value={option.value}>
-                                        {option.label}
-                                      </option>
-                                    ))}
-                                  </select>
+                                  <div className="relative">
+                                    <Combobox
+                                      value={travelRegionToAdd || null}
+                                      onChange={(value: string | null) => {
+                                        setTravelRegionToAdd(value ?? '');
+                                      }}
+                                      disabled={savingTravel || availableTravelRegions.length === 0}
+                                    >
+                                      <div className="relative">
+                                        <Combobox.Button className="flex w-60 items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                          <span
+                                            className={
+                                              travelRegionToAdd
+                                                ? ''
+                                                : 'text-[var(--text-secondary)] dark:text-slate-400'
+                                            }
+                                          >
+                                            {travelRegionToAdd
+                                              ? travelRegionLabelByValue.get(travelRegionToAdd) ?? travelRegionToAdd
+                                              : t('profile.actions.selectTravelRegion', {
+                                                  defaultValue: 'Select region',
+                                                })}
+                                          </span>
+                                          <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                                        </Combobox.Button>
+                                        {availableTravelRegions.length > 0 ? (
+                                          <Combobox.Options className="absolute z-10 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                                            <Combobox.Option
+                                              value={null}
+                                              className={({ active }) =>
+                                                `cursor-pointer px-3 py-2 ${
+                                                  active
+                                                    ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                                    : 'text-[var(--text-primary)]'
+                                                }`
+                                              }
+                                            >
+                                              {t('profile.actions.selectTravelRegion', {
+                                                defaultValue: 'Select region',
+                                              })}
+                                            </Combobox.Option>
+                                            {availableTravelRegions.map((option) => (
+                                              <Combobox.Option
+                                                key={option.value}
+                                                value={option.value}
+                                                className={({ active }) =>
+                                                  `cursor-pointer px-3 py-2 ${
+                                                    active
+                                                      ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                                      : 'text-[var(--text-primary)]'
+                                                  }`
+                                                }
+                                              >
+                                                {option.label}
+                                              </Combobox.Option>
+                                            ))}
+                                          </Combobox.Options>
+                                        ) : null}
+                                      </div>
+                                    </Combobox>
+                                  </div>
                                   <button
                                     type="button"
                                     onClick={handleAddTravelRegion}
@@ -4456,23 +4535,65 @@ const handleRemoveActivityCultural = (value: string) => {
                                   )}
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <select
-                                    value={travelStyleToAdd}
-                                    onChange={(event) => setTravelStyleToAdd(event.target.value)}
-                                    className="w-60 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
-                                    disabled={savingTravel}
-                                  >
-                                    <option value="">
-                                      {t('profile.actions.selectTravelStyle', {
-                                        defaultValue: 'Select travel style',
-                                      })}
-                                    </option>
-                                    {availableTravelStyles.map((option) => (
-                                      <option key={option.value} value={option.value}>
-                                        {option.label}
-                                      </option>
-                                    ))}
-                                  </select>
+                                  <div className="relative">
+                                    <Combobox
+                                      value={travelStyleToAdd || null}
+                                      onChange={(value: string | null) => {
+                                        setTravelStyleToAdd(value ?? '');
+                                      }}
+                                      disabled={savingTravel || availableTravelStyles.length === 0}
+                                    >
+                                      <div className="relative">
+                                        <Combobox.Button className="flex w-60 items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                          <span
+                                            className={
+                                              travelStyleToAdd ? '' : 'text-[var(--text-secondary)] dark:text-slate-400'
+                                            }
+                                          >
+                                            {travelStyleToAdd
+                                              ? travelStyleLabelByValue.get(travelStyleToAdd) ?? travelStyleToAdd
+                                              : t('profile.actions.selectTravelStyle', {
+                                                  defaultValue: 'Select travel style',
+                                                })}
+                                          </span>
+                                          <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                                        </Combobox.Button>
+                                        {availableTravelStyles.length > 0 ? (
+                                          <Combobox.Options className="absolute z-10 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                                            <Combobox.Option
+                                              value={null}
+                                              className={({ active }) =>
+                                                `cursor-pointer px-3 py-2 ${
+                                                  active
+                                                    ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                                    : 'text-[var(--text-primary)]'
+                                                }`
+                                              }
+                                            >
+                                              {t('profile.actions.selectTravelStyle', {
+                                                defaultValue: 'Select travel style',
+                                              })}
+                                            </Combobox.Option>
+                                            {availableTravelStyles.map((option) => (
+                                              <Combobox.Option
+                                                key={option.value}
+                                                value={option.value}
+                                                className={({ active }) =>
+                                                  `cursor-pointer px-3 py-2 ${
+                                                    active
+                                                      ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                                      : 'text-[var(--text-primary)]'
+                                                  }`
+                                                }
+                                              >
+                                                {option.label}
+                                              </Combobox.Option>
+                                            ))}
+                                          </Combobox.Options>
+                                        ) : null}
+                                      </div>
+                                    </Combobox>
+                                  </div>
                                   <button
                                     type="button"
                                     onClick={handleAddTravelStyle}
@@ -4508,28 +4629,61 @@ const handleRemoveActivityCultural = (value: string) => {
                         : section.id === 'travel' && field.id === 'travel_seasonality_preference'
                         ? isEditingTravel
                           ? (
-                              <select
-                                value={travelSeason ?? ''}
-                                onChange={(event) => {
-                                  const nextValue = event.target.value;
-                                  setTravelSeason(nextValue ? nextValue : null);
+                              <Combobox
+                                value={travelSeason}
+                                onChange={(value: string | null) => {
+                                  setTravelSeason(value);
                                   setTravelSaved(false);
                                   setTravelSaveError(null);
                                 }}
-                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
                                 disabled={savingTravel}
                               >
-                                <option value="">
-                                  {t('profile.actions.selectTravelSeason', {
-                                    defaultValue: 'Select season',
-                                  })}
-                                </option>
-                                {travelSeasonOptions.map((option) => (
-                                  <option key={option.value} value={option.value}>
-                                    {option.label}
-                                  </option>
-                                ))}
-                              </select>
+                                <div className="relative">
+                                  <Combobox.Button className="flex w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                    <span
+                                      className={travelSeason ? '' : 'text-[var(--text-secondary)] dark:text-slate-400'}
+                                    >
+                                      {travelSeasonDisplayLabel ??
+                                        originalTravelSeasonDisplayLabel ??
+                                        t('profile.actions.selectTravelSeason', {
+                                          defaultValue: 'Select season',
+                                        })}
+                                    </span>
+                                    <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                                  </Combobox.Button>
+                                  <Combobox.Options className="absolute z-10 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                                    <Combobox.Option
+                                      value={null}
+                                      className={({ active }) =>
+                                        `cursor-pointer px-3 py-2 ${
+                                          active
+                                            ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                            : 'text-[var(--text-primary)]'
+                                        }`
+                                      }
+                                    >
+                                      {t('profile.actions.selectTravelSeason', {
+                                        defaultValue: 'Select season',
+                                      })}
+                                    </Combobox.Option>
+                                    {travelSeasonOptions.map((option) => (
+                                      <Combobox.Option
+                                        key={option.value}
+                                        value={option.value}
+                                        className={({ active }) =>
+                                          `cursor-pointer px-3 py-2 ${
+                                            active
+                                              ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                              : 'text-[var(--text-primary)]'
+                                          }`
+                                        }
+                                      >
+                                        {option.label}
+                                      </Combobox.Option>
+                                    ))}
+                                  </Combobox.Options>
+                                </div>
+                              </Combobox>
                             )
                           : travelSeasonDisplayLabel ??
                             originalTravelSeasonDisplayLabel ??
@@ -4600,28 +4754,61 @@ const handleRemoveActivityCultural = (value: string) => {
                         : section.id === 'travel' && field.id === 'travel_avg_trip_duration_days'
                         ? isEditingTravel
                           ? (
-                              <select
-                                value={travelDuration ?? ''}
-                                onChange={(event) => {
-                                  const nextValue = event.target.value;
-                                  setTravelDuration(isTravelDurationValue(nextValue) ? nextValue : null);
+                              <Combobox
+                                value={travelDuration}
+                                onChange={(value: TravelTripDurationDays | null) => {
+                                  setTravelDuration(value);
                                   setTravelSaved(false);
                                   setTravelSaveError(null);
                                 }}
-                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
                                 disabled={savingTravel}
                               >
-                                <option value="">
-                                  {t('profile.actions.selectTravelDuration', {
-                                    defaultValue: 'Select your average trip length',
-                                  })}
-                                </option>
-                                {travelDurationOptions.map((option) => (
-                                  <option key={option.value} value={option.value}>
-                                    {option.label}
-                                  </option>
-                                ))}
-                              </select>
+                                <div className="relative">
+                                  <Combobox.Button className="flex w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                    <span
+                                      className={travelDuration ? '' : 'text-[var(--text-secondary)] dark:text-slate-400'}
+                                    >
+                                      {travelDurationDisplayLabel ??
+                                        travelDurationProfileLabel ??
+                                        t('profile.actions.selectTravelDuration', {
+                                          defaultValue: 'Select your average trip length',
+                                        })}
+                                    </span>
+                                    <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                                  </Combobox.Button>
+                                  <Combobox.Options className="absolute z-10 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                                    <Combobox.Option
+                                      value={null}
+                                      className={({ active }) =>
+                                        `cursor-pointer px-3 py-2 ${
+                                          active
+                                            ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                            : 'text-[var(--text-primary)]'
+                                        }`
+                                      }
+                                    >
+                                      {t('profile.actions.selectTravelDuration', {
+                                        defaultValue: 'Select your average trip length',
+                                      })}
+                                    </Combobox.Option>
+                                    {travelDurationOptions.map((option) => (
+                                      <Combobox.Option
+                                        key={option.value}
+                                        value={option.value}
+                                        className={({ active }) =>
+                                          `cursor-pointer px-3 py-2 ${
+                                            active
+                                              ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                              : 'text-[var(--text-primary)]'
+                                          }`
+                                        }
+                                      >
+                                        {option.label}
+                                      </Combobox.Option>
+                                    ))}
+                                  </Combobox.Options>
+                                </div>
+                              </Combobox>
                             )
                           : travelDurationDisplayLabel ??
                             travelDurationProfileLabel ??
@@ -4658,23 +4845,67 @@ const handleRemoveActivityCultural = (value: string) => {
                                   )}
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <select
-                                    value={transportModeToAdd}
-                                    onChange={(event) => setTransportModeToAdd(event.target.value)}
-                                    className="w-48 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
-                                    disabled={savingTransport}
-                                  >
-                                    <option value="">
-                                      {t('profile.actions.selectTransportMode', {
-                                        defaultValue: 'Select transport mode',
-                                      })}
-                                    </option>
-                                    {availableTransportModes.map((option) => (
-                                      <option key={option.value} value={option.value}>
-                                        {option.label}
-                                      </option>
-                                    ))}
-                                  </select>
+                                  <div className="relative">
+                                    <Combobox
+                                      value={transportModeToAdd || null}
+                                      onChange={(value: string | null) => {
+                                        setTransportModeToAdd(value ?? '');
+                                      }}
+                                      disabled={savingTransport || availableTransportModes.length === 0}
+                                    >
+                                      <div className="relative">
+                                        <Combobox.Button className="flex w-52 items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                          <span
+                                            className={transportModeToAdd ? '' : 'text-[var(--text-secondary)] dark:text-slate-400'}
+                                          >
+                                            {transportModeToAdd
+                                              ? transportModeLabelByValue.get(transportModeToAdd) ?? transportModeToAdd
+                                              : availableTransportModes.length === 0
+                                                ? t('profile.state.emptyOptions', {
+                                                    defaultValue: 'No options available.',
+                                                  })
+                                                : t('profile.actions.selectTransportMode', {
+                                                    defaultValue: 'Select transport mode',
+                                                  })}
+                                          </span>
+                                          <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                                        </Combobox.Button>
+                                        {availableTransportModes.length > 0 ? (
+                                          <Combobox.Options className="absolute z-10 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                                            <Combobox.Option
+                                              value={null}
+                                              className={({ active }) =>
+                                                `cursor-pointer px-3 py-2 ${
+                                                  active
+                                                    ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                                    : 'text-[var(--text-primary)]'
+                                                }`
+                                              }
+                                            >
+                                              {t('profile.actions.selectTransportMode', {
+                                                defaultValue: 'Select transport mode',
+                                              })}
+                                            </Combobox.Option>
+                                            {availableTransportModes.map((option) => (
+                                              <Combobox.Option
+                                                key={option.value}
+                                                value={option.value}
+                                                className={({ active }) =>
+                                                  `cursor-pointer px-3 py-2 ${
+                                                    active
+                                                      ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                                      : 'text-[var(--text-primary)]'
+                                                  }`
+                                                }
+                                              >
+                                                {option.label}
+                                              </Combobox.Option>
+                                            ))}
+                                          </Combobox.Options>
+                                        ) : null}
+                                      </div>
+                                    </Combobox>
+                                  </div>
                                   <button
                                     type="button"
                                     onClick={handleAddTransportMode}
@@ -4739,23 +4970,67 @@ const handleRemoveActivityCultural = (value: string) => {
                                   )}
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <select
-                                    value={luggageTypeToAdd}
-                                    onChange={(event) => setLuggageTypeToAdd(event.target.value)}
-                                    className="w-48 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
-                                    disabled={savingTransport}
-                                  >
-                                    <option value="">
-                                      {t('profile.actions.selectLuggageType', {
-                                        defaultValue: 'Select luggage type',
-                                      })}
-                                    </option>
-                                    {availableLuggageTypes.map((option) => (
-                                      <option key={option.value} value={option.value}>
-                                        {option.label}
-                                      </option>
-                                    ))}
-                                  </select>
+                                  <div className="relative">
+                                    <Combobox
+                                      value={luggageTypeToAdd || null}
+                                      onChange={(value: string | null) => {
+                                        setLuggageTypeToAdd(value ?? '');
+                                      }}
+                                      disabled={savingTransport || availableLuggageTypes.length === 0}
+                                    >
+                                      <div className="relative">
+                                        <Combobox.Button className="flex w-52 items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                          <span
+                                            className={luggageTypeToAdd ? '' : 'text-[var(--text-secondary)] dark:text-slate-400'}
+                                          >
+                                            {luggageTypeToAdd
+                                              ? luggageTypeLabelByValue.get(luggageTypeToAdd) ?? luggageTypeToAdd
+                                              : availableLuggageTypes.length === 0
+                                                ? t('profile.state.emptyOptions', {
+                                                    defaultValue: 'No options available.',
+                                                  })
+                                                : t('profile.actions.selectLuggageType', {
+                                                    defaultValue: 'Select luggage type',
+                                                  })}
+                                          </span>
+                                          <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                                        </Combobox.Button>
+                                        {availableLuggageTypes.length > 0 ? (
+                                          <Combobox.Options className="absolute z-10 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                                            <Combobox.Option
+                                              value={null}
+                                              className={({ active }) =>
+                                                `cursor-pointer px-3 py-2 ${
+                                                  active
+                                                    ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                                    : 'text-[var(--text-primary)]'
+                                                }`
+                                              }
+                                            >
+                                              {t('profile.actions.selectLuggageType', {
+                                                defaultValue: 'Select luggage type',
+                                              })}
+                                            </Combobox.Option>
+                                            {availableLuggageTypes.map((option) => (
+                                              <Combobox.Option
+                                                key={option.value}
+                                                value={option.value}
+                                                className={({ active }) =>
+                                                  `cursor-pointer px-3 py-2 ${
+                                                    active
+                                                      ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                                      : 'text-[var(--text-primary)]'
+                                                  }`
+                                                }
+                                              >
+                                                {option.label}
+                                              </Combobox.Option>
+                                            ))}
+                                          </Combobox.Options>
+                                        ) : null}
+                                      </div>
+                                    </Combobox>
+                                  </div>
                                   <button
                                     type="button"
                                     onClick={handleAddLuggageType}

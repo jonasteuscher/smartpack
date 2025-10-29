@@ -109,7 +109,7 @@
       "authMethodProvider": "Angemeldet mit {{provider}}",
       "country": "Wohnsitzland",
       "languages": "Sprachen",
-      "travelFrequency": "Reisen pro Jahr", 
+      "travelFrequency": "Reisen pro Jahr",
       "tripDuration": "Durchschnittliche Reisedauer (Tage)",
       "countriesVisited": "Bereiste Länder",
       "regionsVisited": "Häufig besuchte Regionen",
@@ -138,7 +138,8 @@
       "countriesLoading": "Lade Länder…",
       "noCountriesFound": "Keine passenden Länder gefunden.",
       "noLanguagesFound": "Keine passenden Sprachen gefunden.",
-      "settingsSaved": "Deine Einstellungen wurden gespeichert."
+      "settingsSaved": "Deine Einstellungen wurden gespeichert.",
+      "emptyOptions": "Keine Optionen verfügbar."
     },
     "fallback": {
       "notSet": "Nicht hinterlegt",
@@ -256,8 +257,8 @@
         "glacier_ice": "🧊 Gletscher- / Eistour",
         "volcano_desert": "🌋 Vulkan- / Wüstenexpedition",
         "hot_air_balloon": "🎈 Heissluftballon",
-      "helicopter": "🚁 Helikopterflug",
-      "shark_cage_diving": "🦈 Haikäfig / Spezialtauchen"
+        "helicopter": "🚁 Helikopterflug",
+        "shark_cage_diving": "🦈 Haikäfig / Spezialtauchen"
       },
       "cultural": {
         "museums": "🏛️ Museen",

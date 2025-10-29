@@ -138,7 +138,8 @@
       "countriesLoading": "Chargement des pays…",
       "noCountriesFound": "Aucun pays correspondant.",
       "noLanguagesFound": "Aucune langue correspondante.",
-      "settingsSaved": "Vos paramètres ont été enregistrés."
+      "settingsSaved": "Vos paramètres ont été enregistrés.",
+      "emptyOptions": "Aucune option disponible."
     },
     "fallback": {
       "notSet": "Non defini",
@@ -256,8 +257,8 @@
         "glacier_ice": "🧊 Excursion glacier / glace",
         "volcano_desert": "🌋 Expédition volcan / désert",
         "hot_air_balloon": "🎈 Montgolfière",
-      "helicopter": "🚁 Vol en hélicoptère",
-      "shark_cage_diving": "🦈 Plongée en cage aux requins"
+        "helicopter": "🚁 Vol en hélicoptère",
+        "shark_cage_diving": "🦈 Plongée en cage aux requins"
       },
       "cultural": {
         "museums": "🏛️ Musées",
