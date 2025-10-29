@@ -19,7 +19,8 @@
   },
   "themeToggle": {
     "activateLight": "Attiva modalità chiara",
-    "activateDark": "Attiva modalità scura"
+    "activateDark": "Attiva modalità scura",
+    "system": "Segui impostazioni di sistema"
   },
   "languageSwitcher": {
     "label": "Cambia lingua",

@@ -19,7 +19,8 @@
   },
   "themeToggle": {
     "activateLight": "Activer le mode clair",
-    "activateDark": "Activer le mode sombre"
+    "activateDark": "Activer le mode sombre",
+    "system": "Suivre les réglages système"
   },
   "languageSwitcher": {
     "label": "Changer de langue",

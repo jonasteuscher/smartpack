@@ -71,7 +71,6 @@ export const ensureProfileForUser = async (
     typeof value === 'object' && value !== null && !Array.isArray(value);
 
   let profileRecord: Record<string, unknown> | null = null;
-  let createdProfile = false;
 
   if (isRecord(data)) {
     if (defaultFieldKeys.length > 0) {
@@ -128,17 +127,13 @@ export const ensureProfileForUser = async (
     profileRecord = isRecord(fetchedProfile)
       ? fetchedProfile
       : ({ user_id: userId, ...defaultFields } as Record<string, unknown>);
-
-    createdProfile = true;
   }
 
   if (!profileRecord) {
     profileRecord = { user_id: userId, ...defaultFields };
   }
 
-  if (createdProfile) {
-    await ensureUserSettingsForUser(userId);
-  }
+  await ensureUserSettingsForUser(userId);
 
   return { hasProfile: true, profile: profileRecord };
 };

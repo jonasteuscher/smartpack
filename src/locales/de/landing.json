@@ -19,7 +19,8 @@
   },
   "themeToggle": {
     "activateLight": "Hellmodus aktivieren",
-    "activateDark": "Dunkelmodus aktivieren"
+    "activateDark": "Dunkelmodus aktivieren",
+    "system": "Systemeinstellung verwenden"
   },
   "languageSwitcher": {
     "label": "Sprache wechseln",

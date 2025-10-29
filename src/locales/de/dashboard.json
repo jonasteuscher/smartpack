@@ -348,6 +348,57 @@
       "language": {
         "title": "Sprache",
         "description": "Wähle, in welcher Sprache die App angezeigt werden soll."
+      },
+      "preferences": {
+        "title": "Kontopräferenzen",
+        "description": "Diese Werte werden in deinen Kontoeinstellungen gespeichert."
+      },
+      "accountInformation": {
+        "title": "Kontoinformationen",
+        "description": "Zeitstempel, die zu deinen Kontodaten gehören."
+      }
+    },
+    "preferences": {
+      "labels": {
+        "theme": "Design",
+        "language": "Sprache",
+        "units": "Einheiten",
+        "timeFormat": "Zeitformat",
+        "dateFormat": "Datumsformat"
+      },
+      "values": {
+        "theme": {
+          "system": "Systemstandard",
+          "light": "Hell",
+          "dark": "Dunkel"
+        },
+        "units": {
+          "metric": "Metrisch (kg, km, °C)",
+          "imperial": "Imperial (lb, mi, °F)"
+        },
+        "timeFormat": {
+          "24h": "24-Stunden-Format",
+          "12h": "12-Stunden-Format"
+        },
+        "dateFormat": {
+          "iso": "ISO (YYYY-MM-DD)",
+          "dayFirst": "Tag-zuerst (DD.MM.YYYY)"
+        }
+      },
+      "state": {
+        "loading": "Präferenzen werden geladen…",
+        "error": "Deine gespeicherten Präferenzen konnten nicht geladen werden.",
+        "empty": "Keine Präferenzen gespeichert."
+      }
+    },
+    "accountInformation": {
+      "labels": {
+        "created": "Erstellt am",
+        "updated": "Aktualisiert am"
+      },
+      "state": {
+        "empty": "Keine Kontoinformationen verfügbar.",
+        "unknown": "Unbekannt"
       }
     }
   }

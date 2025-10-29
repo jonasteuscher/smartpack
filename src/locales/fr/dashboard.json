@@ -348,6 +348,57 @@
       "language": {
         "title": "Langue",
         "description": "Choisis la langue que tu souhaites utiliser dans l'application."
+      },
+      "preferences": {
+        "title": "Préférences du compte",
+        "description": "Ces valeurs sont enregistrées dans les paramètres de votre compte."
+      },
+      "accountInformation": {
+        "title": "Informations du compte",
+        "description": "Horodatages associés à vos données de compte."
+      }
+    },
+    "preferences": {
+      "labels": {
+        "theme": "Thème",
+        "language": "Langue",
+        "units": "Unités",
+        "timeFormat": "Format de l'heure",
+        "dateFormat": "Format de date"
+      },
+      "values": {
+        "theme": {
+          "system": "Par défaut du système",
+          "light": "Clair",
+          "dark": "Sombre"
+        },
+        "units": {
+          "metric": "Métrique (kg, km, °C)",
+          "imperial": "Impérial (lb, mi, °F)"
+        },
+        "timeFormat": {
+          "24h": "Horloge 24 h",
+          "12h": "Horloge 12 h"
+        },
+        "dateFormat": {
+          "iso": "ISO (YYYY-MM-DD)",
+          "dayFirst": "Jour en premier (DD.MM.YYYY)"
+        }
+      },
+      "state": {
+        "loading": "Chargement des préférences…",
+        "error": "Impossible de charger vos préférences enregistrées.",
+        "empty": "Aucune préférence enregistrée."
+      }
+    },
+    "accountInformation": {
+      "labels": {
+        "created": "Créé le",
+        "updated": "Mis à jour le"
+      },
+      "state": {
+        "empty": "Aucune information de compte disponible.",
+        "unknown": "Inconnu"
       }
     }
   }

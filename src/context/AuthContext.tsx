@@ -14,6 +14,8 @@ import {
   useCallback,
 } from 'react';
 import { supabase } from '../utils/supabaseClient';
+import i18n, { type AppLanguage } from '../i18n';
+import { useTheme, type ThemeSetting } from './ThemeContext';
 import { ensureProfileForUser } from '../services/profile';
 
 const normalizeName = (value: unknown): string | null => {
@@ -23,6 +25,20 @@ const normalizeName = (value: unknown): string | null => {
   const trimmed = value.trim();
   return trimmed.length > 0 ? trimmed : null;
 };
+
+const SUPPORTED_LANGUAGES: ReadonlyArray<AppLanguage> = ['de', 'en', 'fr', 'it'];
+
+const normalizeLanguageSetting = (value: unknown): AppLanguage | null => {
+  if (typeof value !== 'string') {
+    return null;
+  }
+
+  const candidate = value.toLowerCase().split('-')[0] as AppLanguage;
+  return SUPPORTED_LANGUAGES.includes(candidate) ? candidate : null;
+};
+
+const isThemeSetting = (value: unknown): value is ThemeSetting =>
+  value === 'light' || value === 'dark' || value === 'system';
 
 interface EmailSignUpParams {
   email: string;
@@ -47,6 +63,7 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const { setTheme } = useTheme();
 
   useEffect(() => {
     let isMounted = true;
@@ -211,6 +228,68 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error('Failed to ensure profile for authenticated user', profileError);
     });
   }, [session?.user?.id, session?.user?.user_metadata]);
+
+  useEffect(() => {
+    const userId = session?.user?.id;
+    if (!userId || typeof window === 'undefined') {
+      return;
+    }
+
+    let isActive = true;
+
+    const syncUserPreferences = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('user_settings')
+          .select('theme, language')
+          .eq('user_id', userId)
+          .maybeSingle();
+
+        if (!isActive) {
+          return;
+        }
+
+        if (error) {
+          if (error.code !== 'PGRST116') {
+            console.error('Failed to fetch user settings', error);
+          }
+          return;
+        }
+
+        if (!data) {
+          return;
+        }
+
+        if (isThemeSetting(data.theme)) {
+          setTheme(data.theme);
+        } else if (data.theme === null || typeof data.theme === 'undefined') {
+          setTheme('system');
+        }
+
+        const rawLanguage =
+          typeof data.language === 'string' && data.language.trim().length > 0 ? data.language : null;
+        if (rawLanguage) {
+          const currentLanguage = window.localStorage.getItem('smartpack-language');
+          if (currentLanguage !== rawLanguage) {
+            window.localStorage.setItem('smartpack-language', rawLanguage);
+          }
+        }
+
+        const normalizedLanguage = normalizeLanguageSetting(rawLanguage);
+        if (normalizedLanguage && i18n.language !== normalizedLanguage) {
+          await i18n.changeLanguage(normalizedLanguage);
+        }
+      } catch (preferencesError) {
+        console.error('Failed to synchronise user preferences', preferencesError);
+      }
+    };
+
+    void syncUserPreferences();
+
+    return () => {
+      isActive = false;
+    };
+  }, [session?.user?.id, setTheme]);
 
   const value = useMemo(
     () => ({

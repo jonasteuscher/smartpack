@@ -19,7 +19,8 @@
   },
   "themeToggle": {
     "activateLight": "Switch to light mode",
-    "activateDark": "Switch to dark mode"
+    "activateDark": "Switch to dark mode",
+    "system": "Follow system setting"
   },
   "languageSwitcher": {
     "label": "Change language",
