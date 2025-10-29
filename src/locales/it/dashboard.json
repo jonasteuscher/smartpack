@@ -343,11 +343,24 @@
     "sections": {
       "appearance": {
         "title": "Aspetto",
-        "description": "Passa tra tema chiaro e scuro in base alle tue preferenze."
+        "description": "Passa tra tema chiaro e scuro in base alle tue preferenze.",
+        "themeLabel": "Modalità tema",
+        "options": {
+          "system": "Predefinito di sistema",
+          "light": "Chiaro",
+          "dark": "Scuro"
+        }
       },
       "language": {
         "title": "Lingua",
-        "description": "Scegli la lingua che vuoi utilizzare nell'app."
+        "description": "Scegli la lingua che vuoi utilizzare nell'app.",
+        "languageLabel": "Lingua dell'interfaccia",
+        "options": {
+          "deCH": "Tedesco (Svizzera)",
+          "en": "Inglese",
+          "frCH": "Francese",
+          "itCH": "Italiano"
+        }
       },
       "preferences": {
         "title": "Preferenze dell'account",
@@ -400,6 +413,10 @@
         "empty": "Nessuna informazione sull'account disponibile.",
         "unknown": "Sconosciuto"
       }
+    },
+    "messages": {
+      "saved": "Preferenze salvate.",
+      "saveFailed": "Impossibile salvare le preferenze."
     }
   }
 }

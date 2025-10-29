@@ -343,11 +343,24 @@
     "sections": {
       "appearance": {
         "title": "Apparence",
-        "description": "Bascule entre les thèmes clair et sombre selon tes préférences."
+        "description": "Bascule entre les thèmes clair et sombre selon tes préférences.",
+        "themeLabel": "Mode d'affichage",
+        "options": {
+          "system": "Paramètre système",
+          "light": "Clair",
+          "dark": "Sombre"
+        }
       },
       "language": {
         "title": "Langue",
-        "description": "Choisis la langue que tu souhaites utiliser dans l'application."
+        "description": "Choisis la langue que tu souhaites utiliser dans l'application.",
+        "languageLabel": "Langue de l'interface",
+        "options": {
+          "deCH": "Allemand (Suisse)",
+          "en": "Anglais",
+          "frCH": "Français",
+          "itCH": "Italien"
+        }
       },
       "preferences": {
         "title": "Préférences du compte",
@@ -400,6 +413,10 @@
         "empty": "Aucune information de compte disponible.",
         "unknown": "Inconnu"
       }
+    },
+    "messages": {
+      "saved": "Préférences enregistrées.",
+      "saveFailed": "Impossible d'enregistrer vos préférences."
     }
   }
 }

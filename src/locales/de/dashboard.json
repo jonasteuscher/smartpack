@@ -343,11 +343,24 @@
     "sections": {
       "appearance": {
         "title": "Darstellung",
-        "description": "Wechsle zwischen hellem und dunklem Design – so wie es dir am besten passt."
+        "description": "Wechsle zwischen hellem und dunklem Design – so wie es dir am besten passt.",
+        "themeLabel": "Designmodus",
+        "options": {
+          "system": "Systemstandard",
+          "light": "Hell",
+          "dark": "Dunkel"
+        }
       },
       "language": {
         "title": "Sprache",
-        "description": "Wähle, in welcher Sprache die App angezeigt werden soll."
+        "description": "Wähle, in welcher Sprache die App angezeigt werden soll.",
+        "languageLabel": "Anzeigesprache",
+        "options": {
+          "deCH": "Deutsch",
+          "en": "Englisch",
+          "frCH": "Französisch",
+          "itCH": "Italienisch"
+        }
       },
       "preferences": {
         "title": "Kontopräferenzen",
@@ -400,6 +413,10 @@
         "empty": "Keine Kontoinformationen verfügbar.",
         "unknown": "Unbekannt"
       }
+    },
+    "messages": {
+      "saved": "Präferenzen gespeichert.",
+      "saveFailed": "Präferenzen konnten nicht gespeichert werden."
     }
   }
 }

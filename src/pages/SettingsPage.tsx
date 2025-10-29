@@ -1,13 +1,36 @@
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
+import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import LanguageSwitcher from '@components/common/LanguageSwitcher';
-import ThemeToggle from '@components/common/ThemeToggle';
 import { useUserSettings } from '@hooks/useUserSettings';
 import type { UserSettings } from '@/types/userSettings';
+import { useTheme, type ThemeSetting } from '@context/ThemeContext';
+import type { AppLanguage } from '@/i18n';
+import i18n from '@/i18n';
+
+const THEME_OPTIONS: Array<{ value: ThemeSetting; labelKey: string; fallback: string; icon: string }> = [
+  { value: 'system', labelKey: 'settings.sections.appearance.options.system', fallback: 'System default', icon: '🖥️' },
+  { value: 'light', labelKey: 'settings.sections.appearance.options.light', fallback: 'Light', icon: '🌞' },
+  { value: 'dark', labelKey: 'settings.sections.appearance.options.dark', fallback: 'Dark', icon: '🌙' }
+];
+
+interface LanguageOption {
+  value: string;
+  code: AppLanguage;
+  labelKey: string;
+  fallback: string;
+}
+
+const LANGUAGE_OPTIONS: Array<LanguageOption & { icon: string }> = [
+  { value: 'de-CH', code: 'de', labelKey: 'settings.sections.language.options.deCH', fallback: 'German (Switzerland)', icon: '🇨🇭' },
+  { value: 'en', code: 'en', labelKey: 'settings.sections.language.options.en', fallback: 'English', icon: '🇬🇧' },
+  { value: 'fr-CH', code: 'fr', labelKey: 'settings.sections.language.options.frCH', fallback: 'French', icon: '🇫🇷' },
+  { value: 'it-CH', code: 'it', labelKey: 'settings.sections.language.options.itCH', fallback: 'Italian', icon: '🇮🇹' }
+];
 
 const SettingsPage = () => {
   const { t } = useTranslation('dashboard');
-  const { settings, loading, error } = useUserSettings();
+  const { theme, setTheme } = useTheme();
+  const { settings, loading, error, updateSettings, updateResult, isUpdating } = useUserSettings();
 
   const formatDateTime = useMemo(() => {
     const formatter =
@@ -46,6 +69,95 @@ const SettingsPage = () => {
   const createdAt = formatDateTime(settings?.created_at);
   const updatedAt = formatDateTime(settings?.updated_at);
 
+  const activeTheme = (settings?.theme ?? theme ?? 'system') as ThemeSetting;
+
+  const activeLanguageValue = useMemo(() => {
+    const stored =
+      settings?.language ??
+      (typeof window !== 'undefined' ? window.localStorage.getItem('smartpack-language') : null) ??
+      i18n.language;
+
+    if (typeof stored === 'string') {
+      const normalized = LANGUAGE_OPTIONS.find(
+        ({ value, code }) => value === stored || code === (stored.split('-')[0] as AppLanguage)
+      );
+      if (normalized) {
+        return normalized.value;
+      }
+    }
+
+    return LANGUAGE_OPTIONS[0]?.value ?? 'en';
+  }, [settings?.language, i18n.language]);
+
+  const statusMessage = useMemo(() => {
+    if (updateResult.error) {
+      return {
+        tone: 'error' as const,
+        text:
+          updateResult.error.message ||
+          t('settings.messages.saveFailed', { defaultValue: 'We could not save your preferences.' }),
+      };
+    }
+
+    if (updateResult.success) {
+      return {
+        tone: 'success' as const,
+        text: t('settings.messages.saved', { defaultValue: 'Preferences saved.' }),
+      };
+    }
+
+    return null;
+  }, [t, updateResult.error, updateResult.success]);
+
+  const handleThemeChange = useCallback(
+    async (event: ChangeEvent<HTMLSelectElement>) => {
+      const nextTheme = event.target.value as ThemeSetting;
+      if (nextTheme === activeTheme) {
+        return;
+      }
+      const previousTheme = activeTheme;
+
+      setTheme(nextTheme);
+      const success = await updateSettings({ theme: nextTheme });
+      if (!success) {
+        setTheme(previousTheme);
+      }
+    },
+    [activeTheme, setTheme, updateSettings]
+  );
+
+  const handleLanguageChange = useCallback(
+    async (event: ChangeEvent<HTMLSelectElement>) => {
+      const nextLanguage = event.target.value;
+      if (nextLanguage === activeLanguageValue) {
+        return;
+      }
+      const normalized = nextLanguage.split('-')[0] as AppLanguage;
+      const previousLanguageValue = activeLanguageValue;
+      const previousNormalized = previousLanguageValue.split('-')[0] as AppLanguage;
+
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('smartpack-language', nextLanguage);
+      }
+
+      if (i18n.language !== normalized) {
+        await i18n.changeLanguage(normalized);
+      }
+
+      const success = await updateSettings({ language: nextLanguage });
+
+      if (!success) {
+        if (typeof window !== 'undefined') {
+          window.localStorage.setItem('smartpack-language', previousLanguageValue);
+        }
+        if (i18n.language !== previousNormalized) {
+          await i18n.changeLanguage(previousNormalized);
+        }
+      }
+    },
+    [activeLanguageValue, updateSettings, i18n]
+  );
+
   return (
     <section className="flex flex-col gap-6">
       <header className="flex flex-col gap-1">
@@ -55,6 +167,18 @@ const SettingsPage = () => {
         </p>
       </header>
 
+      {statusMessage && (
+        <div
+          className={`rounded-2xl border px-4 py-3 text-sm ${
+            statusMessage.tone === 'success'
+              ? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/40 dark:bg-emerald-500/10 dark:text-emerald-300'
+              : 'border-red-200 bg-red-50 text-red-600 dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-300'
+          }`}
+        >
+          {statusMessage.text}
+        </div>
+      )}
+
       <div className="grid gap-4 lg:grid-cols-2">
         <section className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
           <div className="flex flex-col gap-1">
@@ -63,8 +187,23 @@ const SettingsPage = () => {
               {t('settings.sections.appearance.description', { defaultValue: 'Switch between light and dark themes to suit your preference.' })}
             </p>
           </div>
-          <div className="flex items-center justify-start">
-            <ThemeToggle />
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-[var(--text-secondary)]" htmlFor="theme-setting">
+              {t('settings.sections.appearance.themeLabel', { defaultValue: 'Theme mode' })}
+            </label>
+            <select
+              id="theme-setting"
+              value={activeTheme}
+              onChange={handleThemeChange}
+              disabled={loading || isUpdating}
+              className="w-full max-w-xs rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-[var(--text-primary)] shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-70 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+            >
+              {THEME_OPTIONS.map(({ value, labelKey, fallback, icon }) => (
+                <option key={value} value={value}>
+                  {`${icon} ${t(labelKey, { defaultValue: fallback })}`}
+                </option>
+              ))}
+            </select>
           </div>
         </section>
         <section className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
@@ -74,8 +213,23 @@ const SettingsPage = () => {
               {t('settings.sections.language.description', { defaultValue: 'Choose the language you want to use across the app.' })}
             </p>
           </div>
-          <div className="flex items-center justify-start">
-            <LanguageSwitcher />
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-[var(--text-secondary)]" htmlFor="language-setting">
+              {t('settings.sections.language.languageLabel', { defaultValue: 'Interface language' })}
+            </label>
+            <select
+              id="language-setting"
+              value={activeLanguageValue}
+              onChange={handleLanguageChange}
+              disabled={loading || isUpdating}
+              className="w-full max-w-xs rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-[var(--text-primary)] shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-70 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+            >
+              {LANGUAGE_OPTIONS.map(({ value, labelKey, fallback, icon }) => (
+                <option key={value} value={value}>
+                  {`${icon} ${t(labelKey, { defaultValue: fallback })}`}
+                </option>
+              ))}
+            </select>
           </div>
         </section>
         <section className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">

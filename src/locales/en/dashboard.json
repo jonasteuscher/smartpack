@@ -343,11 +343,24 @@
     "sections": {
       "appearance": {
         "title": "Appearance",
-        "description": "Switch between light and dark themes to suit your preference."
+        "description": "Switch between light and dark themes to suit your preference.",
+        "themeLabel": "Theme mode",
+        "options": {
+          "system": "System default",
+          "light": "Light",
+          "dark": "Dark"
+        }
       },
       "language": {
         "title": "Language",
-        "description": "Choose the language you want to use across the app."
+        "description": "Choose the language you want to use across the app.",
+        "languageLabel": "Interface language",
+        "options": {
+          "deCH": "German (Switzerland)",
+          "en": "English",
+          "frCH": "French",
+          "itCH": "Italian"
+        }
       },
       "preferences": {
         "title": "Account preferences",
@@ -400,6 +413,10 @@
         "empty": "No account information available.",
         "unknown": "Unknown"
       }
+    },
+    "messages": {
+      "saved": "Preferences saved.",
+      "saveFailed": "We could not save your preferences."
     }
   }
 }
