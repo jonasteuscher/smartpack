@@ -340,6 +340,15 @@
   "settings": {
     "heading": "Impostazioni",
     "subheading": "Gestisci le preferenze dell'applicazione.",
-    "placeholder": "Le impostazioni saranno presto disponibili qui."
+    "sections": {
+      "appearance": {
+        "title": "Aspetto",
+        "description": "Passa tra tema chiaro e scuro in base alle tue preferenze."
+      },
+      "language": {
+        "title": "Lingua",
+        "description": "Scegli la lingua che vuoi utilizzare nell'app."
+      }
+    }
   }
 }

@@ -340,6 +340,15 @@
   "settings": {
     "heading": "Settings",
     "subheading": "Manage your application preferences.",
-    "placeholder": "Settings content will appear here soon."
+    "sections": {
+      "appearance": {
+        "title": "Appearance",
+        "description": "Switch between light and dark themes to suit your preference."
+      },
+      "language": {
+        "title": "Language",
+        "description": "Choose the language you want to use across the app."
+      }
+    }
   }
 }

@@ -10,6 +10,23 @@ interface EnsureProfileOptions {
 }
 
 const PROFILE_TABLE = 'profiles';
+const USER_SETTINGS_TABLE = 'user_settings';
+
+const ensureUserSettingsForUser = async (userId: string) => {
+  const { error } = await supabase
+    .from(USER_SETTINGS_TABLE)
+    .upsert(
+      { user_id: userId },
+      {
+        onConflict: 'user_id',
+        returning: 'minimal',
+      }
+    );
+
+  if (error && error.code !== '23505') {
+    throw error;
+  }
+};
 
 /**
  * Guarantees that a profile row exists for the provided user.
@@ -53,6 +70,9 @@ export const ensureProfileForUser = async (
   const isRecord = (value: unknown): value is Record<string, unknown> =>
     typeof value === 'object' && value !== null && !Array.isArray(value);
 
+  let profileRecord: Record<string, unknown> | null = null;
+  let createdProfile = false;
+
   if (isRecord(data)) {
     if (defaultFieldKeys.length > 0) {
       const updatePayload: Record<string, unknown> = {};
@@ -82,32 +102,43 @@ export const ensureProfileForUser = async (
       }
     }
 
-    return { hasProfile: true, profile: data };
+    profileRecord = data;
+  }
+  if (!profileRecord) {
+    const payload: Record<string, unknown> = { user_id: userId, ...defaultFields };
+
+    const { error: insertError } = await supabase.from(PROFILE_TABLE).upsert(payload, {
+      onConflict: 'user_id',
+    });
+
+    if (insertError && insertError.code !== '23505') {
+      throw insertError;
+    }
+
+    const { data: fetchedProfile, error: fetchError } = await supabase
+      .from(PROFILE_TABLE)
+      .select(selectColumns.join(','))
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    if (fetchError && fetchError.code !== 'PGRST116') {
+      throw fetchError;
+    }
+
+    profileRecord = isRecord(fetchedProfile)
+      ? fetchedProfile
+      : ({ user_id: userId, ...defaultFields } as Record<string, unknown>);
+
+    createdProfile = true;
   }
 
-  const payload: Record<string, unknown> = { user_id: userId, ...defaultFields };
-
-  const { error: insertError } = await supabase.from(PROFILE_TABLE).upsert(payload, {
-    onConflict: 'user_id',
-  });
-
-  if (insertError && insertError.code !== '23505') {
-    throw insertError;
+  if (!profileRecord) {
+    profileRecord = { user_id: userId, ...defaultFields };
   }
 
-  const { data: fetchedProfile, error: fetchError } = await supabase
-    .from(PROFILE_TABLE)
-    .select(selectColumns.join(','))
-    .eq('user_id', userId)
-    .maybeSingle();
-
-  if (fetchError && fetchError.code !== 'PGRST116') {
-    throw fetchError;
+  if (createdProfile) {
+    await ensureUserSettingsForUser(userId);
   }
-
-  const profileRecord = isRecord(fetchedProfile)
-    ? fetchedProfile
-    : ({ user_id: userId, ...defaultFields } as Record<string, unknown>);
 
   return { hasProfile: true, profile: profileRecord };
 };

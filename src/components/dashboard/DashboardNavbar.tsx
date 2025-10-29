@@ -3,8 +3,6 @@ import { Link, NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import LanguageSwitcher from '@components/common/LanguageSwitcher';
-import ThemeToggle from '@components/common/ThemeToggle';
 import { useAuth } from '../../context/AuthContext';
 import { getAvatarInitials, getUserAvatarUrl } from '../../utils/getUserAvatarUrl';
 
@@ -110,8 +108,6 @@ const DashboardNavbar = ({
           </nav>
 
           <div className="hidden items-center gap-3 md:flex">
-            <LanguageSwitcher />
-            <ThemeToggle />
             <Menu as="div" className="relative">
               <Menu.Button
                 className="flex items-center rounded-full border border-slate-200 bg-white p-0.5 text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
@@ -261,8 +257,6 @@ const DashboardNavbar = ({
                 </nav>
 
                 <div className="mt-auto flex flex-col gap-4">
-                  <ThemeToggle />
-                  <LanguageSwitcher />
                   <button
                     type="button"
                     onClick={handleSignOut}

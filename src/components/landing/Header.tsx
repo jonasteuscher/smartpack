@@ -16,9 +16,10 @@ const NAV_ITEMS = [
 
 interface HeaderProps {
   showNavigation?: boolean;
+  showUtilities?: boolean;
 }
 
-const Header = ({ showNavigation = true }: HeaderProps) => {
+const Header = ({ showNavigation = true, showUtilities = false }: HeaderProps) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
@@ -81,8 +82,12 @@ const Header = ({ showNavigation = true }: HeaderProps) => {
           )}
 
           <div className="hidden items-center gap-3 md:flex">
-            <LanguageSwitcher />
-            <ThemeToggle />
+            {showUtilities && (
+              <>
+                <LanguageSwitcher />
+                <ThemeToggle />
+              </>
+            )}
             <Link
               to="/app/dashboard"
               className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-secondary/30 transition hover:-translate-y-0.5 hover:bg-brand-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary dark:bg-white dark:text-slate-900"
@@ -139,20 +144,25 @@ const Header = ({ showNavigation = true }: HeaderProps) => {
                     <XMarkIcon className="h-5 w-5" />
                   </button>
                   <nav className="flex flex-col gap-4 text-lg font-medium text-slate-700 dark:text-slate-200">
-                  {NAV_ITEMS.map(({ key, href }) => (
-                    <a
-                      key={key}
-                      href={href}
-                      onClick={(event) => handleNavClick(event, href, true)}
-                      className="transition hover:text-brand-secondary"
-                    >
-                      {t(`header.nav.${key}`)}
-                    </a>
-                  ))}
-                </nav>
+                    {NAV_ITEMS.map(({ key, href }) => (
+                      <a
+                        key={key}
+                        href={href}
+                        onClick={(event) => handleNavClick(event, href, true)}
+                        className="transition hover:text-brand-secondary"
+                      >
+                        {t(`header.nav.${key}`)}
+                      </a>
+                    ))}
+                  </nav>
+
                   <div className="mt-auto flex flex-col gap-4">
-                    <LanguageSwitcher />
-                    <ThemeToggle />
+                    {showUtilities && (
+                      <div className="flex flex-wrap items-center gap-3">
+                        <LanguageSwitcher />
+                        <ThemeToggle />
+                      </div>
+                    )}
                     <Link
                       to="/app/dashboard"
                       onClick={closeMenu}

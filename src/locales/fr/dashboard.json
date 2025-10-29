@@ -340,6 +340,15 @@
   "settings": {
     "heading": "Parametres",
     "subheading": "Gerez les preferences de l'application.",
-    "placeholder": "Les parametres seront bientot disponibles ici."
+    "sections": {
+      "appearance": {
+        "title": "Apparence",
+        "description": "Bascule entre les thèmes clair et sombre selon tes préférences."
+      },
+      "language": {
+        "title": "Langue",
+        "description": "Choisis la langue que tu souhaites utiliser dans l'application."
+      }
+    }
   }
 }

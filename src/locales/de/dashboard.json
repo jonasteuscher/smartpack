@@ -340,6 +340,15 @@
   "settings": {
     "heading": "Einstellungen",
     "subheading": "Verwalte deine Anwendungseinstellungen.",
-    "placeholder": "Hier erscheinen bald deine Einstellungen."
+    "sections": {
+      "appearance": {
+        "title": "Darstellung",
+        "description": "Wechsle zwischen hellem und dunklem Design – so wie es dir am besten passt."
+      },
+      "language": {
+        "title": "Sprache",
+        "description": "Wähle, in welcher Sprache die App angezeigt werden soll."
+      }
+    }
   }
 }
