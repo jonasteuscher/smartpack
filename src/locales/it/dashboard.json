@@ -64,6 +64,7 @@
       "addTravelStyle": "Aggiungi stile",
       "removeTravelStyle": "Rimuovi stile",
       "selectTravelSeason": "Seleziona la stagione",
+      "selectBudgetLevel": "Seleziona livello di budget",
       "selectTransportMode": "Seleziona il mezzo di trasporto",
       "addTransportMode": "Aggiungi mezzo di trasporto",
       "removeTransportMode": "Rimuovi mezzo di trasporto",
@@ -153,6 +154,7 @@
       "mustBeSignedIn": "Accedi per aggiornare il profilo.",
       "travelSaveFailed": "Impossibile salvare le preferenze di viaggio. Riprova.",
       "transportSaveFailed": "Impossibile salvare i mezzi di trasporto. Riprova.",
+      "budgetSaveFailed": "Impossibile salvare le preferenze di budget. Riprova.",
       "activitiesSaveFailed": "Impossibile salvare le attività. Riprova.",
       "sustainabilitySaveFailed": "Impossibile salvare le preferenze di sostenibilità. Riprova."
     },
@@ -289,6 +291,14 @@
         "balanced": "⚖️ Un po di ottimizzazione del peso",
         "lightweight": "🎒 Il piu leggero possibile",
         "ultralight": "🪶 Modalita ultraleggera"
+      }
+    },
+    "budget": {
+      "level": {
+        "low": "💸 Budget ridotto",
+        "medium": "⚖️ Fascia media / equilibrata",
+        "high": "✨ Comfort / premium",
+        "luxury": "💎 Viaggio di lusso"
       }
     },
     "luggageTypes": {

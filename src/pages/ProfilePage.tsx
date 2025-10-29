@@ -7,6 +7,7 @@ import { useProfile } from '../hooks/useProfile';
 import { removeProfileAvatar, uploadProfileAvatar } from '../services/profileAvatar';
 import { updateRecord } from '../services/supabaseCrud';
 import type {
+  BudgetLevel,
   Profile,
   SustainabilityWeightPriority,
   TravelFrequencyPerYear,
@@ -98,6 +99,15 @@ interface SustainabilityWeightPriorityOption {
   emoji: string;
 }
 
+type BudgetLevelValue = BudgetLevel;
+
+interface BudgetLevelOption {
+  value: BudgetLevelValue;
+  translationKey: string;
+  defaultLabel: string;
+  emoji: string;
+}
+
 interface DetailSectionField {
   label: string;
   value: unknown;
@@ -162,6 +172,9 @@ const TRAVEL_DURATION_FALLBACK_LABELS: Record<TravelTripDurationDays, string> = 
 const isTravelDurationValue = (value: unknown): value is TravelTripDurationDays =>
   typeof value === 'string' && (TRAVEL_DURATION_VALUES as readonly string[]).includes(value);
 
+const isBudgetLevelValue = (value: unknown): value is BudgetLevelValue =>
+  typeof value === 'string' && (BUDGET_LEVEL_VALUES as readonly string[]).includes(value);
+
 const TRAVEL_REGION_OPTIONS: readonly TravelRegionOption[] = [
   { value: 'CH', translationKey: 'profile.travelRegions.CH', defaultLabel: '🇨🇭 Switzerland / Domestic', emoji: '🇨🇭' },
   { value: 'EU', translationKey: 'profile.travelRegions.EU', defaultLabel: '🇪🇺 Europe', emoji: '🇪🇺' },
@@ -201,6 +214,35 @@ const TRANSPORT_MODE_OPTIONS: readonly TransportModeOption[] = [
   { value: 'bike', translationKey: 'profile.transportModes.bike', defaultLabel: '🚴‍♀️ Bike' },
   { value: 'boat', translationKey: 'profile.transportModes.boat', defaultLabel: '🚢 Boat / Ferry' },
   { value: 'foot', translationKey: 'profile.transportModes.foot', defaultLabel: '🚶 On foot' },
+];
+
+const BUDGET_LEVEL_VALUES: readonly BudgetLevelValue[] = ['low', 'medium', 'high', 'luxury'];
+
+const BUDGET_LEVEL_OPTIONS: readonly BudgetLevelOption[] = [
+  {
+    value: 'low',
+    translationKey: 'profile.budget.level.low',
+    defaultLabel: '💸 Low-Budget / Sparsam',
+    emoji: '💸',
+  },
+  {
+    value: 'medium',
+    translationKey: 'profile.budget.level.medium',
+    defaultLabel: '⚖️ Mittelklasse / Ausgewogen',
+    emoji: '⚖️',
+  },
+  {
+    value: 'high',
+    translationKey: 'profile.budget.level.high',
+    defaultLabel: '✨ Komfortabel / Premium',
+    emoji: '✨',
+  },
+  {
+    value: 'luxury',
+    translationKey: 'profile.budget.level.luxury',
+    defaultLabel: '💎 Luxusreise',
+    emoji: '💎',
+  },
 ];
 
 const LUGGAGE_OPTIONS: readonly LuggageOption[] = [
@@ -1043,6 +1085,12 @@ const ProfilePage = () => {
   const [savingSustainability, setSavingSustainability] = useState(false);
   const [sustainabilitySaveError, setSustainabilitySaveError] = useState<string | null>(null);
   const [sustainabilitySaved, setSustainabilitySaved] = useState(false);
+  const [budgetLevel, setBudgetLevel] = useState<BudgetLevelValue | null>(null);
+  const [originalBudgetLevel, setOriginalBudgetLevel] = useState<BudgetLevelValue | null>(null);
+  const [isEditingBudget, setIsEditingBudget] = useState(false);
+  const [savingBudget, setSavingBudget] = useState(false);
+  const [budgetSaveError, setBudgetSaveError] = useState<string | null>(null);
+  const [budgetSaved, setBudgetSaved] = useState(false);
   const [isEditingActivities, setIsEditingActivities] = useState(false);
   const [savingActivities, setSavingActivities] = useState(false);
   const [activitiesSaveError, setActivitiesSaveError] = useState<string | null>(null);
@@ -1176,6 +1224,17 @@ const ProfilePage = () => {
       setSustainabilityWeightPriority(normalizedPriority);
     }
   }, [profile?.sustainability_weight_priority, isEditingSustainability]);
+
+  useEffect(() => {
+    const rawBudgetLevel = profile?.budget_level;
+    const normalizedBudget = isBudgetLevelValue(rawBudgetLevel) ? rawBudgetLevel : null;
+
+    setOriginalBudgetLevel(normalizedBudget);
+
+    if (!isEditingBudget) {
+      setBudgetLevel(normalizedBudget);
+    }
+  }, [profile?.budget_level, isEditingBudget]);
 
   useEffect(() => {
     const rawFrequency = profile?.travel_frequency_per_year;
@@ -1580,6 +1639,38 @@ const ProfilePage = () => {
     return map;
   }, [transportModeOptions]);
 
+  const budgetLevelOptions = useMemo(
+    () =>
+      BUDGET_LEVEL_OPTIONS.map((option) => {
+        const localized = t(option.translationKey, { defaultValue: option.defaultLabel }).trim();
+        const label = localized.startsWith(option.emoji)
+          ? localized
+          : `${option.emoji} ${localized}`.trim();
+        return {
+          value: option.value,
+          label,
+        };
+      }),
+    [t]
+  );
+
+  const budgetLevelLabelByValue = useMemo(() => {
+    const map = new Map<BudgetLevelValue, string>();
+    budgetLevelOptions.forEach((option) => {
+      map.set(option.value, option.label);
+    });
+    return map;
+  }, [budgetLevelOptions]);
+
+  const budgetLevelProfileLabel = useMemo(() => {
+    const value = profile?.budget_level;
+    if (!isBudgetLevelValue(value)) {
+      return null;
+    }
+
+    return budgetLevelLabelByValue.get(value) ?? null;
+  }, [profile?.budget_level, budgetLevelLabelByValue]);
+
   const availableTransportModes = useMemo(
     () => transportModeOptions.filter((option) => !transportModes.includes(option.value)),
     [transportModeOptions, transportModes]
@@ -1824,6 +1915,7 @@ const ProfilePage = () => {
   const trimmedLastName = coreLastName.trim();
   const normalizedSelectedCountry = selectedCountry?.name ?? null;
 
+  const normalizedBudgetLevel = budgetLevel;
   const normalizedSustainabilityWeightPriority = sustainabilityWeightPriority;
   const normalizedTravelFrequency = travelFrequency;
   const normalizedTravelDuration = travelDuration;
@@ -1870,6 +1962,7 @@ const ProfilePage = () => {
   const isSustainabilityWeightPriorityDirty =
     normalizedSustainabilityWeightPriority !== originalSustainabilityWeightPriority;
   const isSustainabilityDirty = isSustainabilityFocusDirty || isSustainabilityWeightPriorityDirty;
+  const isBudgetDirty = normalizedBudgetLevel !== originalBudgetLevel;
   const travelFrequencyDisplayLabel = normalizedTravelFrequency
     ? travelFrequencyLabelByValue.get(normalizedTravelFrequency) ?? null
     : null;
@@ -1978,6 +2071,9 @@ const ProfilePage = () => {
     () => originalLuggageTypes.map((type) => luggageTypeLabelByValue.get(type) ?? type),
     [originalLuggageTypes, luggageTypeLabelByValue]
   );
+  const budgetLevelDisplayLabel = normalizedBudgetLevel
+    ? budgetLevelLabelByValue.get(normalizedBudgetLevel) ?? null
+    : null;
 
   const isFirstNameDirty = trimmedFirstName !== originalFirstName;
   const isLastNameDirty = trimmedLastName !== originalLastName;
@@ -2198,7 +2294,7 @@ const ProfilePage = () => {
         id: 'budget',
         title: t('profile.sections.budget'),
         fields: [
-          { label: t('profile.fields.budgetLevel'), value: profile?.budget_level },
+          { id: 'budget_level', label: t('profile.fields.budgetLevel'), value: profile?.budget_level },
           { label: t('profile.fields.buyAtDestination'), value: profile?.budget_buy_at_destination_preference },
           { label: t('profile.fields.souvenirSpace'), value: profile?.budget_souvenir_space_preference },
         ],
@@ -2910,6 +3006,20 @@ const handleRemoveActivityCultural = (value: string) => {
     setActivityCulturalToAdd('');
   };
 
+  const handleStartEditingBudget = () => {
+    setIsEditingBudget(true);
+    setBudgetSaved(false);
+    setBudgetSaveError(null);
+    setBudgetLevel(originalBudgetLevel);
+  };
+
+  const handleCancelEditingBudget = () => {
+    setIsEditingBudget(false);
+    setBudgetSaved(false);
+    setBudgetSaveError(null);
+    setBudgetLevel(originalBudgetLevel);
+  };
+
   const handleStartEditingSustainability = () => {
     setIsEditingSustainability(true);
     setSustainabilitySaved(false);
@@ -2998,6 +3108,63 @@ const handleRemoveActivityCultural = (value: string) => {
       );
     } finally {
       setSavingAccommodation(false);
+    }
+  };
+
+  const handleSaveBudget = async () => {
+    if (!user?.id) {
+      setBudgetSaveError(
+        t('profile.errors.mustBeSignedIn', {
+          defaultValue: 'Sign in to update your profile.',
+        })
+      );
+      return;
+    }
+
+    if (!isBudgetDirty) {
+      setIsEditingBudget(false);
+      return;
+    }
+
+    try {
+      setSavingBudget(true);
+      setBudgetSaveError(null);
+
+      const payload: Partial<Profile> = {};
+
+      if (isBudgetDirty) {
+        payload.budget_level = normalizedBudgetLevel ?? null;
+      }
+
+      if (Object.keys(payload).length === 0) {
+        setIsEditingBudget(false);
+        return;
+      }
+
+      const { error: updateError } = await updateRecord<Profile>('profiles', payload, {
+        match: { user_id: user.id },
+      });
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      await refresh();
+      setIsEditingBudget(false);
+      setBudgetSaved(true);
+      setOriginalBudgetLevel(normalizedBudgetLevel ?? null);
+      setBudgetLevel(normalizedBudgetLevel ?? null);
+    } catch (saveError) {
+      console.error('Failed to save budget preferences', saveError);
+      setBudgetSaveError(
+        saveError instanceof Error
+          ? saveError.message
+          : t('profile.errors.budgetSaveFailed', {
+              defaultValue: 'We couldn’t save your budget preferences. Try again.',
+            })
+      );
+    } finally {
+      setSavingBudget(false);
     }
   };
 
@@ -3154,6 +3321,8 @@ const handleRemoveActivityCultural = (value: string) => {
       setAccommodationSaveError(null);
       setActivitiesSaved(false);
       setActivitiesSaveError(null);
+      setBudgetSaved(false);
+      setBudgetSaveError(null);
       setSustainabilitySaved(false);
       setSustainabilitySaveError(null);
       await refresh();
@@ -3717,6 +3886,38 @@ const handleRemoveActivityCultural = (value: string) => {
                       {t('profile.actions.edit', { defaultValue: 'Edit' })}
                     </button>
                   )
+                ) : section.id === 'budget' ? (
+                  isEditingBudget ? (
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={handleCancelEditingBudget}
+                        className="rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                        disabled={savingBudget}
+                      >
+                        {t('profile.actions.cancel', { defaultValue: 'Cancel' })}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleSaveBudget}
+                        className="rounded-full border border-brand-secondary bg-brand-secondary px-4 py-2 text-xs font-semibold text-white transition hover:bg-brand-secondary/90 disabled:cursor-not-allowed disabled:opacity-60 dark:border-brand-secondary"
+                        disabled={savingBudget || !isBudgetDirty}
+                      >
+                        {savingBudget
+                          ? t('profile.actions.saving', { defaultValue: 'Saving…' })
+                          : t('profile.actions.save', { defaultValue: 'Save' })}
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleStartEditingBudget}
+                      className="rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:border-brand-secondary hover:text-brand-secondary disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-brand-primary dark:hover:text-brand-primary"
+                      disabled={savingBudget}
+                    >
+                      {t('profile.actions.edit', { defaultValue: 'Edit' })}
+                    </button>
+                  )
                 ) : section.id === 'sustainability' ? (
                   isEditingSustainability ? (
                     <div className="flex items-center gap-2">
@@ -3790,6 +3991,17 @@ const handleRemoveActivityCultural = (value: string) => {
                     <p className="text-xs text-red-500">{activitiesSaveError}</p>
                   ) : null}
                   {!activitiesSaveError && activitiesSaved ? (
+                    <p className="text-xs text-emerald-600">
+                      {t('profile.state.settingsSaved', { defaultValue: 'Your settings have been saved.' })}
+                    </p>
+                  ) : null}
+                </>
+              ) : section.id === 'budget' ? (
+                <>
+                  {budgetSaveError ? (
+                    <p className="text-xs text-red-500">{budgetSaveError}</p>
+                  ) : null}
+                  {!budgetSaveError && budgetSaved ? (
                     <p className="text-xs text-emerald-600">
                       {t('profile.state.settingsSaved', { defaultValue: 'Your settings have been saved.' })}
                     </p>
@@ -4765,6 +4977,35 @@ const handleRemoveActivityCultural = (value: string) => {
                                   ))}
                                 </div>
                               )
+                        : section.id === 'budget' && field.id === 'budget_level'
+                        ? isEditingBudget
+                          ? (
+                              <select
+                                value={budgetLevel ?? ''}
+                                onChange={(event) => {
+                                  const nextValue = event.target.value;
+                                  setBudgetLevel(isBudgetLevelValue(nextValue) ? nextValue : null);
+                                  setBudgetSaved(false);
+                                  setBudgetSaveError(null);
+                                }}
+                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                disabled={savingBudget}
+                              >
+                                <option value="">
+                                  {t('profile.actions.selectBudgetLevel', {
+                                    defaultValue: 'Select your budget level',
+                                  })}
+                                </option>
+                                {budgetLevelOptions.map((option) => (
+                                  <option key={option.value} value={option.value}>
+                                    {option.label}
+                                  </option>
+                                ))}
+                              </select>
+                            )
+                          : budgetLevelDisplayLabel ??
+                            budgetLevelProfileLabel ??
+                            t('profile.fallback.notSet')
                         : section.id === 'sustainability' && field.id === 'sustainability_weight_priority'
                         ? isEditingSustainability
                           ? (

@@ -64,6 +64,7 @@
       "addTravelStyle": "Reisestil hinzufügen",
       "removeTravelStyle": "Reisestil entfernen",
       "selectTravelSeason": "Reisesaison auswählen",
+      "selectBudgetLevel": "Budgetstufe wählen",
       "selectTransportMode": "Verkehrsmittel auswählen",
       "addTransportMode": "Verkehrsmittel hinzufügen",
       "removeTransportMode": "Verkehrsmittel entfernen",
@@ -153,6 +154,7 @@
       "mustBeSignedIn": "Melde dich an, um dein Profil zu aktualisieren.",
       "travelSaveFailed": "Deine Reisepräferenzen konnten nicht gespeichert werden. Versuche es erneut.",
       "transportSaveFailed": "Deine Verkehrsmittel konnten nicht gespeichert werden. Versuche es erneut.",
+      "budgetSaveFailed": "Deine Budget-Einstellungen konnten nicht gespeichert werden. Versuche es erneut.",
       "activitiesSaveFailed": "Deine Aktivitäten konnten nicht gespeichert werden. Versuche es erneut.",
       "sustainabilitySaveFailed": "Deine Nachhaltigkeitspräferenzen konnten nicht gespeichert werden. Versuche es erneut."
     },
@@ -289,6 +291,14 @@
         "balanced": "⚖️ Etwas Gewichtsoptimierung",
         "lightweight": "🎒 So leicht wie möglich",
         "ultralight": "🪶 Ultraleicht unterwegs"
+      }
+    },
+    "budget": {
+      "level": {
+        "low": "💸 Low-Budget / Sparsam",
+        "medium": "⚖️ Mittelklasse / Ausgewogen",
+        "high": "✨ Komfortabel / Premium",
+        "luxury": "💎 Luxusreise"
       }
     },
     "luggageTypes": {
