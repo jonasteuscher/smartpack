@@ -5095,23 +5095,65 @@ const handleRemoveActivityCultural = (value: string) => {
                                   )}
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <select
-                                    value={accommodationTypeToAdd}
-                                    onChange={(event) => setAccommodationTypeToAdd(event.target.value)}
-                                    className="w-64 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
-                                    disabled={savingAccommodation}
-                                  >
-                                    <option value="">
-                                      {t('profile.actions.selectAccommodationType', {
-                                        defaultValue: 'Select accommodation type',
-                                      })}
-                                    </option>
-                                    {availableAccommodationTypes.map((option) => (
-                                      <option key={option.value} value={option.value}>
-                                        {option.label}
-                                      </option>
-                                    ))}
-                                  </select>
+                                  <div className="relative">
+                                    <Combobox
+                                      value={accommodationTypeToAdd || null}
+                                      onChange={(value: string | null) => {
+                                        setAccommodationTypeToAdd(value ?? '');
+                                      }}
+                                      disabled={savingAccommodation || availableAccommodationTypes.length === 0}
+                                    >
+                                      <div className="relative">
+                                        <Combobox.Button className="flex w-64 items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                          <span
+                                            className={accommodationTypeToAdd ? '' : 'text-[var(--text-secondary)] dark:text-slate-400'}
+                                          >
+                                            {accommodationTypeToAdd
+                                              ? accommodationTypeLabelByValue.get(accommodationTypeToAdd) ?? accommodationTypeToAdd
+                                              : availableAccommodationTypes.length === 0
+                                                ? t('profile.state.emptyOptions', { defaultValue: 'No options available.' })
+                                                : t('profile.actions.selectAccommodationType', {
+                                                    defaultValue: 'Select accommodation type',
+                                                  })}
+                                          </span>
+                                          <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                                        </Combobox.Button>
+                                        {availableAccommodationTypes.length > 0 ? (
+                                          <Combobox.Options className="absolute z-10 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                                            <Combobox.Option
+                                              value={null}
+                                              className={({ active }) =>
+                                                `cursor-pointer px-3 py-2 ${
+                                                  active
+                                                    ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                                    : 'text-[var(--text-primary)]'
+                                                }`
+                                              }
+                                            >
+                                              {t('profile.actions.selectAccommodationType', {
+                                                defaultValue: 'Select accommodation type',
+                                              })}
+                                            </Combobox.Option>
+                                            {availableAccommodationTypes.map((option) => (
+                                              <Combobox.Option
+                                                key={option.value}
+                                                value={option.value}
+                                                className={({ active }) =>
+                                                  `cursor-pointer px-3 py-2 ${
+                                                    active
+                                                      ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                                      : 'text-[var(--text-primary)]'
+                                                  }`
+                                                }
+                                              >
+                                                {option.label}
+                                              </Combobox.Option>
+                                            ))}
+                                          </Combobox.Options>
+                                        ) : null}
+                                      </div>
+                                    </Combobox>
+                                  </div>
                                   <button
                                     type="button"
                                     onClick={handleAddAccommodationType}
@@ -5147,32 +5189,61 @@ const handleRemoveActivityCultural = (value: string) => {
                         : section.id === 'accommodation' && field.id === 'accommodation_laundry_access_expectation'
                         ? isEditingAccommodation
                           ? (
-                              <select
-                                value={accommodationLaundryExpectation ?? ''}
-                                onChange={(event) => {
-                                  const nextValue = event.target.value;
-                                  let sanitized: AccommodationLaundryAccessExpectationValue | null = null;
-                                  if (isAccommodationLaundryAccessExpectationValue(nextValue)) {
-                                    sanitized = nextValue;
-                                  }
-                                  setAccommodationLaundryExpectation(sanitized);
+                              <Combobox
+                                value={accommodationLaundryExpectation}
+                                onChange={(value: AccommodationLaundryAccessExpectationValue | null) => {
+                                  setAccommodationLaundryExpectation(value);
                                   setAccommodationSaved(false);
                                   setAccommodationSaveError(null);
                                 }}
-                                className="w-64 max-w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
                                 disabled={savingAccommodation}
                               >
-                                <option value="">
-                                  {t('profile.actions.selectLaundryAccessExpectation', {
-                                    defaultValue: 'Select laundry access expectation',
-                                  })}
-                                </option>
-                                {accommodationLaundryOptions.map((option) => (
-                                  <option key={option.value} value={option.value}>
-                                    {option.label}
-                                  </option>
-                                ))}
-                              </select>
+                                <div className="relative">
+                                  <Combobox.Button className="flex w-64 max-w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                    <span
+                                      className={accommodationLaundryExpectation ? '' : 'text-[var(--text-secondary)] dark:text-slate-400'}
+                                    >
+                                      {accommodationLaundryExpectation
+                                        ? accommodationLaundryLabelByValue.get(accommodationLaundryExpectation) ?? accommodationLaundryExpectation
+                                        : t('profile.actions.selectLaundryAccessExpectation', {
+                                            defaultValue: 'Select laundry access expectation',
+                                          })}
+                                    </span>
+                                    <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                                  </Combobox.Button>
+                                  <Combobox.Options className="absolute z-10 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                                    <Combobox.Option
+                                      value={null}
+                                      className={({ active }) =>
+                                        `cursor-pointer px-3 py-2 ${
+                                          active
+                                            ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                            : 'text-[var(--text-primary)]'
+                                        }`
+                                      }
+                                    >
+                                      {t('profile.actions.selectLaundryAccessExpectation', {
+                                        defaultValue: 'Select laundry access expectation',
+                                      })}
+                                    </Combobox.Option>
+                                    {accommodationLaundryOptions.map((option) => (
+                                      <Combobox.Option
+                                        key={option.value}
+                                        value={option.value}
+                                        className={({ active }) =>
+                                          `cursor-pointer px-3 py-2 ${
+                                            active
+                                              ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                              : 'text-[var(--text-primary)]'
+                                          }`
+                                        }
+                                      >
+                                        {option.label}
+                                      </Combobox.Option>
+                                    ))}
+                                  </Combobox.Options>
+                                </div>
+                              </Combobox>
                             )
                           : originalAccommodationLaundryExpectationDisplayLabel
                             ? originalAccommodationLaundryExpectationDisplayLabel
@@ -5184,32 +5255,61 @@ const handleRemoveActivityCultural = (value: string) => {
                         : section.id === 'accommodation' && field.id === 'accommodation_workspace_needed'
                         ? isEditingAccommodation
                           ? (
-                              <select
-                                value={accommodationWorkspaceNeeded ?? ''}
-                                onChange={(event) => {
-                                  const nextValue = event.target.value;
-                                  let sanitized: AccommodationWorkspacePreferenceValue | null = null;
-                                  if (nextValue === 'yes' || nextValue === 'no') {
-                                    sanitized = nextValue as AccommodationWorkspacePreferenceValue;
-                                  }
-                                  setAccommodationWorkspaceNeeded(sanitized);
+                              <Combobox
+                                value={accommodationWorkspaceNeeded}
+                                onChange={(value: AccommodationWorkspacePreferenceValue | null) => {
+                                  setAccommodationWorkspaceNeeded(value);
                                   setAccommodationSaved(false);
                                   setAccommodationSaveError(null);
                                 }}
-                                className="w-64 max-w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
                                 disabled={savingAccommodation}
                               >
-                                <option value="">
-                                  {t('profile.actions.selectWorkspacePreference', {
-                                    defaultValue: 'Select workspace preference',
-                                  })}
-                                </option>
-                                {accommodationWorkspaceOptions.map((option) => (
-                                  <option key={option.value} value={option.value}>
-                                    {option.label}
-                                  </option>
-                                ))}
-                              </select>
+                                <div className="relative">
+                                  <Combobox.Button className="flex w-64 max-w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                    <span
+                                      className={accommodationWorkspaceNeeded ? '' : 'text-[var(--text-secondary)] dark:text-slate-400'}
+                                    >
+                                      {accommodationWorkspaceNeeded === null
+                                        ? t('profile.actions.selectWorkspacePreference', {
+                                            defaultValue: 'Select workspace preference',
+                                          })
+                                        : accommodationWorkspaceLabelByValue.get(accommodationWorkspaceNeeded) ?? accommodationWorkspaceNeeded}
+                                    </span>
+                                    <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                                  </Combobox.Button>
+                                  <Combobox.Options className="absolute z-10 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                                    <Combobox.Option
+                                      value={null}
+                                      className={({ active }) =>
+                                        `cursor-pointer px-3 py-2 ${
+                                          active
+                                            ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                            : 'text-[var(--text-primary)]'
+                                        }`
+                                      }
+                                    >
+                                      {t('profile.actions.selectWorkspacePreference', {
+                                        defaultValue: 'Select workspace preference',
+                                      })}
+                                    </Combobox.Option>
+                                    {accommodationWorkspaceOptions.map((option) => (
+                                      <Combobox.Option
+                                        key={option.value}
+                                        value={option.value}
+                                        className={({ active }) =>
+                                          `cursor-pointer px-3 py-2 ${
+                                            active
+                                              ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                              : 'text-[var(--text-primary)]'
+                                          }`
+                                        }
+                                      >
+                                        {option.label}
+                                      </Combobox.Option>
+                                    ))}
+                                  </Combobox.Options>
+                                </div>
+                              </Combobox>
                             )
                           : originalAccommodationWorkspaceNeededDisplayLabel
                             ? originalAccommodationWorkspaceNeededDisplayLabel
@@ -5250,23 +5350,67 @@ const handleRemoveActivityCultural = (value: string) => {
                                   )}
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <select
-                                    value={activitySportToAdd}
-                                    onChange={(event) => setActivitySportToAdd(event.target.value)}
-                                    className="w-72 max-w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
-                                    disabled={savingActivities}
-                                  >
-                                    <option value="">
-                                      {t('profile.actions.selectActivitySport', {
-                                        defaultValue: 'Select activity',
-                                      })}
-                                    </option>
-                                    {availableActivitySportsOptions.map((option) => (
-                                      <option key={option.value} value={option.value}>
-                                        {option.label}
-                                      </option>
-                                    ))}
-                                  </select>
+                                  <div className="relative">
+                                    <Combobox
+                                      value={activitySportToAdd || null}
+                                      onChange={(value: string | null) => {
+                                        setActivitySportToAdd(value ?? '');
+                                      }}
+                                      disabled={savingActivities || availableActivitySportsOptions.length === 0}
+                                    >
+                                      <div className="relative">
+                                        <Combobox.Button className="flex w-72 max-w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                          <span
+                                            className={activitySportToAdd ? '' : 'text-[var(--text-secondary)] dark:text-slate-400'}
+                                          >
+                                            {activitySportToAdd
+                                              ? activitySportsLabelByValue.get(activitySportToAdd) ?? activitySportToAdd
+                                              : availableActivitySportsOptions.length === 0
+                                                ? t('profile.state.emptyOptions', {
+                                                    defaultValue: 'No options available.',
+                                                  })
+                                                : t('profile.actions.selectActivitySport', {
+                                                    defaultValue: 'Select activity',
+                                                  })}
+                                          </span>
+                                          <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                                        </Combobox.Button>
+                                        {availableActivitySportsOptions.length > 0 ? (
+                                          <Combobox.Options className="absolute z-10 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                                            <Combobox.Option
+                                              value={null}
+                                              className={({ active }) =>
+                                                `cursor-pointer px-3 py-2 ${
+                                                  active
+                                                    ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                                    : 'text-[var(--text-primary)]'
+                                                }`
+                                              }
+                                            >
+                                              {t('profile.actions.selectActivitySport', {
+                                                defaultValue: 'Select activity',
+                                              })}
+                                            </Combobox.Option>
+                                            {availableActivitySportsOptions.map((option) => (
+                                              <Combobox.Option
+                                                key={option.value}
+                                                value={option.value}
+                                                className={({ active }) =>
+                                                  `cursor-pointer px-3 py-2 ${
+                                                    active
+                                                      ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                                      : 'text-[var(--text-primary)]'
+                                                  }`
+                                                }
+                                              >
+                                                {option.label}
+                                              </Combobox.Option>
+                                            ))}
+                                          </Combobox.Options>
+                                        ) : null}
+                                      </div>
+                                    </Combobox>
+                                  </div>
                                   <button
                                     type="button"
                                     onClick={handleAddActivitySport}
@@ -5331,23 +5475,67 @@ const handleRemoveActivityCultural = (value: string) => {
                                   )}
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <select
-                                    value={activityAdventureToAdd}
-                                    onChange={(event) => setActivityAdventureToAdd(event.target.value)}
-                                    className="w-72 max-w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
-                                    disabled={savingActivities}
-                                  >
-                                    <option value="">
-                                      {t('profile.actions.selectAdventureActivity', {
-                                        defaultValue: 'Select adventure',
-                                      })}
-                                    </option>
-                                    {availableActivityAdventureOptions.map((option) => (
-                                      <option key={option.value} value={option.value}>
-                                        {option.label}
-                                      </option>
-                                    ))}
-                                  </select>
+                                  <div className="relative">
+                                    <Combobox
+                                      value={activityAdventureToAdd || null}
+                                      onChange={(value: string | null) => {
+                                        setActivityAdventureToAdd(value ?? '');
+                                      }}
+                                      disabled={savingActivities || availableActivityAdventureOptions.length === 0}
+                                    >
+                                      <div className="relative">
+                                        <Combobox.Button className="flex w-72 max-w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                          <span
+                                            className={activityAdventureToAdd ? '' : 'text-[var(--text-secondary)] dark:text-slate-400'}
+                                          >
+                                            {activityAdventureToAdd
+                                              ? activityAdventureLabelByValue.get(activityAdventureToAdd) ?? activityAdventureToAdd
+                                              : availableActivityAdventureOptions.length === 0
+                                                ? t('profile.state.emptyOptions', {
+                                                    defaultValue: 'No options available.',
+                                                  })
+                                                : t('profile.actions.selectAdventureActivity', {
+                                                    defaultValue: 'Select adventure',
+                                                  })}
+                                          </span>
+                                          <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                                        </Combobox.Button>
+                                        {availableActivityAdventureOptions.length > 0 ? (
+                                          <Combobox.Options className="absolute z-10 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                                            <Combobox.Option
+                                              value={null}
+                                              className={({ active }) =>
+                                                `cursor-pointer px-3 py-2 ${
+                                                  active
+                                                    ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                                    : 'text-[var(--text-primary)]'
+                                                }`
+                                              }
+                                            >
+                                              {t('profile.actions.selectAdventureActivity', {
+                                                defaultValue: 'Select adventure',
+                                              })}
+                                            </Combobox.Option>
+                                            {availableActivityAdventureOptions.map((option) => (
+                                              <Combobox.Option
+                                                key={option.value}
+                                                value={option.value}
+                                                className={({ active }) =>
+                                                  `cursor-pointer px-3 py-2 ${
+                                                    active
+                                                      ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                                      : 'text-[var(--text-primary)]'
+                                                  }`
+                                                }
+                                              >
+                                                {option.label}
+                                              </Combobox.Option>
+                                            ))}
+                                          </Combobox.Options>
+                                        ) : null}
+                                      </div>
+                                    </Combobox>
+                                  </div>
                                   <button
                                     type="button"
                                     onClick={handleAddActivityAdventure}
@@ -5412,23 +5600,67 @@ const handleRemoveActivityCultural = (value: string) => {
                                   )}
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <select
-                                    value={activityCulturalToAdd}
-                                    onChange={(event) => setActivityCulturalToAdd(event.target.value)}
-                                    className="w-72 max-w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
-                                    disabled={savingActivities}
-                                  >
-                                    <option value="">
-                                      {t('profile.actions.selectCulturalActivity', {
-                                        defaultValue: 'Select cultural activity',
-                                      })}
-                                    </option>
-                                    {availableActivityCulturalOptions.map((option) => (
-                                      <option key={option.value} value={option.value}>
-                                        {option.label}
-                                      </option>
-                                    ))}
-                                  </select>
+                                  <div className="relative">
+                                    <Combobox
+                                      value={activityCulturalToAdd || null}
+                                      onChange={(value: string | null) => {
+                                        setActivityCulturalToAdd(value ?? '');
+                                      }}
+                                      disabled={savingActivities || availableActivityCulturalOptions.length === 0}
+                                    >
+                                      <div className="relative">
+                                        <Combobox.Button className="flex w-72 max-w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                          <span
+                                            className={activityCulturalToAdd ? '' : 'text-[var(--text-secondary)] dark:text-slate-400'}
+                                          >
+                                            {activityCulturalToAdd
+                                              ? activityCulturalLabelByValue.get(activityCulturalToAdd) ?? activityCulturalToAdd
+                                              : availableActivityCulturalOptions.length === 0
+                                                ? t('profile.state.emptyOptions', {
+                                                    defaultValue: 'No options available.',
+                                                  })
+                                                : t('profile.actions.selectCulturalActivity', {
+                                                    defaultValue: 'Select cultural activity',
+                                                  })}
+                                          </span>
+                                          <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                                        </Combobox.Button>
+                                        {availableActivityCulturalOptions.length > 0 ? (
+                                          <Combobox.Options className="absolute z-10 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                                            <Combobox.Option
+                                              value={null}
+                                              className={({ active }) =>
+                                                `cursor-pointer px-3 py-2 ${
+                                                  active
+                                                    ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                                    : 'text-[var(--text-primary)]'
+                                                }`
+                                              }
+                                            >
+                                              {t('profile.actions.selectCulturalActivity', {
+                                                defaultValue: 'Select cultural activity',
+                                              })}
+                                            </Combobox.Option>
+                                            {availableActivityCulturalOptions.map((option) => (
+                                              <Combobox.Option
+                                                key={option.value}
+                                                value={option.value}
+                                                className={({ active }) =>
+                                                  `cursor-pointer px-3 py-2 ${
+                                                    active
+                                                      ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                                      : 'text-[var(--text-primary)]'
+                                                  }`
+                                                }
+                                              >
+                                                {option.label}
+                                              </Combobox.Option>
+                                            ))}
+                                          </Combobox.Options>
+                                        ) : null}
+                                      </div>
+                                    </Combobox>
+                                  </div>
                                   <button
                                     type="button"
                                     onClick={handleAddActivityCultural}
@@ -5493,23 +5725,67 @@ const handleRemoveActivityCultural = (value: string) => {
                                   )}
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <select
-                                    value={sustainabilityFocusToAdd}
-                                    onChange={(event) => setSustainabilityFocusToAdd(event.target.value)}
-                                    className="w-72 max-w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
-                                    disabled={savingSustainability}
-                                  >
-                                    <option value="">
-                                      {t('profile.actions.selectSustainabilityFocus', {
-                                        defaultValue: 'Select sustainability focus',
-                                      })}
-                                    </option>
-                                    {availableSustainabilityFocusOptions.map((option) => (
-                                      <option key={option.value} value={option.value}>
-                                        {option.label}
-                                      </option>
-                                    ))}
-                                  </select>
+                                  <div className="relative">
+                                    <Combobox
+                                      value={sustainabilityFocusToAdd || null}
+                                      onChange={(value: string | null) => {
+                                        setSustainabilityFocusToAdd(value ?? '');
+                                      }}
+                                      disabled={savingSustainability || availableSustainabilityFocusOptions.length === 0}
+                                    >
+                                      <div className="relative">
+                                        <Combobox.Button className="flex w-72 max-w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                          <span
+                                            className={sustainabilityFocusToAdd ? '' : 'text-[var(--text-secondary)] dark:text-slate-400'}
+                                          >
+                                            {sustainabilityFocusToAdd
+                                              ? sustainabilityFocusLabelByValue.get(sustainabilityFocusToAdd) ?? sustainabilityFocusToAdd
+                                              : availableSustainabilityFocusOptions.length === 0
+                                                ? t('profile.state.emptyOptions', {
+                                                    defaultValue: 'No options available.',
+                                                  })
+                                                : t('profile.actions.selectSustainabilityFocus', {
+                                                    defaultValue: 'Select sustainability focus',
+                                                  })}
+                                          </span>
+                                          <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                                        </Combobox.Button>
+                                        {availableSustainabilityFocusOptions.length > 0 ? (
+                                          <Combobox.Options className="absolute z-10 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                                            <Combobox.Option
+                                              value={null}
+                                              className={({ active }) =>
+                                                `cursor-pointer px-3 py-2 ${
+                                                  active
+                                                    ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                                    : 'text-[var(--text-primary)]'
+                                                }`
+                                              }
+                                            >
+                                              {t('profile.actions.selectSustainabilityFocus', {
+                                                defaultValue: 'Select sustainability focus',
+                                              })}
+                                            </Combobox.Option>
+                                            {availableSustainabilityFocusOptions.map((option) => (
+                                              <Combobox.Option
+                                                key={option.value}
+                                                value={option.value}
+                                                className={({ active }) =>
+                                                  `cursor-pointer px-3 py-2 ${
+                                                    active
+                                                      ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                                      : 'text-[var(--text-primary)]'
+                                                  }`
+                                                }
+                                              >
+                                                {option.label}
+                                              </Combobox.Option>
+                                            ))}
+                                          </Combobox.Options>
+                                        ) : null}
+                                      </div>
+                                    </Combobox>
+                                  </div>
                                   <button
                                     type="button"
                                     onClick={handleAddSustainabilityFocus}
@@ -5545,28 +5821,61 @@ const handleRemoveActivityCultural = (value: string) => {
                         : section.id === 'budget' && field.id === 'budget_level'
                         ? isEditingBudget
                           ? (
-                              <select
-                                value={budgetLevel ?? ''}
-                                onChange={(event) => {
-                                  const nextValue = event.target.value;
-                                  setBudgetLevel(isBudgetLevelValue(nextValue) ? nextValue : null);
+                              <Combobox
+                                value={budgetLevel}
+                                onChange={(value: BudgetLevel | null) => {
+                                  setBudgetLevel(value);
                                   setBudgetSaved(false);
                                   setBudgetSaveError(null);
                                 }}
-                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
                                 disabled={savingBudget}
                               >
-                                <option value="">
-                                  {t('profile.actions.selectBudgetLevel', {
-                                    defaultValue: 'Select your budget level',
-                                  })}
-                                </option>
-                                {budgetLevelOptions.map((option) => (
-                                  <option key={option.value} value={option.value}>
-                                    {option.label}
-                                  </option>
-                                ))}
-                              </select>
+                                <div className="relative">
+                                  <Combobox.Button className="flex w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                    <span
+                                      className={budgetLevel ? '' : 'text-[var(--text-secondary)] dark:text-slate-400'}
+                                    >
+                                      {budgetLevelDisplayLabel ??
+                                        budgetLevelProfileLabel ??
+                                        t('profile.actions.selectBudgetLevel', {
+                                          defaultValue: 'Select your budget level',
+                                        })}
+                                    </span>
+                                    <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                                  </Combobox.Button>
+                                  <Combobox.Options className="absolute z-10 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                                    <Combobox.Option
+                                      value={null}
+                                      className={({ active }) =>
+                                        `cursor-pointer px-3 py-2 ${
+                                          active
+                                            ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                            : 'text-[var(--text-primary)]'
+                                        }`
+                                      }
+                                    >
+                                      {t('profile.actions.selectBudgetLevel', {
+                                        defaultValue: 'Select your budget level',
+                                      })}
+                                    </Combobox.Option>
+                                    {budgetLevelOptions.map((option) => (
+                                      <Combobox.Option
+                                        key={option.value}
+                                        value={option.value}
+                                        className={({ active }) =>
+                                          `cursor-pointer px-3 py-2 ${
+                                            active
+                                              ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                              : 'text-[var(--text-primary)]'
+                                          }`
+                                        }
+                                      >
+                                        {option.label}
+                                      </Combobox.Option>
+                                    ))}
+                                  </Combobox.Options>
+                                </div>
+                              </Combobox>
                             )
                           : budgetLevelDisplayLabel ??
                             budgetLevelProfileLabel ??
@@ -5574,30 +5883,61 @@ const handleRemoveActivityCultural = (value: string) => {
                         : section.id === 'budget' && field.id === 'budget_buy_at_destination_preference'
                         ? isEditingBudget
                           ? (
-                              <select
-                                value={budgetBuyPreference ?? ''}
-                                onChange={(event) => {
-                                  const nextValue = event.target.value;
-                                  setBudgetBuyPreference(
-                                    isBudgetBuyPreferenceValue(nextValue) ? nextValue : null
-                                  );
+                              <Combobox
+                                value={budgetBuyPreference}
+                                onChange={(value: BudgetBuyPreference | null) => {
+                                  setBudgetBuyPreference(value);
                                   setBudgetSaved(false);
                                   setBudgetSaveError(null);
                                 }}
-                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
                                 disabled={savingBudget}
                               >
-                                <option value="">
-                                  {t('profile.actions.selectBudgetBuyPreference', {
-                                    defaultValue: 'Select your shopping preference',
-                                  })}
-                                </option>
-                                {budgetBuyPreferenceOptions.map((option) => (
-                                  <option key={option.value} value={option.value}>
-                                    {option.label}
-                                  </option>
-                                ))}
-                              </select>
+                                <div className="relative">
+                                  <Combobox.Button className="flex w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                    <span
+                                      className={budgetBuyPreference ? '' : 'text-[var(--text-secondary)] dark:text-slate-400'}
+                                    >
+                                      {budgetBuyPreferenceDisplayLabel ??
+                                        budgetBuyPreferenceProfileLabel ??
+                                        t('profile.actions.selectBudgetBuyPreference', {
+                                          defaultValue: 'Select your shopping preference',
+                                        })}
+                                    </span>
+                                    <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                                  </Combobox.Button>
+                                  <Combobox.Options className="absolute z-10 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                                    <Combobox.Option
+                                      value={null}
+                                      className={({ active }) =>
+                                        `cursor-pointer px-3 py-2 ${
+                                          active
+                                            ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                            : 'text-[var(--text-primary)]'
+                                        }`
+                                      }
+                                    >
+                                      {t('profile.actions.selectBudgetBuyPreference', {
+                                        defaultValue: 'Select your shopping preference',
+                                      })}
+                                    </Combobox.Option>
+                                    {budgetBuyPreferenceOptions.map((option) => (
+                                      <Combobox.Option
+                                        key={option.value}
+                                        value={option.value}
+                                        className={({ active }) =>
+                                          `cursor-pointer px-3 py-2 ${
+                                            active
+                                              ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                              : 'text-[var(--text-primary)]'
+                                          }`
+                                        }
+                                      >
+                                        {option.label}
+                                      </Combobox.Option>
+                                    ))}
+                                  </Combobox.Options>
+                                </div>
+                              </Combobox>
                             )
                           : budgetBuyPreferenceDisplayLabel ??
                             budgetBuyPreferenceProfileLabel ??
@@ -5605,30 +5945,61 @@ const handleRemoveActivityCultural = (value: string) => {
                         : section.id === 'budget' && field.id === 'budget_souvenir_space_preference'
                         ? isEditingBudget
                           ? (
-                              <select
-                                value={budgetSouvenirSpace ?? ''}
-                                onChange={(event) => {
-                                  const nextValue = event.target.value;
-                                  setBudgetSouvenirSpace(
-                                    isBudgetSouvenirSpacePreferenceValue(nextValue) ? nextValue : null
-                                  );
+                              <Combobox
+                                value={budgetSouvenirSpace}
+                                onChange={(value: BudgetSouvenirSpacePreference | null) => {
+                                  setBudgetSouvenirSpace(value);
                                   setBudgetSaved(false);
                                   setBudgetSaveError(null);
                                 }}
-                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
                                 disabled={savingBudget}
                               >
-                                <option value="">
-                                  {t('profile.actions.selectSouvenirSpacePreference', {
-                                    defaultValue: 'Select your souvenir space plan',
-                                  })}
-                                </option>
-                                {budgetSouvenirSpaceOptions.map((option) => (
-                                  <option key={option.value} value={option.value}>
-                                    {option.label}
-                                  </option>
-                                ))}
-                              </select>
+                                <div className="relative">
+                                  <Combobox.Button className="flex w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                    <span
+                                      className={budgetSouvenirSpace ? '' : 'text-[var(--text-secondary)] dark:text-slate-400'}
+                                    >
+                                      {budgetSouvenirSpaceDisplayLabel ??
+                                        budgetSouvenirSpaceProfileLabel ??
+                                        t('profile.actions.selectSouvenirSpacePreference', {
+                                          defaultValue: 'Select your souvenir space plan',
+                                        })}
+                                    </span>
+                                    <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                                  </Combobox.Button>
+                                  <Combobox.Options className="absolute z-10 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                                    <Combobox.Option
+                                      value={null}
+                                      className={({ active }) =>
+                                        `cursor-pointer px-3 py-2 ${
+                                          active
+                                            ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                            : 'text-[var(--text-primary)]'
+                                        }`
+                                      }
+                                    >
+                                      {t('profile.actions.selectSouvenirSpacePreference', {
+                                        defaultValue: 'Select your souvenir space plan',
+                                      })}
+                                    </Combobox.Option>
+                                    {budgetSouvenirSpaceOptions.map((option) => (
+                                      <Combobox.Option
+                                        key={option.value}
+                                        value={option.value}
+                                        className={({ active }) =>
+                                          `cursor-pointer px-3 py-2 ${
+                                            active
+                                              ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                              : 'text-[var(--text-primary)]'
+                                          }`
+                                        }
+                                      >
+                                        {option.label}
+                                      </Combobox.Option>
+                                    ))}
+                                  </Combobox.Options>
+                                </div>
+                              </Combobox>
                             )
                           : budgetSouvenirSpaceDisplayLabel ??
                             budgetSouvenirSpaceProfileLabel ??
@@ -5636,30 +6007,63 @@ const handleRemoveActivityCultural = (value: string) => {
                         : section.id === 'sustainability' && field.id === 'sustainability_weight_priority'
                         ? isEditingSustainability
                           ? (
-                              <select
-                                value={sustainabilityWeightPriority ?? ''}
-                                onChange={(event) => {
-                                  const nextValue = event.target.value;
-                                  setSustainabilityWeightPriority(
-                                    isSustainabilityWeightPriorityValue(nextValue) ? nextValue : null
-                                  );
+                              <Combobox
+                                value={sustainabilityWeightPriority}
+                                onChange={(value: SustainabilityWeightPriority | null) => {
+                                  setSustainabilityWeightPriority(value);
                                   setSustainabilitySaved(false);
                                   setSustainabilitySaveError(null);
                                 }}
-                                className="w-72 max-w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
                                 disabled={savingSustainability}
                               >
-                                <option value="">
-                                  {t('profile.actions.selectSustainabilityWeightPriority', {
-                                    defaultValue: 'Choose your pack weight priority',
-                                  })}
-                                </option>
-                                {sustainabilityWeightPriorityOptions.map((option) => (
-                                  <option key={option.value} value={option.value}>
-                                    {option.label}
-                                  </option>
-                                ))}
-                              </select>
+                                <div className="relative">
+                                  <Combobox.Button className="flex w-72 max-w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                    <span
+                                      className={
+                                        sustainabilityWeightPriority ? '' : 'text-[var(--text-secondary)] dark:text-slate-400'
+                                      }
+                                    >
+                                      {sustainabilityWeightPriority
+                                        ? sustainabilityWeightPriorityLabelByValue.get(sustainabilityWeightPriority) ?? sustainabilityWeightPriority
+                                        : t('profile.actions.selectSustainabilityWeightPriority', {
+                                            defaultValue: 'Choose your pack weight priority',
+                                          })}
+                                    </span>
+                                    <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                                  </Combobox.Button>
+                                  <Combobox.Options className="absolute z-10 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                                    <Combobox.Option
+                                      value={null}
+                                      className={({ active }) =>
+                                        `cursor-pointer px-3 py-2 ${
+                                          active
+                                            ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                            : 'text-[var(--text-primary)]'
+                                        }`
+                                      }
+                                    >
+                                      {t('profile.actions.selectSustainabilityWeightPriority', {
+                                        defaultValue: 'Choose your pack weight priority',
+                                      })}
+                                    </Combobox.Option>
+                                    {sustainabilityWeightPriorityOptions.map((option) => (
+                                      <Combobox.Option
+                                        key={option.value}
+                                        value={option.value}
+                                        className={({ active }) =>
+                                          `cursor-pointer px-3 py-2 ${
+                                            active
+                                              ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                              : 'text-[var(--text-primary)]'
+                                          }`
+                                        }
+                                      >
+                                        {option.label}
+                                      </Combobox.Option>
+                                    ))}
+                                  </Combobox.Options>
+                                </div>
+                              </Combobox>
                             )
                           : originalSustainabilityWeightPriorityDisplayLabel ??
                             sustainabilityWeightPriorityProfileLabel ??
