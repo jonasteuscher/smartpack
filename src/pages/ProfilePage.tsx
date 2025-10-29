@@ -9,6 +9,7 @@ import { updateRecord } from '../services/supabaseCrud';
 import type {
   BudgetLevel,
   BudgetBuyPreference,
+  BudgetSouvenirSpacePreference,
   Profile,
   SustainabilityWeightPriority,
   TravelFrequencyPerYear,
@@ -118,6 +119,15 @@ interface BudgetBuyPreferenceOption {
   emoji: string;
 }
 
+type BudgetSouvenirSpacePreferenceValue = BudgetSouvenirSpacePreference;
+
+interface BudgetSouvenirSpacePreferenceOption {
+  value: BudgetSouvenirSpacePreferenceValue;
+  translationKey: string;
+  defaultLabel: string;
+  emoji: string;
+}
+
 interface DetailSectionField {
   label: string;
   value: unknown;
@@ -187,6 +197,9 @@ const isBudgetLevelValue = (value: unknown): value is BudgetLevelValue =>
 
 const isBudgetBuyPreferenceValue = (value: unknown): value is BudgetBuyPreferenceValue =>
   typeof value === 'string' && (BUDGET_BUY_PREFERENCE_VALUES as readonly string[]).includes(value);
+
+const isBudgetSouvenirSpacePreferenceValue = (value: unknown): value is BudgetSouvenirSpacePreferenceValue =>
+  typeof value === 'string' && (BUDGET_SOUVENIR_SPACE_PREFERENCE_VALUES as readonly string[]).includes(value);
 
 const TRAVEL_REGION_OPTIONS: readonly TravelRegionOption[] = [
   { value: 'CH', translationKey: 'profile.travelRegions.CH', defaultLabel: '🇨🇭 Switzerland / Domestic', emoji: '🇨🇭' },
@@ -289,6 +302,40 @@ const BUDGET_BUY_PREFERENCE_OPTIONS: readonly BudgetBuyPreferenceOption[] = [
     translationKey: 'profile.budget.buyPreference.decide_later',
     defaultLabel: '🧭 Ich entscheide spontan',
     emoji: '🧭',
+  },
+];
+
+const BUDGET_SOUVENIR_SPACE_PREFERENCE_VALUES: readonly BudgetSouvenirSpacePreferenceValue[] = [
+  'none',
+  'some',
+  'extra',
+  'expandable',
+];
+
+const BUDGET_SOUVENIR_SPACE_PREFERENCE_OPTIONS: readonly BudgetSouvenirSpacePreferenceOption[] = [
+  {
+    value: 'none',
+    translationKey: 'profile.budget.souvenirSpace.none',
+    defaultLabel: '🚫 Nein, kein Platz für Souvenirs',
+    emoji: '🚫',
+  },
+  {
+    value: 'some',
+    translationKey: 'profile.budget.souvenirSpace.some',
+    defaultLabel: '🎁 Etwas Platz einplanen',
+    emoji: '🎁',
+  },
+  {
+    value: 'extra',
+    translationKey: 'profile.budget.souvenirSpace.extra',
+    defaultLabel: '🧳 Ich plane bewusst mehr Platz ein',
+    emoji: '🧳',
+  },
+  {
+    value: 'expandable',
+    translationKey: 'profile.budget.souvenirSpace.expandable',
+    defaultLabel: '🛒 Ich kaufe vor Ort einen Zusatzkoffer',
+    emoji: '🛒',
   },
 ];
 
@@ -1137,6 +1184,10 @@ const ProfilePage = () => {
   const [budgetBuyPreference, setBudgetBuyPreference] = useState<BudgetBuyPreferenceValue | null>(null);
   const [originalBudgetBuyPreference, setOriginalBudgetBuyPreference] =
     useState<BudgetBuyPreferenceValue | null>(null);
+  const [budgetSouvenirSpace, setBudgetSouvenirSpace] =
+    useState<BudgetSouvenirSpacePreferenceValue | null>(null);
+  const [originalBudgetSouvenirSpace, setOriginalBudgetSouvenirSpace] =
+    useState<BudgetSouvenirSpacePreferenceValue | null>(null);
   const [isEditingBudget, setIsEditingBudget] = useState(false);
   const [savingBudget, setSavingBudget] = useState(false);
   const [budgetSaveError, setBudgetSaveError] = useState<string | null>(null);
@@ -1296,6 +1347,19 @@ const ProfilePage = () => {
       setBudgetBuyPreference(normalizedPreference);
     }
   }, [profile?.budget_buy_at_destination_preference, isEditingBudget]);
+
+  useEffect(() => {
+    const rawSouvenirSpace = profile?.budget_souvenir_space_preference;
+    const normalizedSouvenirSpace = isBudgetSouvenirSpacePreferenceValue(rawSouvenirSpace)
+      ? rawSouvenirSpace
+      : null;
+
+    setOriginalBudgetSouvenirSpace(normalizedSouvenirSpace);
+
+    if (!isEditingBudget) {
+      setBudgetSouvenirSpace(normalizedSouvenirSpace);
+    }
+  }, [profile?.budget_souvenir_space_preference, isEditingBudget]);
 
   useEffect(() => {
     const rawFrequency = profile?.travel_frequency_per_year;
@@ -1764,6 +1828,38 @@ const ProfilePage = () => {
     return budgetBuyPreferenceLabelByValue.get(value) ?? null;
   }, [profile?.budget_buy_at_destination_preference, budgetBuyPreferenceLabelByValue]);
 
+  const budgetSouvenirSpaceOptions = useMemo(
+    () =>
+      BUDGET_SOUVENIR_SPACE_PREFERENCE_OPTIONS.map((option) => {
+        const localized = t(option.translationKey, { defaultValue: option.defaultLabel }).trim();
+        const label = localized.startsWith(option.emoji)
+          ? localized
+          : `${option.emoji} ${localized}`.trim();
+        return {
+          value: option.value,
+          label,
+        };
+      }),
+    [t]
+  );
+
+  const budgetSouvenirSpaceLabelByValue = useMemo(() => {
+    const map = new Map<BudgetSouvenirSpacePreferenceValue, string>();
+    budgetSouvenirSpaceOptions.forEach((option) => {
+      map.set(option.value, option.label);
+    });
+    return map;
+  }, [budgetSouvenirSpaceOptions]);
+
+  const budgetSouvenirSpaceProfileLabel = useMemo(() => {
+    const value = profile?.budget_souvenir_space_preference;
+    if (!isBudgetSouvenirSpacePreferenceValue(value)) {
+      return null;
+    }
+
+    return budgetSouvenirSpaceLabelByValue.get(value) ?? null;
+  }, [profile?.budget_souvenir_space_preference, budgetSouvenirSpaceLabelByValue]);
+
   const availableTransportModes = useMemo(
     () => transportModeOptions.filter((option) => !transportModes.includes(option.value)),
     [transportModeOptions, transportModes]
@@ -2010,6 +2106,7 @@ const ProfilePage = () => {
 
   const normalizedBudgetLevel = budgetLevel;
   const normalizedBudgetBuyPreference = budgetBuyPreference;
+  const normalizedBudgetSouvenirSpace = budgetSouvenirSpace;
   const normalizedSustainabilityWeightPriority = sustainabilityWeightPriority;
   const normalizedTravelFrequency = travelFrequency;
   const normalizedTravelDuration = travelDuration;
@@ -2058,7 +2155,8 @@ const ProfilePage = () => {
   const isSustainabilityDirty = isSustainabilityFocusDirty || isSustainabilityWeightPriorityDirty;
   const isBudgetLevelDirty = normalizedBudgetLevel !== originalBudgetLevel;
   const isBudgetBuyPreferenceDirty = normalizedBudgetBuyPreference !== originalBudgetBuyPreference;
-  const isBudgetDirty = isBudgetLevelDirty || isBudgetBuyPreferenceDirty;
+  const isBudgetSouvenirSpaceDirty = normalizedBudgetSouvenirSpace !== originalBudgetSouvenirSpace;
+  const isBudgetDirty = isBudgetLevelDirty || isBudgetBuyPreferenceDirty || isBudgetSouvenirSpaceDirty;
   const travelFrequencyDisplayLabel = normalizedTravelFrequency
     ? travelFrequencyLabelByValue.get(normalizedTravelFrequency) ?? null
     : null;
@@ -2172,6 +2270,9 @@ const ProfilePage = () => {
     : null;
   const budgetBuyPreferenceDisplayLabel = normalizedBudgetBuyPreference
     ? budgetBuyPreferenceLabelByValue.get(normalizedBudgetBuyPreference) ?? null
+    : null;
+  const budgetSouvenirSpaceDisplayLabel = normalizedBudgetSouvenirSpace
+    ? budgetSouvenirSpaceLabelByValue.get(normalizedBudgetSouvenirSpace) ?? null
     : null;
 
   const isFirstNameDirty = trimmedFirstName !== originalFirstName;
@@ -2399,7 +2500,11 @@ const ProfilePage = () => {
             label: t('profile.fields.buyAtDestination'),
             value: profile?.budget_buy_at_destination_preference,
           },
-          { label: t('profile.fields.souvenirSpace'), value: profile?.budget_souvenir_space_preference },
+          {
+            id: 'budget_souvenir_space_preference',
+            label: t('profile.fields.souvenirSpace'),
+            value: profile?.budget_souvenir_space_preference,
+          },
         ],
       },
     ],
@@ -3115,6 +3220,7 @@ const handleRemoveActivityCultural = (value: string) => {
     setBudgetSaveError(null);
     setBudgetLevel(originalBudgetLevel);
     setBudgetBuyPreference(originalBudgetBuyPreference);
+    setBudgetSouvenirSpace(originalBudgetSouvenirSpace);
   };
 
   const handleCancelEditingBudget = () => {
@@ -3123,6 +3229,7 @@ const handleRemoveActivityCultural = (value: string) => {
     setBudgetSaveError(null);
     setBudgetLevel(originalBudgetLevel);
     setBudgetBuyPreference(originalBudgetBuyPreference);
+    setBudgetSouvenirSpace(originalBudgetSouvenirSpace);
   };
 
   const handleStartEditingSustainability = () => {
@@ -3245,6 +3352,10 @@ const handleRemoveActivityCultural = (value: string) => {
         payload.budget_buy_at_destination_preference = normalizedBudgetBuyPreference ?? null;
       }
 
+      if (isBudgetSouvenirSpaceDirty) {
+        payload.budget_souvenir_space_preference = normalizedBudgetSouvenirSpace ?? null;
+      }
+
       if (Object.keys(payload).length === 0) {
         setIsEditingBudget(false);
         return;
@@ -3265,6 +3376,8 @@ const handleRemoveActivityCultural = (value: string) => {
       setBudgetLevel(normalizedBudgetLevel ?? null);
       setOriginalBudgetBuyPreference(normalizedBudgetBuyPreference ?? null);
       setBudgetBuyPreference(normalizedBudgetBuyPreference ?? null);
+      setOriginalBudgetSouvenirSpace(normalizedBudgetSouvenirSpace ?? null);
+      setBudgetSouvenirSpace(normalizedBudgetSouvenirSpace ?? null);
     } catch (saveError) {
       console.error('Failed to save budget preferences', saveError);
       setBudgetSaveError(
@@ -5147,6 +5260,37 @@ const handleRemoveActivityCultural = (value: string) => {
                             )
                           : budgetBuyPreferenceDisplayLabel ??
                             budgetBuyPreferenceProfileLabel ??
+                            t('profile.fallback.notSet')
+                        : section.id === 'budget' && field.id === 'budget_souvenir_space_preference'
+                        ? isEditingBudget
+                          ? (
+                              <select
+                                value={budgetSouvenirSpace ?? ''}
+                                onChange={(event) => {
+                                  const nextValue = event.target.value;
+                                  setBudgetSouvenirSpace(
+                                    isBudgetSouvenirSpacePreferenceValue(nextValue) ? nextValue : null
+                                  );
+                                  setBudgetSaved(false);
+                                  setBudgetSaveError(null);
+                                }}
+                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                disabled={savingBudget}
+                              >
+                                <option value="">
+                                  {t('profile.actions.selectSouvenirSpacePreference', {
+                                    defaultValue: 'Select your souvenir space plan',
+                                  })}
+                                </option>
+                                {budgetSouvenirSpaceOptions.map((option) => (
+                                  <option key={option.value} value={option.value}>
+                                    {option.label}
+                                  </option>
+                                ))}
+                              </select>
+                            )
+                          : budgetSouvenirSpaceDisplayLabel ??
+                            budgetSouvenirSpaceProfileLabel ??
                             t('profile.fallback.notSet')
                         : section.id === 'sustainability' && field.id === 'sustainability_weight_priority'
                         ? isEditingSustainability

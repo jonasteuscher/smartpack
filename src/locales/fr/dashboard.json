@@ -66,6 +66,7 @@
       "selectTravelSeason": "Choisir une saison",
       "selectBudgetLevel": "Choisir le niveau de budget",
       "selectBudgetBuyPreference": "Choisir la préférence d'achat",
+      "selectSouvenirSpacePreference": "Choisir l'espace pour les souvenirs",
       "selectTransportMode": "Choisir un mode de transport",
       "addTransportMode": "Ajouter un mode de transport",
       "removeTransportMode": "Supprimer le mode de transport",
@@ -306,6 +307,12 @@
         "buy_some": "🧴 Essentiels dans la valise – le reste sur place",
         "buy_local": "🛍️ Préférer acheter sur place",
         "decide_later": "🧭 Décider spontanément"
+      },
+      "souvenirSpace": {
+        "none": "🚫 Pas de place pour des souvenirs",
+        "some": "🎁 Garder un peu de place",
+        "extra": "🧳 Prévoir davantage d'espace",
+        "expandable": "🛒 Acheter un bagage en plus sur place"
       }
     },
     "luggageTypes": {

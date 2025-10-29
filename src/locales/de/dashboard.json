@@ -66,6 +66,7 @@
       "selectTravelSeason": "Reisesaison auswählen",
       "selectBudgetLevel": "Budgetstufe wählen",
       "selectBudgetBuyPreference": "Einkaufspräferenz wählen",
+      "selectSouvenirSpacePreference": "Souvenir-Platzbedarf wählen",
       "selectTransportMode": "Verkehrsmittel auswählen",
       "addTransportMode": "Verkehrsmittel hinzufügen",
       "removeTransportMode": "Verkehrsmittel entfernen",
@@ -306,6 +307,12 @@
         "buy_some": "🧴 Nur Grundausstattung – Rest vor Ort",
         "buy_local": "🛍️ Ich kaufe lieber lokal",
         "decide_later": "🧭 Ich entscheide spontan"
+      },
+      "souvenirSpace": {
+        "none": "🚫 Kein Platz für Souvenirs",
+        "some": "🎁 Etwas Platz einplanen",
+        "extra": "🧳 Bewusst mehr Platz einplanen",
+        "expandable": "🛒 Zusatzkoffer vor Ort kaufen"
       }
     },
     "luggageTypes": {

@@ -3,6 +3,7 @@ export type TravelTripDurationDays = 'short' | 'medium' | 'long' | 'extended';
 export type SustainabilityWeightPriority = 'comfort_first' | 'balanced' | 'lightweight' | 'ultralight';
 export type BudgetLevel = 'low' | 'medium' | 'high' | 'luxury';
 export type BudgetBuyPreference = 'bring_all' | 'buy_some' | 'buy_local' | 'decide_later';
+export type BudgetSouvenirSpacePreference = 'none' | 'some' | 'extra' | 'expandable';
 
 export interface Profile {
   user_id: string;
@@ -29,7 +30,7 @@ export interface Profile {
   sustainability_weight_priority?: SustainabilityWeightPriority | null;
   budget_level?: BudgetLevel | null;
   budget_buy_at_destination_preference?: BudgetBuyPreference | null;
-  budget_souvenir_space_preference?: string | null;
+  budget_souvenir_space_preference?: BudgetSouvenirSpacePreference | null;
   created_at?: string;
   updated_at?: string;
 }

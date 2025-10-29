@@ -66,6 +66,7 @@
       "selectTravelSeason": "Select season",
       "selectBudgetLevel": "Select budget level",
       "selectBudgetBuyPreference": "Select shopping preference",
+      "selectSouvenirSpacePreference": "Select souvenir space plan",
       "selectTransportMode": "Select transport mode",
       "addTransportMode": "Add transport mode",
       "removeTransportMode": "Remove transport mode",
@@ -306,6 +307,12 @@
         "buy_some": "🧴 Pack essentials – buy the rest there",
         "buy_local": "🛍️ Prefer to shop locally",
         "decide_later": "🧭 Decide spontaneously"
+      },
+      "souvenirSpace": {
+        "none": "🚫 No room for souvenirs",
+        "some": "🎁 Leave a little room",
+        "extra": "🧳 Plan extra packing space",
+        "expandable": "🛒 Buy an extra bag on the spot"
       }
     },
     "luggageTypes": {
