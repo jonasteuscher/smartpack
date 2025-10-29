@@ -65,6 +65,7 @@
       "removeTravelStyle": "Reisestil entfernen",
       "selectTravelSeason": "Reisesaison auswählen",
       "selectBudgetLevel": "Budgetstufe wählen",
+      "selectBudgetBuyPreference": "Einkaufspräferenz wählen",
       "selectTransportMode": "Verkehrsmittel auswählen",
       "addTransportMode": "Verkehrsmittel hinzufügen",
       "removeTransportMode": "Verkehrsmittel entfernen",
@@ -299,6 +300,12 @@
         "medium": "⚖️ Mittelklasse / Ausgewogen",
         "high": "✨ Komfortabel / Premium",
         "luxury": "💎 Luxusreise"
+      },
+      "buyPreference": {
+        "bring_all": "🎒 Ich bringe alles von zu Hause mit",
+        "buy_some": "🧴 Nur Grundausstattung – Rest vor Ort",
+        "buy_local": "🛍️ Ich kaufe lieber lokal",
+        "decide_later": "🧭 Ich entscheide spontan"
       }
     },
     "luggageTypes": {

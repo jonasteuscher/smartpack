@@ -65,6 +65,7 @@
       "removeTravelStyle": "Supprimer le style",
       "selectTravelSeason": "Choisir une saison",
       "selectBudgetLevel": "Choisir le niveau de budget",
+      "selectBudgetBuyPreference": "Choisir la préférence d'achat",
       "selectTransportMode": "Choisir un mode de transport",
       "addTransportMode": "Ajouter un mode de transport",
       "removeTransportMode": "Supprimer le mode de transport",
@@ -299,6 +300,12 @@
         "medium": "⚖️ Budget équilibré",
         "high": "✨ Confort premium",
         "luxury": "💎 Voyage de luxe"
+      },
+      "buyPreference": {
+        "bring_all": "🎒 Tout apporter de la maison",
+        "buy_some": "🧴 Essentiels dans la valise – le reste sur place",
+        "buy_local": "🛍️ Préférer acheter sur place",
+        "decide_later": "🧭 Décider spontanément"
       }
     },
     "luggageTypes": {

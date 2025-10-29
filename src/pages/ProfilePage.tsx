@@ -8,6 +8,7 @@ import { removeProfileAvatar, uploadProfileAvatar } from '../services/profileAva
 import { updateRecord } from '../services/supabaseCrud';
 import type {
   BudgetLevel,
+  BudgetBuyPreference,
   Profile,
   SustainabilityWeightPriority,
   TravelFrequencyPerYear,
@@ -108,6 +109,15 @@ interface BudgetLevelOption {
   emoji: string;
 }
 
+type BudgetBuyPreferenceValue = BudgetBuyPreference;
+
+interface BudgetBuyPreferenceOption {
+  value: BudgetBuyPreferenceValue;
+  translationKey: string;
+  defaultLabel: string;
+  emoji: string;
+}
+
 interface DetailSectionField {
   label: string;
   value: unknown;
@@ -174,6 +184,9 @@ const isTravelDurationValue = (value: unknown): value is TravelTripDurationDays 
 
 const isBudgetLevelValue = (value: unknown): value is BudgetLevelValue =>
   typeof value === 'string' && (BUDGET_LEVEL_VALUES as readonly string[]).includes(value);
+
+const isBudgetBuyPreferenceValue = (value: unknown): value is BudgetBuyPreferenceValue =>
+  typeof value === 'string' && (BUDGET_BUY_PREFERENCE_VALUES as readonly string[]).includes(value);
 
 const TRAVEL_REGION_OPTIONS: readonly TravelRegionOption[] = [
   { value: 'CH', translationKey: 'profile.travelRegions.CH', defaultLabel: '🇨🇭 Switzerland / Domestic', emoji: '🇨🇭' },
@@ -242,6 +255,40 @@ const BUDGET_LEVEL_OPTIONS: readonly BudgetLevelOption[] = [
     translationKey: 'profile.budget.level.luxury',
     defaultLabel: '💎 Luxusreise',
     emoji: '💎',
+  },
+];
+
+const BUDGET_BUY_PREFERENCE_VALUES: readonly BudgetBuyPreferenceValue[] = [
+  'bring_all',
+  'buy_some',
+  'buy_local',
+  'decide_later',
+];
+
+const BUDGET_BUY_PREFERENCE_OPTIONS: readonly BudgetBuyPreferenceOption[] = [
+  {
+    value: 'bring_all',
+    translationKey: 'profile.budget.buyPreference.bring_all',
+    defaultLabel: '🎒 Ich bringe alles von zu Hause mit',
+    emoji: '🎒',
+  },
+  {
+    value: 'buy_some',
+    translationKey: 'profile.budget.buyPreference.buy_some',
+    defaultLabel: '🧴 Nur Grundausstattung – Rest vor Ort',
+    emoji: '🧴',
+  },
+  {
+    value: 'buy_local',
+    translationKey: 'profile.budget.buyPreference.buy_local',
+    defaultLabel: '🛍️ Ich kaufe lieber lokal',
+    emoji: '🛍️',
+  },
+  {
+    value: 'decide_later',
+    translationKey: 'profile.budget.buyPreference.decide_later',
+    defaultLabel: '🧭 Ich entscheide spontan',
+    emoji: '🧭',
   },
 ];
 
@@ -1087,6 +1134,9 @@ const ProfilePage = () => {
   const [sustainabilitySaved, setSustainabilitySaved] = useState(false);
   const [budgetLevel, setBudgetLevel] = useState<BudgetLevelValue | null>(null);
   const [originalBudgetLevel, setOriginalBudgetLevel] = useState<BudgetLevelValue | null>(null);
+  const [budgetBuyPreference, setBudgetBuyPreference] = useState<BudgetBuyPreferenceValue | null>(null);
+  const [originalBudgetBuyPreference, setOriginalBudgetBuyPreference] =
+    useState<BudgetBuyPreferenceValue | null>(null);
   const [isEditingBudget, setIsEditingBudget] = useState(false);
   const [savingBudget, setSavingBudget] = useState(false);
   const [budgetSaveError, setBudgetSaveError] = useState<string | null>(null);
@@ -1235,6 +1285,17 @@ const ProfilePage = () => {
       setBudgetLevel(normalizedBudget);
     }
   }, [profile?.budget_level, isEditingBudget]);
+
+  useEffect(() => {
+    const rawPreference = profile?.budget_buy_at_destination_preference;
+    const normalizedPreference = isBudgetBuyPreferenceValue(rawPreference) ? rawPreference : null;
+
+    setOriginalBudgetBuyPreference(normalizedPreference);
+
+    if (!isEditingBudget) {
+      setBudgetBuyPreference(normalizedPreference);
+    }
+  }, [profile?.budget_buy_at_destination_preference, isEditingBudget]);
 
   useEffect(() => {
     const rawFrequency = profile?.travel_frequency_per_year;
@@ -1671,6 +1732,38 @@ const ProfilePage = () => {
     return budgetLevelLabelByValue.get(value) ?? null;
   }, [profile?.budget_level, budgetLevelLabelByValue]);
 
+  const budgetBuyPreferenceOptions = useMemo(
+    () =>
+      BUDGET_BUY_PREFERENCE_OPTIONS.map((option) => {
+        const localized = t(option.translationKey, { defaultValue: option.defaultLabel }).trim();
+        const label = localized.startsWith(option.emoji)
+          ? localized
+          : `${option.emoji} ${localized}`.trim();
+        return {
+          value: option.value,
+          label,
+        };
+      }),
+    [t]
+  );
+
+  const budgetBuyPreferenceLabelByValue = useMemo(() => {
+    const map = new Map<BudgetBuyPreferenceValue, string>();
+    budgetBuyPreferenceOptions.forEach((option) => {
+      map.set(option.value, option.label);
+    });
+    return map;
+  }, [budgetBuyPreferenceOptions]);
+
+  const budgetBuyPreferenceProfileLabel = useMemo(() => {
+    const value = profile?.budget_buy_at_destination_preference;
+    if (!isBudgetBuyPreferenceValue(value)) {
+      return null;
+    }
+
+    return budgetBuyPreferenceLabelByValue.get(value) ?? null;
+  }, [profile?.budget_buy_at_destination_preference, budgetBuyPreferenceLabelByValue]);
+
   const availableTransportModes = useMemo(
     () => transportModeOptions.filter((option) => !transportModes.includes(option.value)),
     [transportModeOptions, transportModes]
@@ -1916,6 +2009,7 @@ const ProfilePage = () => {
   const normalizedSelectedCountry = selectedCountry?.name ?? null;
 
   const normalizedBudgetLevel = budgetLevel;
+  const normalizedBudgetBuyPreference = budgetBuyPreference;
   const normalizedSustainabilityWeightPriority = sustainabilityWeightPriority;
   const normalizedTravelFrequency = travelFrequency;
   const normalizedTravelDuration = travelDuration;
@@ -1962,7 +2056,9 @@ const ProfilePage = () => {
   const isSustainabilityWeightPriorityDirty =
     normalizedSustainabilityWeightPriority !== originalSustainabilityWeightPriority;
   const isSustainabilityDirty = isSustainabilityFocusDirty || isSustainabilityWeightPriorityDirty;
-  const isBudgetDirty = normalizedBudgetLevel !== originalBudgetLevel;
+  const isBudgetLevelDirty = normalizedBudgetLevel !== originalBudgetLevel;
+  const isBudgetBuyPreferenceDirty = normalizedBudgetBuyPreference !== originalBudgetBuyPreference;
+  const isBudgetDirty = isBudgetLevelDirty || isBudgetBuyPreferenceDirty;
   const travelFrequencyDisplayLabel = normalizedTravelFrequency
     ? travelFrequencyLabelByValue.get(normalizedTravelFrequency) ?? null
     : null;
@@ -2073,6 +2169,9 @@ const ProfilePage = () => {
   );
   const budgetLevelDisplayLabel = normalizedBudgetLevel
     ? budgetLevelLabelByValue.get(normalizedBudgetLevel) ?? null
+    : null;
+  const budgetBuyPreferenceDisplayLabel = normalizedBudgetBuyPreference
+    ? budgetBuyPreferenceLabelByValue.get(normalizedBudgetBuyPreference) ?? null
     : null;
 
   const isFirstNameDirty = trimmedFirstName !== originalFirstName;
@@ -2295,7 +2394,11 @@ const ProfilePage = () => {
         title: t('profile.sections.budget'),
         fields: [
           { id: 'budget_level', label: t('profile.fields.budgetLevel'), value: profile?.budget_level },
-          { label: t('profile.fields.buyAtDestination'), value: profile?.budget_buy_at_destination_preference },
+          {
+            id: 'budget_buy_at_destination_preference',
+            label: t('profile.fields.buyAtDestination'),
+            value: profile?.budget_buy_at_destination_preference,
+          },
           { label: t('profile.fields.souvenirSpace'), value: profile?.budget_souvenir_space_preference },
         ],
       },
@@ -3011,6 +3114,7 @@ const handleRemoveActivityCultural = (value: string) => {
     setBudgetSaved(false);
     setBudgetSaveError(null);
     setBudgetLevel(originalBudgetLevel);
+    setBudgetBuyPreference(originalBudgetBuyPreference);
   };
 
   const handleCancelEditingBudget = () => {
@@ -3018,6 +3122,7 @@ const handleRemoveActivityCultural = (value: string) => {
     setBudgetSaved(false);
     setBudgetSaveError(null);
     setBudgetLevel(originalBudgetLevel);
+    setBudgetBuyPreference(originalBudgetBuyPreference);
   };
 
   const handleStartEditingSustainability = () => {
@@ -3132,8 +3237,12 @@ const handleRemoveActivityCultural = (value: string) => {
 
       const payload: Partial<Profile> = {};
 
-      if (isBudgetDirty) {
+      if (isBudgetLevelDirty) {
         payload.budget_level = normalizedBudgetLevel ?? null;
+      }
+
+      if (isBudgetBuyPreferenceDirty) {
+        payload.budget_buy_at_destination_preference = normalizedBudgetBuyPreference ?? null;
       }
 
       if (Object.keys(payload).length === 0) {
@@ -3154,6 +3263,8 @@ const handleRemoveActivityCultural = (value: string) => {
       setBudgetSaved(true);
       setOriginalBudgetLevel(normalizedBudgetLevel ?? null);
       setBudgetLevel(normalizedBudgetLevel ?? null);
+      setOriginalBudgetBuyPreference(normalizedBudgetBuyPreference ?? null);
+      setBudgetBuyPreference(normalizedBudgetBuyPreference ?? null);
     } catch (saveError) {
       console.error('Failed to save budget preferences', saveError);
       setBudgetSaveError(
@@ -5005,6 +5116,37 @@ const handleRemoveActivityCultural = (value: string) => {
                             )
                           : budgetLevelDisplayLabel ??
                             budgetLevelProfileLabel ??
+                            t('profile.fallback.notSet')
+                        : section.id === 'budget' && field.id === 'budget_buy_at_destination_preference'
+                        ? isEditingBudget
+                          ? (
+                              <select
+                                value={budgetBuyPreference ?? ''}
+                                onChange={(event) => {
+                                  const nextValue = event.target.value;
+                                  setBudgetBuyPreference(
+                                    isBudgetBuyPreferenceValue(nextValue) ? nextValue : null
+                                  );
+                                  setBudgetSaved(false);
+                                  setBudgetSaveError(null);
+                                }}
+                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                                disabled={savingBudget}
+                              >
+                                <option value="">
+                                  {t('profile.actions.selectBudgetBuyPreference', {
+                                    defaultValue: 'Select your shopping preference',
+                                  })}
+                                </option>
+                                {budgetBuyPreferenceOptions.map((option) => (
+                                  <option key={option.value} value={option.value}>
+                                    {option.label}
+                                  </option>
+                                ))}
+                              </select>
+                            )
+                          : budgetBuyPreferenceDisplayLabel ??
+                            budgetBuyPreferenceProfileLabel ??
                             t('profile.fallback.notSet')
                         : section.id === 'sustainability' && field.id === 'sustainability_weight_priority'
                         ? isEditingSustainability

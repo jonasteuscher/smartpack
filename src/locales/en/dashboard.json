@@ -65,6 +65,7 @@
       "removeTravelStyle": "Remove travel style",
       "selectTravelSeason": "Select season",
       "selectBudgetLevel": "Select budget level",
+      "selectBudgetBuyPreference": "Select shopping preference",
       "selectTransportMode": "Select transport mode",
       "addTransportMode": "Add transport mode",
       "removeTransportMode": "Remove transport mode",
@@ -299,6 +300,12 @@
         "medium": "⚖️ Mid-range / Balanced",
         "high": "✨ Comfortable / Premium",
         "luxury": "💎 Luxury trip"
+      },
+      "buyPreference": {
+        "bring_all": "🎒 Bring everything from home",
+        "buy_some": "🧴 Pack essentials – buy the rest there",
+        "buy_local": "🛍️ Prefer to shop locally",
+        "decide_later": "🧭 Decide spontaneously"
       }
     },
     "luggageTypes": {
