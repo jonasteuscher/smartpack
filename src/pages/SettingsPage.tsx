@@ -7,7 +7,12 @@ import { useTheme, type ThemeSetting } from '@context/ThemeContext';
 import type { AppLanguage } from '@/i18n';
 import i18n from '@/i18n';
 
-const THEME_OPTIONS: Array<{ value: ThemeSetting; labelKey: string; fallback: string; icon: string }> = [
+const THEME_OPTIONS: readonly {
+  value: ThemeSetting;
+  labelKey: string;
+  fallback: string;
+  icon: string;
+}[] = [
   { value: 'system', labelKey: 'settings.sections.appearance.options.system', fallback: 'System default', icon: '🖥️' },
   { value: 'light', labelKey: 'settings.sections.appearance.options.light', fallback: 'Light', icon: '🌞' },
   { value: 'dark', labelKey: 'settings.sections.appearance.options.dark', fallback: 'Dark', icon: '🌙' }
@@ -20,7 +25,7 @@ interface LanguageOption {
   fallback: string;
 }
 
-const LANGUAGE_OPTIONS: Array<LanguageOption & { icon: string }> = [
+const LANGUAGE_OPTIONS: readonly (LanguageOption & { icon: string })[] = [
   { value: 'de-CH', code: 'de', labelKey: 'settings.sections.language.options.deCH', fallback: 'German (Switzerland)', icon: '🇨🇭' },
   { value: 'en', code: 'en', labelKey: 'settings.sections.language.options.en', fallback: 'English', icon: '🇬🇧' },
   { value: 'fr-CH', code: 'fr', labelKey: 'settings.sections.language.options.frCH', fallback: 'French', icon: '🇫🇷' },
@@ -71,7 +76,7 @@ const SettingsPage = () => {
 
   const activeTheme = (settings?.theme ?? theme ?? 'system') as ThemeSetting;
 
-  const activeLanguageValue = useMemo(() => {
+  const activeLanguageValue = (() => {
     const stored =
       settings?.language ??
       (typeof window !== 'undefined' ? window.localStorage.getItem('smartpack-language') : null) ??
@@ -87,7 +92,7 @@ const SettingsPage = () => {
     }
 
     return LANGUAGE_OPTIONS[0]?.value ?? 'en';
-  }, [settings?.language, i18n.language]);
+  })();
 
   const statusMessage = useMemo(() => {
     if (updateResult.error) {
@@ -155,7 +160,7 @@ const SettingsPage = () => {
         }
       }
     },
-    [activeLanguageValue, updateSettings, i18n]
+    [activeLanguageValue, updateSettings]
   );
 
   return (

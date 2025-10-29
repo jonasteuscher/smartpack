@@ -26,7 +26,7 @@ const normalizeName = (value: unknown): string | null => {
   return trimmed.length > 0 ? trimmed : null;
 };
 
-const SUPPORTED_LANGUAGES: ReadonlyArray<AppLanguage> = ['de', 'en', 'fr', 'it'];
+const SUPPORTED_LANGUAGES: readonly AppLanguage[] = ['de', 'en', 'fr', 'it'];
 
 const normalizeLanguageSetting = (value: unknown): AppLanguage | null => {
   if (typeof value !== 'string') {
