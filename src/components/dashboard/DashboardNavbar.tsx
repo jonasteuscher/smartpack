@@ -76,9 +76,9 @@ const DashboardNavbar = ({
   const mobileNavItemsToRender = mobileNavItems.filter(({ key }) => !hiddenKeySet.has(key));
 
   return (
-    <header className="pointer-events-auto">
-      <div className="container-responsive pt-6">
-        <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/80 px-6 py-4 shadow-sm backdrop-blur-md transition dark:border-slate-800/80 dark:bg-slate-900/70">
+    <header className="pointer-events-auto sticky top-0 z-40">
+      <div className="container-responsive py-4">
+        <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/70 px-6 py-4 shadow-sm backdrop-blur-md transition supports-[backdrop-filter]:bg-white/60 dark:border-slate-800/70 dark:bg-slate-900/60">
           <Link
             to="/app/dashboard"
             className="flex items-center gap-3 font-semibold text-slate-900 transition hover:text-brand-secondary dark:text-white"
@@ -210,7 +210,7 @@ const DashboardNavbar = ({
       </div>
 
       <Transition show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-40 md:hidden" onClose={closeMenu}>
+        <Dialog as="div" className="relative z-50 md:hidden" onClose={closeMenu}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-200"
