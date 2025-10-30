@@ -76,6 +76,20 @@
         "unknown": "Unknown"
       }
     },
+    "deleteAccount": {
+      "title": "Delete account",
+      "description": "Deleting your account will permanently remove your profile and preferences. This action cannot be undone.",
+      "button": "Delete account",
+      "modal": {
+        "title": "Permanently delete account?",
+        "description": "All SmartPack data linked to your profile will be removed from our databases. You won't be able to recover it later.",
+        "warning": "This action cannot be undone.",
+        "confirm": "Delete account",
+        "deleting": "Deleting…",
+        "cancel": "Cancel"
+      },
+      "error": "We could not delete your account. Please try again."
+    },
     "messages": {
       "saved": "Preferences saved.",
       "saveFailed": "We could not save your preferences."

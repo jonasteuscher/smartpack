@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useEffect, useState } from 'react';
+import { Fragment, useMemo, useCallback, useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUserSettings } from '@hooks/useUserSettings';
 import type { UserSettings } from '@/types/userSettings';
@@ -6,8 +6,11 @@ import { useTheme, type ThemeSetting } from '@context/ThemeContext';
 import type { AppLanguage } from '@/i18n';
 import i18n from '@/i18n';
 import { formatDateTimeWithPreference } from '@/utils/formatDateTime';
-import { Combobox } from '@headlessui/react';
+import { Combobox, Dialog, Transition } from '@headlessui/react';
 import { ChevronUpDownIcon } from '@heroicons/react/20/solid';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@context/AuthContext';
+import { deleteUserAccount } from '@/services/deleteUserAccount';
 
 const THEME_OPTIONS: readonly {
   value: ThemeSetting;
@@ -89,6 +92,8 @@ const SettingsPage = () => {
   const { t } = useTranslation('dashboard');
   const { theme, setTheme } = useTheme();
   const { settings, loading, error, updateSettings, updateResult, isUpdating } = useUserSettings();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const resolvedTheme = (settings?.theme ?? theme ?? 'system') as ThemeSetting;
   const [themeValue, setThemeValue] = useState<ThemeSetting>(resolvedTheme);
   const [themeComboboxKey, setThemeComboboxKey] = useState(0);
@@ -121,6 +126,16 @@ const SettingsPage = () => {
   const [languageValue, setLanguageValue] = useState<string>(initialLanguageValue);
   const [languageComboboxKey, setLanguageComboboxKey] = useState(0);
   const [dateFormatComboboxKey, setDateFormatComboboxKey] = useState(0);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [deleteAccountError, setDeleteAccountError] = useState<string | null>(null);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const locale = i18n.language;
   const resolvedTimeFormat = settings?.time_format ?? '24h';
@@ -376,28 +391,85 @@ const SettingsPage = () => {
     [languageValue, updateSettings]
   );
 
+  const handleOpenDeleteDialog = useCallback(() => {
+    setDeleteAccountError(null);
+    setIsDeleteDialogOpen(true);
+  }, []);
+
+  const handleDismissDeleteDialog = useCallback(() => {
+    if (isDeletingAccount) {
+      return;
+    }
+    setIsDeleteDialogOpen(false);
+  }, [isDeletingAccount]);
+
+  const handleConfirmDelete = useCallback(async () => {
+    if (!user?.id) {
+      setDeleteAccountError(
+        t('settings.deleteAccount.error', {
+          defaultValue: 'We could not delete your account. Please try again.'
+        })
+      );
+      return;
+    }
+
+    setIsDeletingAccount(true);
+    setDeleteAccountError(null);
+
+    try {
+      const result = await deleteUserAccount(user.id);
+      if (!result.success) {
+        const baseMessage = t('settings.deleteAccount.error', {
+          defaultValue: 'We could not delete your account. Please try again.'
+        });
+        setDeleteAccountError(result.message ? `${baseMessage} (${result.message})` : baseMessage);
+        return;
+      }
+
+      const signOutError = await signOut();
+      if (signOutError) {
+        console.error('Sign out after deleting account failed', signOutError);
+      }
+
+      setIsDeleteDialogOpen(false);
+      navigate('/', { replace: true });
+    } catch (deleteError) {
+      console.error('Failed to delete account', deleteError);
+      setDeleteAccountError(
+        t('settings.deleteAccount.error', {
+          defaultValue: 'We could not delete your account. Please try again.'
+        })
+      );
+    } finally {
+      if (isMountedRef.current) {
+        setIsDeletingAccount(false);
+      }
+    }
+  }, [navigate, signOut, t, user?.id]);
+
   return (
-    <section className="flex flex-col gap-6">
-      <header className="flex flex-col gap-1">
-        <h1 className="text-3xl font-semibold">{t('settings.heading', { defaultValue: 'Settings' })}</h1>
-        <p className="text-sm text-[var(--text-secondary)]">
-          {t('settings.subheading', { defaultValue: 'Manage your account preferences.' })}
-        </p>
-      </header>
+    <>
+      <section className="flex flex-col gap-6">
+        <header className="flex flex-col gap-1">
+          <h1 className="text-3xl font-semibold">{t('settings.heading', { defaultValue: 'Settings' })}</h1>
+          <p className="text-sm text-[var(--text-secondary)]">
+            {t('settings.subheading', { defaultValue: 'Manage your account preferences.' })}
+          </p>
+        </header>
 
-      {statusMessage && (
-        <div
-          className={`rounded-2xl border px-4 py-3 text-sm ${
-            statusMessage.tone === 'success'
-              ? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/40 dark:bg-emerald-500/10 dark:text-emerald-300'
-              : 'border-red-200 bg-red-50 text-red-600 dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-300'
-          }`}
-        >
-          {statusMessage.text}
-        </div>
-      )}
+        {statusMessage && (
+          <div
+            className={`rounded-2xl border px-4 py-3 text-sm ${
+              statusMessage.tone === 'success'
+                ? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/40 dark:bg-emerald-500/10 dark:text-emerald-300'
+                : 'border-red-200 bg-red-50 text-red-600 dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-300'
+            }`}
+          >
+            {statusMessage.text}
+          </div>
+        )}
 
-      <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid gap-4 lg:grid-cols-2">
         <section className="relative z-40 flex min-w-0 flex-col gap-3 overflow-visible rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
           <div className="flex flex-col gap-1">
             <h2 className="text-lg font-semibold">{t('settings.sections.appearance.title', { defaultValue: 'Appearance' })}</h2>
@@ -734,8 +806,108 @@ const SettingsPage = () => {
             )}
           </div>
         </section>
-      </div>
-    </section>
+          <section className="relative z-10 flex min-w-0 flex-col gap-4 rounded-2xl border border-red-200/70 bg-red-50/80 p-6 shadow-sm backdrop-blur dark:border-red-500/40 dark:bg-red-500/10 lg:col-span-2">
+            <div className="flex flex-col gap-2">
+              <h2 className="text-lg font-semibold text-red-700 dark:text-red-300">
+                {t('settings.deleteAccount.title', { defaultValue: 'Delete account' })}
+              </h2>
+              <p className="text-sm text-red-700/90 dark:text-red-200">
+                {t('settings.deleteAccount.description', {
+                  defaultValue: 'Deleting your account permanently removes your data. This action cannot be undone.'
+                })}
+              </p>
+            </div>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={handleOpenDeleteDialog}
+                disabled={isDeletingAccount}
+                className="inline-flex items-center gap-2 rounded-full bg-red-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {t('settings.deleteAccount.button', { defaultValue: 'Delete account' })}
+              </button>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <Transition show={isDeleteDialogOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-50" onClose={handleDismissDeleteDialog}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-200"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-150"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-end justify-center px-4 py-8 sm:items-center sm:px-6">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-200"
+                enterFrom="opacity-0 translate-y-6 sm:translate-y-0 sm:scale-95"
+                enterTo="opacity-100 translate-y-0 sm:scale-100"
+                leave="ease-in duration-150"
+                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                leaveTo="opacity-0 translate-y-6 sm:translate-y-0 sm:scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-md rounded-2xl border border-red-200 bg-white p-6 shadow-2xl dark:border-red-500/40 dark:bg-slate-900">
+                  <div className="space-y-3">
+                    <Dialog.Title className="text-lg font-semibold text-slate-900 dark:text-white">
+                      {t('settings.deleteAccount.modal.title', { defaultValue: 'Permanently delete account?' })}
+                    </Dialog.Title>
+                    <p className="text-sm text-slate-600 dark:text-slate-300">
+                      {t('settings.deleteAccount.modal.description', {
+                        defaultValue:
+                          'This will remove your profile, preferences, and any associated data from SmartPack.'
+                      })}
+                    </p>
+                    <p className="text-sm font-semibold text-red-600 dark:text-red-400">
+                      {t('settings.deleteAccount.modal.warning', { defaultValue: 'This action cannot be undone.' })}
+                    </p>
+                    {deleteAccountError ? (
+                      <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600 dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-300">
+                        {deleteAccountError}
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className="mt-6 flex justify-end gap-3">
+                    <button
+                      type="button"
+                      onClick={handleDismissDeleteDialog}
+                      disabled={isDeletingAccount}
+                      className="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-slate-400 hover:text-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-200 dark:hover:border-slate-500 dark:hover:text-slate-100"
+                    >
+                      {t('settings.deleteAccount.modal.cancel', { defaultValue: 'Cancel' })}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleConfirmDelete}
+                      disabled={isDeletingAccount}
+                      className="inline-flex items-center justify-center gap-2 rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 disabled:cursor-not-allowed disabled:opacity-70"
+                    >
+                      {t(
+                        isDeletingAccount
+                          ? 'settings.deleteAccount.modal.deleting'
+                          : 'settings.deleteAccount.modal.confirm',
+                        {
+                          defaultValue: isDeletingAccount ? 'Deleting…' : 'Delete account'
+                        }
+                      )}
+                    </button>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+    </>
   );
 };
 

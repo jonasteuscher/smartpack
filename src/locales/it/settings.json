@@ -76,6 +76,20 @@
         "unknown": "Sconosciuto"
       }
     },
+    "deleteAccount": {
+      "title": "Elimina account",
+      "description": "Eliminando l'account rimuoverai definitivamente profilo e preferenze. L'operazione è irreversibile.",
+      "button": "Elimina account",
+      "modal": {
+        "title": "Eliminare definitivamente l'account?",
+        "description": "Tutti i dati SmartPack associati al tuo profilo verranno rimossi dai nostri database e non potranno essere recuperati.",
+        "warning": "Questa azione è irreversibile.",
+        "confirm": "Elimina account",
+        "deleting": "Eliminazione in corso…",
+        "cancel": "Annulla"
+      },
+      "error": "Non siamo riusciti a eliminare il tuo account. Riprova."
+    },
     "messages": {
       "saved": "Preferenze salvate.",
       "saveFailed": "Impossibile salvare le preferenze."

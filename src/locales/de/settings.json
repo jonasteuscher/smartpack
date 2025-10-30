@@ -76,6 +76,20 @@
         "unknown": "Unbekannt"
       }
     },
+    "deleteAccount": {
+      "title": "Konto löschen",
+      "description": "Wenn du dein Konto löschst, werden Profil und Einstellungen dauerhaft entfernt. Dieser Vorgang kann nicht rückgängig gemacht werden.",
+      "button": "Konto löschen",
+      "modal": {
+        "title": "Konto dauerhaft löschen?",
+        "description": "Alle SmartPack-Daten, die deinem Profil zugeordnet sind, werden aus unseren Datenbanken entfernt. Du kannst sie später nicht wiederherstellen.",
+        "warning": "Dieser Vorgang kann nicht rückgängig gemacht werden.",
+        "confirm": "Konto löschen",
+        "deleting": "Lösche…",
+        "cancel": "Abbrechen"
+      },
+      "error": "Dein Konto konnte nicht gelöscht werden. Bitte versuche es erneut."
+    },
     "messages": {
       "saved": "Präferenzen gespeichert.",
       "saveFailed": "Präferenzen konnten nicht gespeichert werden."

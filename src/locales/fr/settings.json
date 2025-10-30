@@ -76,6 +76,20 @@
         "unknown": "Inconnu"
       }
     },
+    "deleteAccount": {
+      "title": "Supprimer le compte",
+      "description": "La suppression de votre compte effacera définitivement votre profil et vos préférences. Cette action est irréversible.",
+      "button": "Supprimer le compte",
+      "modal": {
+        "title": "Supprimer définitivement le compte ?",
+        "description": "Toutes les données SmartPack associées à votre profil seront retirées de nos bases. Vous ne pourrez pas les récupérer.",
+        "warning": "Cette action est irréversible.",
+        "confirm": "Supprimer le compte",
+        "deleting": "Suppression…",
+        "cancel": "Annuler"
+      },
+      "error": "Impossible de supprimer votre compte. Veuillez réessayer."
+    },
     "messages": {
       "saved": "Préférences enregistrées.",
       "saveFailed": "Impossible d'enregistrer vos préférences."
