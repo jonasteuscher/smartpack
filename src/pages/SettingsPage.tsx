@@ -406,7 +406,7 @@ const SettingsPage = () => {
       )}
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="relative z-30 flex flex-col gap-3 overflow-visible rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
+        <section className="relative z-40 flex min-w-0 flex-col gap-3 overflow-visible rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
           <div className="flex flex-col gap-1">
             <h2 className="text-lg font-semibold">{t('settings.sections.appearance.title', { defaultValue: 'Appearance' })}</h2>
             <p className="text-sm text-[var(--text-secondary)]">
@@ -423,7 +423,7 @@ const SettingsPage = () => {
               onChange={handleThemeChange}
               disabled={loading || isUpdating}
             >
-              <div className="relative z-40 w-64 max-w-full">
+              <div className="relative z-40 w-full max-w-full sm:w-64">
                 <Combobox.Button
                   id="theme-setting"
                   className="flex w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-[var(--text-primary)] shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
@@ -470,7 +470,7 @@ const SettingsPage = () => {
             </Combobox>
           </div>
         </section>
-        <section className="relative z-30 flex flex-col gap-3 overflow-visible rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
+        <section className="relative z-50 flex min-w-0 flex-col gap-3 overflow-visible rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
           <div className="flex flex-col gap-1">
             <h2 className="text-lg font-semibold">{t('settings.sections.language.title', { defaultValue: 'Language' })}</h2>
             <p className="text-sm text-[var(--text-secondary)]">
@@ -487,7 +487,7 @@ const SettingsPage = () => {
               onChange={handleLanguageChange}
               disabled={loading || isUpdating}
             >
-              <div className="relative z-30 w-64 max-w-full">
+              <div className="relative z-40 w-full max-w-full sm:w-64">
                 <Combobox.Button
                   id="language-setting"
                   className="flex w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-[var(--text-primary)] shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
@@ -510,7 +510,7 @@ const SettingsPage = () => {
                   </span>
                   <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
                 </Combobox.Button>
-                <Combobox.Options className="absolute z-50 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                <Combobox.Options className="absolute z-[80] mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
                   {LANGUAGE_OPTIONS.map(({ value, labelKey, fallback, icon }) => (
                     <Combobox.Option
                       key={value}
@@ -532,7 +532,7 @@ const SettingsPage = () => {
             </Combobox>
           </div>
         </section>
-        <section className="relative z-30 flex flex-col gap-3 overflow-visible rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
+        <section className="relative z-20 flex min-w-0 flex-col gap-3 overflow-visible rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
           <div className="flex flex-col gap-1">
             <h2 className="text-lg font-semibold">
               {t('settings.sections.preferences.title', { defaultValue: 'Account preferences' })}
@@ -557,7 +557,7 @@ const SettingsPage = () => {
               </p>
             ) : settings ? (
               <ul className="flex flex-col divide-y divide-slate-200/70 dark:divide-slate-800/70">
-                <li className="flex items-center justify-between gap-3 py-2">
+                <li className="flex flex-col gap-3 py-2 sm:flex-row sm:items-center sm:justify-between">
                   <label className="text-sm font-medium text-[var(--text-secondary)]" htmlFor="units-setting">
                     {t('settings.preferences.labels.units', { defaultValue: 'Units' })}
                   </label>
@@ -567,7 +567,7 @@ const SettingsPage = () => {
                     onChange={handleUnitsChange}
                     disabled={loading || isUpdating}
                   >
-                    <div className="relative w-64">
+                    <div className="relative w-full sm:w-64">
                       <Combobox.Button
                         id="units-setting"
                         className="flex w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-[var(--text-primary)] shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
@@ -595,7 +595,7 @@ const SettingsPage = () => {
                     </div>
                   </Combobox>
                 </li>
-                <li className="flex items-center justify-between gap-3 py-2">
+                <li className="flex flex-col gap-3 py-2 sm:flex-row sm:items-center sm:justify-between">
                   <span className="text-[var(--text-secondary)]">
                     {t('settings.preferences.labels.timeFormat', { defaultValue: 'Time format' })}
                   </span>
@@ -605,7 +605,7 @@ const SettingsPage = () => {
                     onChange={handleTimeFormatChange}
                     disabled={loading || isUpdating}
                   >
-                    <div className="relative w-64">
+                    <div className="relative w-full sm:w-64">
                       <Combobox.Button
                         id="time-format-setting"
                         className="flex w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-[var(--text-primary)] shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
@@ -638,7 +638,7 @@ const SettingsPage = () => {
                     </div>
                   </Combobox>
                 </li>
-                <li className="flex items-center justify-between gap-3 py-2">
+                <li className="flex flex-col gap-3 py-2 sm:flex-row sm:items-center sm:justify-between">
                   <span className="text-[var(--text-secondary)]">
                     {t('settings.preferences.labels.dateFormat', { defaultValue: 'Date format' })}
                   </span>
@@ -648,7 +648,7 @@ const SettingsPage = () => {
                     onChange={handleDateFormatChange}
                     disabled={loading || isUpdating}
                   >
-                    <div className="relative w-64">
+                    <div className="relative w-full sm:w-64">
                       <Combobox.Button
                         id="date-format-setting"
                         className="flex w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-[var(--text-primary)] shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
@@ -692,7 +692,7 @@ const SettingsPage = () => {
             )}
           </div>
         </section>
-        <section className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
+        <section className="relative z-10 flex min-w-0 flex-col gap-3 rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
           <div className="flex flex-col gap-1">
             <h2 className="text-lg font-semibold">
               {t('settings.sections.accountInformation.title', { defaultValue: 'Account information' })}
@@ -716,7 +716,7 @@ const SettingsPage = () => {
               </p>
             ) : settings ? (
               <ul className="flex flex-col divide-y divide-slate-200/70 dark:divide-slate-800/70">
-                <li className="flex items-center justify-between py-2 text-xs">
+                <li className="flex flex-col gap-1 py-2 text-xs sm:flex-row sm:items-center sm:justify-between">
                   <span className="text-[var(--text-secondary)]">
                     {t('settings.accountInformation.labels.created', { defaultValue: 'Created at' })}
                   </span>
@@ -724,7 +724,7 @@ const SettingsPage = () => {
                     {createdAt ?? t('settings.accountInformation.state.unknown', { defaultValue: 'Unknown' })}
                   </span>
                 </li>
-                <li className="flex items-center justify-between py-2 text-xs">
+                <li className="flex flex-col gap-1 py-2 text-xs sm:flex-row sm:items-center sm:justify-between">
                   <span className="text-[var(--text-secondary)]">
                     {t('settings.accountInformation.labels.updated', { defaultValue: 'Updated at' })}
                   </span>
