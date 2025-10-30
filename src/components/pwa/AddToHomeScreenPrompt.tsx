@@ -22,7 +22,12 @@ const AddToHomeScreenPrompt = () => {
   };
 
   const showInstallButton = promptType === 'event';
-  const descriptionKey = promptType === 'ios' ? 'install.instructionsIos' : 'install.description';
+  const descriptionKey =
+    promptType === 'ios'
+      ? 'install.instructionsIos'
+      : promptType === 'generic'
+        ? 'install.instructionsGeneric'
+        : 'install.description';
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex justify-center px-4 sm:bottom-6 sm:px-6">

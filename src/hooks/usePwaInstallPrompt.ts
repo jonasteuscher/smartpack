@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 type BeforeInstallPromptEvent = Event & {
   readonly platforms?: string[];
@@ -61,12 +61,15 @@ const rememberDismiss = () => {
   window.localStorage.setItem(DISMISS_KEY, Date.now().toString());
 };
 
-type PromptType = 'event' | 'ios' | null;
+type PromptType = 'event' | 'ios' | 'generic' | null;
 
 const usePwaInstallPrompt = () => {
   const [promptEvent, setPromptEvent] = useState<BeforeInstallPromptEvent | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [promptType, setPromptType] = useState<PromptType>(null);
+  const [hasBeforeInstallPromptFired, setHasBeforeInstallPromptFired] = useState(false);
+  const [hasShownGenericPrompt, setHasShownGenericPrompt] = useState(false);
+  const promptEventRef = useRef<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -82,9 +85,11 @@ const usePwaInstallPrompt = () => {
     const handleBeforeInstallPrompt = (event: Event) => {
       const beforeInstallEvent = event as BeforeInstallPromptEvent;
       beforeInstallEvent.preventDefault();
+      promptEventRef.current = beforeInstallEvent;
       setPromptEvent(beforeInstallEvent);
       setPromptType('event');
       setIsVisible(true);
+      setHasBeforeInstallPromptFired(true);
     };
 
     const handleAppInstalled = () => {
@@ -126,6 +131,7 @@ const usePwaInstallPrompt = () => {
     } catch {
       return 'error' as const;
     } finally {
+      promptEventRef.current = null;
       setPromptEvent(null);
       setIsVisible(false);
       setPromptType(null);
@@ -137,8 +143,52 @@ const usePwaInstallPrompt = () => {
     setIsVisible(false);
     setPromptType(null);
     setPromptEvent(null);
+    promptEventRef.current = null;
     rememberDismiss();
   }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const handlePwaReady = () => {
+      if (
+        hasShownGenericPrompt ||
+        hasBeforeInstallPromptFired ||
+        promptEventRef.current ||
+        isIos() ||
+        !isMobileDevice() ||
+        isStandaloneDisplayMode() ||
+        wasRecentlyDismissed()
+      ) {
+        return;
+      }
+
+      window.setTimeout(() => {
+        if (
+          hasShownGenericPrompt ||
+          hasBeforeInstallPromptFired ||
+          promptEventRef.current ||
+          isIos() ||
+          !isMobileDevice() ||
+          isStandaloneDisplayMode() ||
+          wasRecentlyDismissed()
+        ) {
+          return;
+        }
+
+        setPromptType('generic');
+        setIsVisible(true);
+        setHasShownGenericPrompt(true);
+      }, 1500);
+    };
+
+    window.addEventListener('pwa:ready', handlePwaReady);
+    return () => {
+      window.removeEventListener('pwa:ready', handlePwaReady);
+    };
+  }, [hasBeforeInstallPromptFired, hasShownGenericPrompt]);
 
   return useMemo(
     () => ({

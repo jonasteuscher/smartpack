@@ -4,6 +4,7 @@
     "heading": "Installa SmartPack",
     "description": "Aggiungi SmartPack alla schermata iniziale per un accesso rapido anche senza connessione.",
     "instructionsIos": "Tocca l'icona di condivisione in Safari e scegli «Aggiungi a schermata Home» per installare SmartPack.",
+    "instructionsGeneric": "Apri il menu del browser e scegli «Aggiungi alla schermata Home» per avere sempre SmartPack a portata di mano.",
     "cta": "Aggiungi alla schermata Home",
     "installing": "Apertura del prompt…",
     "dismiss": "Più tardi"

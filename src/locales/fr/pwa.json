@@ -4,6 +4,7 @@
     "heading": "Installer SmartPack",
     "description": "Ajoutez SmartPack à votre écran d'accueil pour y accéder rapidement, même hors connexion.",
     "instructionsIos": "Touchez l'icône de partage dans Safari puis « Ajouter à l'écran d'accueil » pour installer SmartPack.",
+    "instructionsGeneric": "Ouvrez le menu de votre navigateur puis choisissez « Ajouter à l'écran d'accueil » pour garder SmartPack à portée de main.",
     "cta": "Ajouter à l'écran d'accueil",
     "installing": "Ouverture de la fenêtre…",
     "dismiss": "Plus tard"
