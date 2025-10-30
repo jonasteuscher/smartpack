@@ -17,6 +17,7 @@ import TripsPage from './pages/TripsPage';
 import OnboardPage from './pages/OnboardPage';
 import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 const StandaloneRedirect = () => {
   const location = useLocation();
@@ -78,7 +79,9 @@ const App = () => {
           <Route path="trips" element={<TripsPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="settings" element={<SettingsPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </main>
   );
