@@ -1,0 +1,11 @@
+{
+  "install": {
+    "title": "PWA",
+    "heading": "Installer SmartPack",
+    "description": "Ajoutez SmartPack à votre écran d'accueil pour y accéder rapidement, même hors connexion.",
+    "instructionsIos": "Touchez l'icône de partage dans Safari puis « Ajouter à l'écran d'accueil » pour installer SmartPack.",
+    "cta": "Ajouter à l'écran d'accueil",
+    "installing": "Ouverture de la fenêtre…",
+    "dismiss": "Plus tard"
+  }
+}

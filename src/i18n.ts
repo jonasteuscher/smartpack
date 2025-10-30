@@ -26,27 +26,35 @@ import deTrips from './locales/de/trips.json';
 import enTrips from './locales/en/trips.json';
 import frTrips from './locales/fr/trips.json';
 import itTrips from './locales/it/trips.json';
+import dePwa from './locales/de/pwa.json';
+import enPwa from './locales/en/pwa.json';
+import frPwa from './locales/fr/pwa.json';
+import itPwa from './locales/it/pwa.json';
 
 const resources = {
   de: {
     landing: deLanding,
     auth: deAuth,
-    dashboard: { ...deDashboard, ...deTrips, ...deProfile, ...deSettings }
+    dashboard: { ...deDashboard, ...deTrips, ...deProfile, ...deSettings },
+    pwa: dePwa
   },
   en: {
     landing: enLanding,
     auth: enAuth,
-    dashboard: { ...enDashboard, ...enTrips, ...enProfile, ...enSettings }
+    dashboard: { ...enDashboard, ...enTrips, ...enProfile, ...enSettings },
+    pwa: enPwa
   },
   fr: {
     landing: frLanding,
     auth: frAuth,
-    dashboard: { ...frDashboard, ...frTrips, ...frProfile, ...frSettings }
+    dashboard: { ...frDashboard, ...frTrips, ...frProfile, ...frSettings },
+    pwa: frPwa
   },
   it: {
     landing: itLanding,
     auth: itAuth,
-    dashboard: { ...itDashboard, ...itTrips, ...itProfile, ...itSettings }
+    dashboard: { ...itDashboard, ...itTrips, ...itProfile, ...itSettings },
+    pwa: itPwa
   }
 } as const;
 
@@ -58,7 +66,7 @@ i18n
     fallbackLng: 'en',
     supportedLngs: ['de', 'en', 'fr', 'it'],
     defaultNS: 'landing',
-    ns: ['landing', 'auth', 'dashboard'],
+    ns: ['landing', 'auth', 'dashboard', 'pwa'],
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],

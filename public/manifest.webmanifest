@@ -15,6 +15,11 @@
       "sizes": "500x500",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/img/logo/Logo_500x350_Emblem.PNG",
+      "sizes": "350x350",
+      "type": "image/png"
     }
   ]
 }

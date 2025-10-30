@@ -18,6 +18,7 @@ import OnboardPage from './pages/OnboardPage';
 import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
 import NotFoundPage from './pages/NotFoundPage';
+import AddToHomeScreenPrompt from './components/pwa/AddToHomeScreenPrompt';
 
 const StandaloneRedirect = () => {
   const location = useLocation();
@@ -48,6 +49,7 @@ const App = () => {
     <main className="min-h-screen bg-[var(--surface-primary)] text-[var(--text-primary)]">
       <StandaloneRedirect />
       <ScrollToTop />
+      <AddToHomeScreenPrompt />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/team" element={<TeamPage />} />

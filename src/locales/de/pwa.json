@@ -1,0 +1,11 @@
+{
+  "install": {
+    "title": "PWA",
+    "heading": "SmartPack installieren",
+    "description": "Füge SmartPack deinem Startbildschirm hinzu und greife schnell – auch offline – auf deine Packlisten zu.",
+    "instructionsIos": "Tippe in Safari auf das Teilen-Symbol und wähle anschliessend «Zum Home-Bildschirm» aus, um SmartPack zu installieren.",
+    "cta": "Zum Startbildschirm hinzufügen",
+    "installing": "Dialog wird geöffnet…",
+    "dismiss": "Vielleicht später"
+  }
+}

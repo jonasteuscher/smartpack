@@ -13,7 +13,17 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['img/logo/Logo_500x500.PNG'],
+      injectRegister: 'auto',
+      includeAssets: [
+        'img/logo/Logo_500x500.PNG',
+        'img/logo/Logo_500x350_Emblem.PNG'
+      ],
+      devOptions: {
+        enabled: true,
+        type: 'module'
+      },
+      strategies: 'generateSW',
+      filename: 'service-worker.js',
       manifest: {
         name: APP_NAME,
         short_name: APP_SHORT_NAME,
@@ -25,10 +35,24 @@ export default defineConfig({
         scope: '/',
         lang: 'de',
         categories: ['travel', 'productivity'],
+        icons: [
+          {
+            src: 'img/logo/Logo_500x500.PNG',
+            sizes: '500x500',
+            type: 'image/png',
+            purpose: 'any maskable'
+          },
+          {
+            src: 'img/logo/Logo_500x350_Emblem.PNG',
+            sizes: '350x350',
+            type: 'image/png'
+          }
+        ]
       },
       workbox: {
         navigateFallback: '/index.html',
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest}']
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest}'],
+        cleanupOutdatedCaches: true
       }
     })
   ],

@@ -1,0 +1,11 @@
+{
+  "install": {
+    "title": "PWA",
+    "heading": "Install SmartPack",
+    "description": "Add SmartPack to your home screen for quick access and offline-ready packing support.",
+    "instructionsIos": "Tap the share icon in Safari, then choose \"Add to Home Screen\" to install SmartPack.",
+    "cta": "Add to home screen",
+    "installing": "Opening prompt…",
+    "dismiss": "Maybe later"
+  }
+}
