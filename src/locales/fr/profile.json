@@ -1,0 +1,305 @@
+{
+  "profile": {
+    "heading": "Profil",
+    "subheading": "Consultez et mettez a jour vos informations personnelles.",
+    "description": "Plus vous en dites sur vous, mieux nous pouvons adapter vos listes de bagages a vous et a vos voyages. Ainsi, vous recevez des suggestions qui correspondent vraiment a votre style, vos activites et votre destination.",
+    "memberSince": "Membre depuis {{date}}",
+    "lastUpdated": "Dernière modification: {{date}}",
+    "actions": {
+      "refresh": "Actualiser",
+      "refreshing": "Actualisation en cours…",
+      "updateAvatar": "Changer la photo",
+      "updateAvatarUploading": "Téléchargement…",
+      "removeAvatar": "Supprimer la photo",
+      "removeAvatarRemoving": "Suppression…",
+      "edit": "Modifier",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "selectCountry": "Choisir un pays",
+      "selectTravelFrequency": "Choisir la frequence de voyage",
+      "selectTravelDuration": "Choisir la duree moyenne du voyage",
+      "increaseTravelCountriesVisited": "Augmenter le nombre de pays visites",
+      "decreaseTravelCountriesVisited": "Diminuer le nombre de pays visites",
+      "enterTravelCountriesVisited": "Saisir le nombre de pays visites",
+      "selectTravelRegion": "Choisir une region",
+      "addTravelRegion": "Ajouter une region",
+      "removeTravelRegion": "Supprimer la region",
+      "selectTravelStyle": "Choisir un style de voyage",
+      "addTravelStyle": "Ajouter un style",
+      "removeTravelStyle": "Supprimer le style",
+      "selectTravelSeason": "Choisir une saison",
+      "selectBudgetLevel": "Choisir le niveau de budget",
+      "selectBudgetBuyPreference": "Choisir la préférence d'achat",
+      "selectSouvenirSpacePreference": "Choisir l'espace pour les souvenirs",
+      "selectTransportMode": "Choisir un mode de transport",
+      "addTransportMode": "Ajouter un mode de transport",
+      "removeTransportMode": "Supprimer le mode de transport",
+      "selectLuggageType": "Choisir un type de bagage",
+      "addLuggageType": "Ajouter un type de bagage",
+      "removeLuggageType": "Supprimer le type de bagage",
+      "selectLaundryAccessExpectation": "Choisir la disponibilite de la buanderie",
+      "selectSustainabilityFocus": "Choisir un focus durable",
+      "selectSustainabilityWeightPriority": "Choisir la priorite de poids",
+      "selectWorkspacePreference": "Choisir la preference d'espace de travail",
+      "selectActivitySport": "Choisir une activité",
+      "addActivitySport": "Ajouter une activité",
+      "removeActivitySport": "Supprimer l'activité",
+      "selectAdventureActivity": "Choisir une aventure",
+      "addAdventureActivity": "Ajouter une aventure",
+      "removeAdventureActivity": "Supprimer l'aventure",
+      "selectCulturalActivity": "Choisir une activité culturelle",
+      "addActivityCultural": "Ajouter une activité culturelle",
+      "removeActivityCultural": "Supprimer l'activité culturelle",
+      "addSustainabilityFocus": "Ajouter un focus durable",
+      "removeSustainabilityFocus": "Supprimer le focus durable"
+    },
+    "sections": {
+      "details": "Details du profil",
+      "core": "Informations principales",
+      "travel": "Habitudes de voyage",
+      "transport": "Transport",
+      "accommodation": "Hebergement",
+      "activities": "Activites",
+      "sustainability": "Durabilite",
+      "budget": "Budget",
+      "meta": "Metadonnees du compte"
+    },
+    "fields": {
+      "firstname": "Prenom",
+      "lastname": "Nom",
+      "email": "E-mail",
+      "authMethod": "Méthode d'authentification",
+      "authMethodPassword": "E-mail & mot de passe",
+      "authMethodProvider": "Connecté avec {{provider}}",
+      "country": "Pays de residence",
+      "languages": "Langues",
+      "travelFrequency": "Voyages par an",
+      "tripDuration": "Duree moyenne (jours)",
+      "countriesVisited": "Pays visites",
+      "regionsVisited": "Regions frequentees",
+      "travelStyles": "Styles de voyage",
+      "travelSeasonality": "Preference saisonniere",
+      "transportModes": "Modes de transport",
+      "luggageTypes": "Bagages preferes",
+      "accommodationTypes": "Types d'hebergement",
+      "laundryAccess": "Acces a une buanderie",
+      "workspaceNeeded": "Espace de travail",
+      "activitiesSports": "Sports & plein air",
+      "activitiesAdventure": "Activites d'aventure",
+      "activitiesCultural": "Activites culturelles",
+      "sustainabilityFocus": "Focus durabilite",
+      "sustainabilityWeight": "Priorite au poids",
+      "budgetLevel": "Niveau de budget",
+      "buyAtDestination": "Achats sur place",
+      "souvenirSpace": "Espace souvenirs",
+      "createdAt": "Cree",
+      "updatedAt": "Mis a jour"
+    },
+    "state": {
+      "loading": "Chargement du profil...",
+      "error": "Impossible de charger votre profil. Veuillez reessayer.",
+      "empty": "Aucune information de profil pour le moment.",
+      "countriesLoading": "Chargement des pays…",
+      "noCountriesFound": "Aucun pays correspondant.",
+      "noLanguagesFound": "Aucune langue correspondante.",
+      "settingsSaved": "Vos paramètres ont été enregistrés.",
+      "emptyOptions": "Aucune option disponible."
+    },
+    "fallback": {
+      "notSet": "Non defini",
+      "notAvailable": "Non disponible"
+    },
+    "errors": {
+      "avatarInvalidType": "Veuillez choisir un fichier image.",
+      "avatarUploadFailed": "Impossible de téléverser votre photo de profil.",
+      "avatarUploadForbidden": "Le stockage bloque les téléversements. Contactez votre équipe pour activer les photos de profil.",
+      "avatarRemoveFailed": "Impossible de supprimer votre photo de profil.",
+      "languageSaveFailed": "Impossible d'enregistrer vos langues.",
+      "countriesLoadFailed": "Impossible de charger la liste des pays.",
+      "countrySaveFailed": "Impossible d'enregistrer le pays.",
+      "countrySaveForbidden": "L'enregistrement est bloqué par les règles de sécurité. Contactez l'administrateur.",
+      "countrySelectRequired": "Veuillez choisir votre pays de résidence.",
+      "mustBeSignedIn": "Connectez-vous pour mettre a jour votre profil.",
+      "travelSaveFailed": "Impossible d'enregistrer vos preferences de voyage. Veuillez reessayer.",
+      "transportSaveFailed": "Impossible d'enregistrer vos modes de transport. Veuillez reessayer.",
+      "budgetSaveFailed": "Impossible d'enregistrer vos preferences budgetaires. Veuillez reessayer.",
+      "activitiesSaveFailed": "Impossible d'enregistrer vos activités. Veuillez réessayer.",
+      "sustainabilitySaveFailed": "Impossible d'enregistrer vos préférences durables. Veuillez réessayer."
+    },
+    "travelFrequency": {
+      "rarely": "🌱 Rarement (1-2 voyages)",
+      "sometimes": "🌤️ Parfois (3-5 voyages)",
+      "often": "✈️ Souvent (6-10 voyages)",
+      "frequent": "🌍 Tres souvent (10+ voyages)"
+    },
+    "travelDuration": {
+      "short": "📅 Court (1-3 jours)",
+      "medium": "🧳 Moyen (4-7 jours)",
+      "long": "🌏 Long (8-14 jours)",
+      "extended": "🗺️ Tres long (15+ jours)"
+    },
+    "travelRegions": {
+      "CH": "Suisse / national",
+      "EU": "Europe",
+      "NA": "Amerique du Nord",
+      "SA": "Amerique du Sud",
+      "AS": "Asie",
+      "AF": "Afrique",
+      "OC": "Oceanie",
+      "ME": "Moyen-Orient"
+    },
+    "travelStyles": {
+      "citytrip": "🏙️ Voyages urbains",
+      "beach": "🏖️ Vacances a la plage",
+      "outdoor": "🧗 Aventure & plein air",
+      "business": "💼 Voyages d'affaires",
+      "camping": "🚐 Camping / Vanlife",
+      "luxury": "✨ Voyages de luxe",
+      "backpacking": "🎒 Backpacking",
+      "culture": "🗺️ Culture & visites"
+    },
+    "travelSeasons": {
+      "spring": "🌸 Printemps",
+      "summer": "☀️ Été",
+      "autumn": "🍂 Automne",
+      "winter": "❄️ Hiver",
+      "all_year": "🗓️ Toute l'année"
+    },
+    "accommodation": {
+      "types": {
+        "hotel": "🏨 Hôtel",
+        "hostel": "🛏️ Auberge de jeunesse",
+        "apartment": "🏠 Airbnb / Location saisonnière",
+        "camping": "⛺️ Camping / Terrain",
+        "van": "🚐 Van / Camping-car",
+        "guesthouse": "🏡 Maison d'hôtes / B&B",
+        "mountain_lodge": "🏔️ Refuge de montagne / Chalet",
+        "private_stay": "👥 Chez amis ou famille",
+        "resort": "💎 Complexe hôtelier de luxe"
+      },
+      "laundry": {
+        "none": "Pas necessaire",
+        "sometimes": "Disponible occasionnellement",
+        "usually": "Generalement disponible",
+        "always": "Indispensable"
+      },
+      "workspace": {
+        "yes": "🧑‍💻 Espace de travail indispensable",
+        "no": "🛋️ Pas d'espace de travail nécessaire"
+      }
+    },
+    "activities": {
+      "sports": {
+        "hiking": "🥾 Randonnée",
+        "trekking": "⛰️ Trekking / alpinisme",
+        "trailrunning": "🏃 Trail running",
+        "climbing_bouldering": "🧗 Escalade / bloc",
+        "via_ferrata": "🧗‍♂️ Via ferrata",
+        "mtb": "🚵 VTT",
+        "road_gravel": "🚴 Route / gravel",
+        "running": "🏃‍♀️ Course / jogging",
+        "snowsport": "🎿 Sports d'hiver (ski / snowboard)",
+        "xc_skiing": "⛷️ Ski de fond",
+        "snowshoeing": "🥾 Raquettes",
+        "paddle_sports": "🛶 Sports de pagaie (SUP / kayak)",
+        "surf_kite": "🏄 Surf / kitesurf",
+        "swimming": "🏊 Natation",
+        "diving_snorkeling": "🤿 Plongée / snorkeling",
+        "gym": "🏋️ Salle de sport",
+        "outdoor_fitness": "💪 Fitness en plein air"
+      },
+      "adventure": {
+        "skydiving": "🪂 Parachutisme",
+        "basejump": "🪂 BASE jump",
+        "paragliding": "🏔️ Parapente",
+        "bungee": "🪢 Saut à l'élastique",
+        "canyoning": "🌊 Canyoning",
+        "whitewater_rafting": "🚣 Rafting en eaux vives",
+        "zipline": "🧗 Tyrolienne",
+        "caving": "🕳️ Spéléologie / grottes",
+        "offroad_4x4": "🚙 Off-road / 4x4",
+        "glacier_ice": "🧊 Excursion glacier / glace",
+        "volcano_desert": "🌋 Expédition volcan / désert",
+        "hot_air_balloon": "🎈 Montgolfière",
+        "helicopter": "🚁 Vol en hélicoptère",
+        "shark_cage_diving": "🦈 Plongée en cage aux requins"
+      },
+      "cultural": {
+        "museums": "🏛️ Musées",
+        "galleries": "🖼️ Galeries",
+        "historical_sites": "🏰 Sites historiques",
+        "architecture_tours": "🏛️ Visites architecturales",
+        "performing_arts": "🎭 Théâtre / Opéra / Ballet",
+        "live_music": "🎶 Concerts / musique live",
+        "festivals": "🎉 Festivals",
+        "local_markets": "🛍️ Marchés locaux",
+        "food_tours_cooking": "🍜 Food tour / cours de cuisine",
+        "wine_beer_tastings": "🍷 Dégustations de vin / bière",
+        "religious_sites": "⛪ Sites religieux",
+        "street_art": "🎨 Street art / graffiti",
+        "craft_workshops": "🧵 Ateliers artisanaux",
+        "cinema_film": "🎬 Cinéma / culture film",
+        "literature_bookshops": "📚 Littérature / librairies"
+      }
+    },
+    "sustainability": {
+      "focus": {
+        "eco_transport": "🚆 Moyens de transport écologiques",
+        "local_food": "🍲 Produits & gastronomie locaux",
+        "fair_tourism": "🤝 Tourisme équitable & responsable",
+        "waste_reduction": "♻️ Réduction des déchets & du plastique",
+        "eco_accommodation": "🏡 Hébergements économes en ressources",
+        "carbon_offset": "🌍 Compensation des émissions de CO₂",
+        "sustainable_gear": "🧭 Équipement outdoor durable",
+        "nature_protection": "🌿 Protection de la nature & biodiversité",
+        "paperless": "📱 Billets numériques plutôt qu'imprimés"
+      },
+      "weightPriority": {
+        "comfort_first": "🛋️ Confort avant tout (aucune limite de poids)",
+        "balanced": "⚖️ Équilibre poids & confort",
+        "lightweight": "🎒 Aussi léger que possible",
+        "ultralight": "🪶 Mode ultraléger"
+      }
+    },
+    "budget": {
+      "level": {
+        "low": "💸 Petit budget",
+        "medium": "⚖️ Budget équilibré",
+        "high": "✨ Confort premium",
+        "luxury": "💎 Voyage de luxe"
+      },
+      "buyPreference": {
+        "bring_all": "🎒 Tout apporter de la maison",
+        "buy_some": "🧴 Essentiels dans la valise – le reste sur place",
+        "buy_local": "🛍️ Préférer acheter sur place",
+        "decide_later": "🧭 Décider spontanément"
+      },
+      "souvenirSpace": {
+        "none": "🚫 Pas de place pour des souvenirs",
+        "some": "🎁 Garder un peu de place",
+        "extra": "🧳 Prévoir davantage d'espace",
+        "expandable": "🛒 Acheter un bagage en plus sur place"
+      }
+    },
+    "luggageTypes": {
+      "carry_on": "💼 Bagage cabine (valise / sac à dos)",
+      "checked_suitcase": "🧳 Valise enregistrée",
+      "travel_backpack": "🎒 Sac à dos de voyage",
+      "duffle_bag": "👝 Sac de voyage / Duffle bag",
+      "hiking_backpack": "🥾 Sac à dos de randonnée",
+      "weekender": "👜 Weekender",
+      "special_equipment": "🎿 Équipement spécial (p. ex. matériel de sport)"
+    },
+    "transportModes": {
+      "plane": "✈️ Avion",
+      "train": "🚆 Train",
+      "car": "🚗 Voiture",
+      "bus": "🚌 Bus",
+      "camper": "🚐 Camping-car / Van",
+      "bike": "🚴‍♀️ Velo",
+      "boat": "🚢 Bateau / Ferry",
+      "foot": "🚶 A pied"
+    }
+  }
+}

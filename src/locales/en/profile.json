@@ -1,0 +1,305 @@
+{
+  "profile": {
+    "heading": "Profile",
+    "subheading": "View and update your personal information.",
+    "description": "The more you tell us about yourself, the better we can tailor your packing lists to you and your trips. That way you get suggestions that truly match your style, your activities, and your destination.",
+    "memberSince": "Member since {{date}}",
+    "lastUpdated": "Last changed: {{date}}",
+    "actions": {
+      "refresh": "Refresh",
+      "refreshing": "Refreshing…",
+      "updateAvatar": "Change photo",
+      "updateAvatarUploading": "Uploading…",
+      "removeAvatar": "Remove photo",
+      "removeAvatarRemoving": "Removing…",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "selectCountry": "Select your country",
+      "selectTravelFrequency": "Select your travel frequency",
+      "selectTravelDuration": "Select your average trip length",
+      "increaseTravelCountriesVisited": "Increase countries visited",
+      "decreaseTravelCountriesVisited": "Decrease countries visited",
+      "enterTravelCountriesVisited": "Enter number of countries visited",
+      "selectTravelRegion": "Select region",
+      "addTravelRegion": "Add region",
+      "removeTravelRegion": "Remove region",
+      "selectTravelStyle": "Select travel style",
+      "addTravelStyle": "Add travel style",
+      "removeTravelStyle": "Remove travel style",
+      "selectTravelSeason": "Select season",
+      "selectBudgetLevel": "Select budget level",
+      "selectBudgetBuyPreference": "Select shopping preference",
+      "selectSouvenirSpacePreference": "Select souvenir space plan",
+      "selectTransportMode": "Select transport mode",
+      "addTransportMode": "Add transport mode",
+      "removeTransportMode": "Remove transport mode",
+      "selectLuggageType": "Select luggage type",
+      "addLuggageType": "Add luggage type",
+      "removeLuggageType": "Remove luggage type",
+      "selectLaundryAccessExpectation": "Select laundry access expectation",
+      "selectSustainabilityFocus": "Select sustainability focus",
+      "selectSustainabilityWeightPriority": "Choose your pack weight priority",
+      "selectWorkspacePreference": "Select workspace preference",
+      "selectActivitySport": "Select activity",
+      "addActivitySport": "Add activity",
+      "removeActivitySport": "Remove activity",
+      "selectAdventureActivity": "Select adventure",
+      "addAdventureActivity": "Add adventure",
+      "removeAdventureActivity": "Remove adventure",
+      "selectCulturalActivity": "Select cultural activity",
+      "addActivityCultural": "Add cultural activity",
+      "removeActivityCultural": "Remove cultural activity",
+      "addSustainabilityFocus": "Add sustainability focus",
+      "removeSustainabilityFocus": "Remove sustainability focus"
+    },
+    "sections": {
+      "details": "Profile details",
+      "core": "Core information",
+      "travel": "Travel patterns",
+      "transport": "Transport",
+      "accommodation": "Accommodation",
+      "activities": "Activities",
+      "sustainability": "Sustainability",
+      "budget": "Budget",
+      "meta": "Account metadata"
+    },
+    "fields": {
+      "firstname": "Firstname",
+      "lastname": "Lastname",
+      "email": "Email",
+      "authMethod": "Authentication method",
+      "authMethodPassword": "Email & password",
+      "authMethodProvider": "Signed in with {{provider}}",
+      "country": "Country of residence",
+      "languages": "Languages",
+      "travelFrequency": "Trips per year",
+      "tripDuration": "Average trip duration (days)",
+      "countriesVisited": "Countries visited",
+      "regionsVisited": "Regions often visited",
+      "travelStyles": "Travel styles",
+      "travelSeasonality": "Seasonality preference",
+      "transportModes": "Transport modes",
+      "luggageTypes": "Preferred luggage",
+      "accommodationTypes": "Accommodation types",
+      "laundryAccess": "Laundry expectation",
+      "workspaceNeeded": "Workspace needed",
+      "activitiesSports": "Sports & outdoor",
+      "activitiesAdventure": "Adventure activities",
+      "activitiesCultural": "Cultural activities",
+      "sustainabilityFocus": "Sustainability focus",
+      "sustainabilityWeight": "Weight priority",
+      "budgetLevel": "Budget level",
+      "buyAtDestination": "Buy-on-destination preference",
+      "souvenirSpace": "Souvenir space preference",
+      "createdAt": "Created",
+      "updatedAt": "Updated"
+    },
+    "state": {
+      "loading": "Loading profile...",
+      "error": "We couldn't load your profile. Please try again.",
+      "empty": "We couldn't find any profile information yet.",
+      "countriesLoading": "Loading countries…",
+      "noCountriesFound": "No countries match your search.",
+      "noLanguagesFound": "No languages match your search.",
+      "settingsSaved": "Your settings have been saved.",
+      "emptyOptions": "No options available."
+    },
+    "fallback": {
+      "notSet": "Not set",
+      "notAvailable": "Not available"
+    },
+    "errors": {
+      "avatarInvalidType": "Please choose an image file.",
+      "avatarUploadFailed": "We couldn’t upload your profile picture. Try again.",
+      "avatarUploadForbidden": "Uploads are blocked by storage security rules. Ask your administrator to allow profile photos.",
+      "avatarRemoveFailed": "We couldn’t remove your profile picture. Try again.",
+      "languageSaveFailed": "We couldn’t save your languages. Try again.",
+      "countriesLoadFailed": "We couldn’t load the list of countries.",
+      "countrySaveFailed": "We couldn’t save your country. Try again.",
+      "countrySaveForbidden": "Saving is blocked by security rules. Contact your administrator.",
+      "countrySelectRequired": "Please choose your home country.",
+      "mustBeSignedIn": "Sign in to update your profile.",
+      "travelSaveFailed": "We couldn’t save your travel preferences. Try again.",
+      "transportSaveFailed": "We couldn’t save your transport preferences. Try again.",
+      "budgetSaveFailed": "We couldn’t save your budget preferences. Try again.",
+      "activitiesSaveFailed": "We couldn’t save your activities. Try again.",
+      "sustainabilitySaveFailed": "We couldn’t save your sustainability preferences. Try again."
+    },
+    "travelFrequency": {
+      "rarely": "🌱 Rarely (1-2 trips)",
+      "sometimes": "🌤️ Sometimes (3-5 trips)",
+      "often": "✈️ Often (6-10 trips)",
+      "frequent": "🌍 Very often (10+ trips)"
+    },
+    "travelDuration": {
+      "short": "📅 Short (1-3 days)",
+      "medium": "🧳 Medium (4-7 days)",
+      "long": "🌏 Long (8-14 days)",
+      "extended": "🗺️ Extended (15+ days)"
+    },
+    "travelRegions": {
+      "CH": "🇨🇭 Switzerland / Domestic",
+      "EU": "🇪🇺 Europe",
+      "NA": "🇺🇸 North America",
+      "SA": "🇧🇷 South America",
+      "AS": "🇯🇵 Asia",
+      "AF": "🇿🇦 Africa",
+      "OC": "🇦🇺 Oceania",
+      "ME": "🕌 Middle East"
+    },
+    "travelStyles": {
+      "citytrip": "🏙️ City trips",
+      "beach": "🏖️ Beach holidays",
+      "outdoor": "🧗 Adventure & outdoor",
+      "business": "💼 Business travel",
+      "camping": "🚐 Camping / Vanlife",
+      "luxury": "✨ Luxury travel",
+      "backpacking": "🎒 Backpacking",
+      "culture": "🗺️ Culture & sightseeing"
+    },
+    "travelSeasons": {
+      "spring": "🌸 Spring",
+      "summer": "☀️ Summer",
+      "autumn": "🍂 Autumn",
+      "winter": "❄️ Winter",
+      "all_year": "🗓️ All year round"
+    },
+    "accommodation": {
+      "types": {
+        "hotel": "🏨 Hotel",
+        "hostel": "🛏️ Hostel",
+        "apartment": "🏠 Airbnb / Apartment",
+        "camping": "⛺️ Camping / Campsite",
+        "van": "🚐 Van / Campervan",
+        "guesthouse": "🏡 Guesthouse / B&B",
+        "mountain_lodge": "🏔️ Mountain lodge / Cabin",
+        "private_stay": "👥 Friends & family stay",
+        "resort": "💎 Luxury resort"
+      },
+      "laundry": {
+        "none": "Not needed",
+        "sometimes": "Occasionally available",
+        "usually": "Usually available",
+        "always": "Absolutely required"
+      },
+      "workspace": {
+        "yes": "🧑‍💻 Dedicated workspace required",
+        "no": "🛋️ No workspace needed"
+      }
+    },
+    "activities": {
+      "sports": {
+        "hiking": "🥾 Hiking",
+        "trekking": "⛰️ Trekking & mountain tours",
+        "trailrunning": "🏃 Trail running",
+        "climbing_bouldering": "🧗 Climbing & bouldering",
+        "via_ferrata": "🧗‍♂️ Via ferrata",
+        "mtb": "🚵 Mountain biking",
+        "road_gravel": "🚴 Road & gravel cycling",
+        "running": "🏃‍♀️ Running & jogging",
+        "snowsport": "🎿 Ski & snowboard",
+        "xc_skiing": "⛷️ Cross-country skiing",
+        "snowshoeing": "🥾 Snowshoeing",
+        "paddle_sports": "🛶 SUP & kayaking",
+        "surf_kite": "🏄 Surfing & kitesurfing",
+        "swimming": "🏊 Swimming",
+        "diving_snorkeling": "🤿 Diving & snorkeling",
+        "gym": "🏋️ Gym workouts",
+        "outdoor_fitness": "💪 Outdoor fitness"
+      },
+      "adventure": {
+        "skydiving": "🪂 Skydiving",
+        "basejump": "🪂 BASE jump",
+        "paragliding": "🏔️ Paragliding",
+        "bungee": "🪢 Bungee jump",
+        "canyoning": "🌊 Canyoning",
+        "whitewater_rafting": "🚣 Whitewater rafting",
+        "zipline": "🧗 Zipline",
+        "caving": "🕳️ Caving & spelunking",
+        "offroad_4x4": "🚙 Off-road 4x4",
+        "glacier_ice": "🧊 Glacier & ice tours",
+        "volcano_desert": "🌋 Volcano & desert expeditions",
+        "hot_air_balloon": "🎈 Hot air balloon rides",
+        "helicopter": "🚁 Helicopter flights",
+        "shark_cage_diving": "🦈 Shark cage diving"
+      },
+      "cultural": {
+        "museums": "🏛️ Museums",
+        "galleries": "🖼️ Art galleries",
+        "historical_sites": "🏰 Historical sites",
+        "architecture_tours": "🏛️ Architecture tours",
+        "performing_arts": "🎭 Theater, opera & ballet",
+        "live_music": "🎶 Concerts & live music",
+        "festivals": "🎉 Festivals",
+        "local_markets": "🛍️ Local markets",
+        "food_tours_cooking": "🍜 Food tours & cooking classes",
+        "wine_beer_tastings": "🍷 Wine & beer tastings",
+        "religious_sites": "⛪ Religious sites",
+        "street_art": "🎨 Street art & graffiti",
+        "craft_workshops": "🧵 Craft workshops",
+        "cinema_film": "🎬 Cinema & film culture",
+        "literature_bookshops": "📚 Literature & bookshops"
+      }
+    },
+    "sustainability": {
+      "focus": {
+        "eco_transport": "🚆 Eco-friendly transport",
+        "local_food": "🍲 Local food & gastronomy",
+        "fair_tourism": "🤝 Fair & responsible tourism",
+        "waste_reduction": "♻️ Waste & plastic reduction",
+        "eco_accommodation": "🏡 Eco-conscious stays",
+        "carbon_offset": "🌍 CO₂ offsetting",
+        "sustainable_gear": "🧭 Sustainable gear",
+        "nature_protection": "🌿 Nature & biodiversity",
+        "paperless": "📱 Paperless travel"
+      },
+      "weightPriority": {
+        "comfort_first": "🛋️ Comfort-first (no weight limits)",
+        "balanced": "⚖️ Balanced: mindful weight & comfort",
+        "lightweight": "🎒 Lightweight: as light as possible",
+        "ultralight": "🪶 Ultralight mission: every gram counts"
+      }
+    },
+    "budget": {
+      "level": {
+        "low": "💸 Low-budget / Frugal",
+        "medium": "⚖️ Mid-range / Balanced",
+        "high": "✨ Comfortable / Premium",
+        "luxury": "💎 Luxury trip"
+      },
+      "buyPreference": {
+        "bring_all": "🎒 Bring everything from home",
+        "buy_some": "🧴 Pack essentials – buy the rest there",
+        "buy_local": "🛍️ Prefer to shop locally",
+        "decide_later": "🧭 Decide spontaneously"
+      },
+      "souvenirSpace": {
+        "none": "🚫 No room for souvenirs",
+        "some": "🎁 Leave a little room",
+        "extra": "🧳 Plan extra packing space",
+        "expandable": "🛒 Buy an extra bag on the spot"
+      }
+    },
+    "luggageTypes": {
+      "carry_on": "💼 Carry-on (Trolley / Backpack)",
+      "checked_suitcase": "🧳 Checked suitcase",
+      "travel_backpack": "🎒 Travel backpack",
+      "duffle_bag": "👝 Duffle bag / Travel bag",
+      "hiking_backpack": "🥾 Hiking backpack",
+      "weekender": "👜 Weekender",
+      "special_equipment": "🎿 Special equipment (e.g. sports gear)"
+    },
+    "transportModes": {
+      "plane": "✈️ Plane",
+      "train": "🚆 Train",
+      "car": "🚗 Car",
+      "bus": "🚌 Bus",
+      "camper": "🚐 Camper / Van",
+      "bike": "🚴‍♀️ Bike",
+      "boat": "🚢 Boat / Ferry",
+      "foot": "🚶 On foot"
+    }
+  }
+}

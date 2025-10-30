@@ -1,0 +1,84 @@
+{
+  "settings": {
+    "heading": "Impostazioni",
+    "subheading": "Gestisci le preferenze dell'applicazione.",
+    "sections": {
+      "appearance": {
+        "title": "Aspetto",
+        "description": "Passa tra tema chiaro e scuro in base alle tue preferenze.",
+        "themeLabel": "Modalità tema",
+        "options": {
+          "system": "Predefinito di sistema",
+          "light": "Chiaro",
+          "dark": "Scuro"
+        }
+      },
+      "language": {
+        "title": "Lingua",
+        "description": "Scegli la lingua che vuoi utilizzare nell'app.",
+        "languageLabel": "Lingua dell'interfaccia",
+        "options": {
+          "deCH": "Tedesco",
+          "en": "Inglese",
+          "frCH": "Francese",
+          "itCH": "Italiano"
+        }
+      },
+      "preferences": {
+        "title": "Preferenze dell'account",
+        "description": "Questi valori sono salvati nelle impostazioni del tuo account."
+      },
+      "accountInformation": {
+        "title": "Informazioni dell'account",
+        "description": "Timestamp associati ai dati del tuo account."
+      }
+    },
+    "preferences": {
+      "labels": {
+        "theme": "Tema",
+        "language": "Lingua",
+        "units": "Unità",
+        "timeFormat": "Formato orario",
+        "dateFormat": "Formato data"
+      },
+      "values": {
+        "theme": {
+          "system": "Predefinito di sistema",
+          "light": "Chiaro",
+          "dark": "Scuro"
+        },
+        "units": {
+          "metric": "Metrico (kg, km, °C)",
+          "imperial": "Imperiale (lb, mi, °F)"
+        },
+        "timeFormat": {
+          "24h": "Formato 24 ore",
+          "12h": "Formato 12 ore"
+        },
+        "dateFormat": {
+          "iso": "ISO (YYYY-MM-DD)",
+          "dayFirst": "Giorno prima (DD.MM.YYYY)"
+        }
+      },
+      "state": {
+        "loading": "Caricamento delle preferenze…",
+        "error": "Impossibile caricare le preferenze salvate.",
+        "empty": "Nessuna preferenza salvata."
+      }
+    },
+    "accountInformation": {
+      "labels": {
+        "created": "Creato il",
+        "updated": "Aggiornato il"
+      },
+      "state": {
+        "empty": "Nessuna informazione sull'account disponibile.",
+        "unknown": "Sconosciuto"
+      }
+    },
+    "messages": {
+      "saved": "Preferenze salvate.",
+      "saveFailed": "Impossibile salvare le preferenze."
+    }
+  }
+}

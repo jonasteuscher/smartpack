@@ -1,0 +1,84 @@
+{
+  "settings": {
+    "heading": "Settings",
+    "subheading": "Manage your application preferences.",
+    "sections": {
+      "appearance": {
+        "title": "Appearance",
+        "description": "Switch between light and dark themes to suit your preference.",
+        "themeLabel": "Theme mode",
+        "options": {
+          "system": "System default",
+          "light": "Light",
+          "dark": "Dark"
+        }
+      },
+      "language": {
+        "title": "Language",
+        "description": "Choose the language you want to use across the app.",
+        "languageLabel": "Interface language",
+        "options": {
+          "deCH": "German",
+          "en": "English",
+          "frCH": "French",
+          "itCH": "Italian"
+        }
+      },
+      "preferences": {
+        "title": "Account preferences",
+        "description": "These values are stored in your account settings."
+      },
+      "accountInformation": {
+        "title": "Account information",
+        "description": "Timestamps related to your account data."
+      }
+    },
+    "preferences": {
+      "labels": {
+        "theme": "Theme",
+        "language": "Language",
+        "units": "Units",
+        "timeFormat": "Time format",
+        "dateFormat": "Date format"
+      },
+      "values": {
+        "theme": {
+          "system": "System default",
+          "light": "Light",
+          "dark": "Dark"
+        },
+        "units": {
+          "metric": "Metric (kg, km, °C)",
+          "imperial": "Imperial (lb, mi, °F)"
+        },
+        "timeFormat": {
+          "24h": "24-hour clock",
+          "12h": "12-hour clock"
+        },
+        "dateFormat": {
+          "iso": "ISO (YYYY-MM-DD)",
+          "dayFirst": "Day first (DD.MM.YYYY)"
+        }
+      },
+      "state": {
+        "loading": "Loading preferences…",
+        "error": "We could not load your saved preferences.",
+        "empty": "No preferences stored."
+      }
+    },
+    "accountInformation": {
+      "labels": {
+        "created": "Created at",
+        "updated": "Updated at"
+      },
+      "state": {
+        "empty": "No account information available.",
+        "unknown": "Unknown"
+      }
+    },
+    "messages": {
+      "saved": "Preferences saved.",
+      "saveFailed": "We could not save your preferences."
+    }
+  }
+}

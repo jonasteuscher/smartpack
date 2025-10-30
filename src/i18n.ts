@@ -14,12 +14,40 @@ import deDashboard from './locales/de/dashboard.json';
 import enDashboard from './locales/en/dashboard.json';
 import frDashboard from './locales/fr/dashboard.json';
 import itDashboard from './locales/it/dashboard.json';
+import deProfile from './locales/de/profile.json';
+import enProfile from './locales/en/profile.json';
+import frProfile from './locales/fr/profile.json';
+import itProfile from './locales/it/profile.json';
+import deSettings from './locales/de/settings.json';
+import enSettings from './locales/en/settings.json';
+import frSettings from './locales/fr/settings.json';
+import itSettings from './locales/it/settings.json';
+import deTrips from './locales/de/trips.json';
+import enTrips from './locales/en/trips.json';
+import frTrips from './locales/fr/trips.json';
+import itTrips from './locales/it/trips.json';
 
 const resources = {
-  de: { landing: deLanding, auth: deAuth, dashboard: deDashboard },
-  en: { landing: enLanding, auth: enAuth, dashboard: enDashboard },
-  fr: { landing: frLanding, auth: frAuth, dashboard: frDashboard },
-  it: { landing: itLanding, auth: itAuth, dashboard: itDashboard }
+  de: {
+    landing: deLanding,
+    auth: deAuth,
+    dashboard: { ...deDashboard, ...deTrips, ...deProfile, ...deSettings }
+  },
+  en: {
+    landing: enLanding,
+    auth: enAuth,
+    dashboard: { ...enDashboard, ...enTrips, ...enProfile, ...enSettings }
+  },
+  fr: {
+    landing: frLanding,
+    auth: frAuth,
+    dashboard: { ...frDashboard, ...frTrips, ...frProfile, ...frSettings }
+  },
+  it: {
+    landing: itLanding,
+    auth: itAuth,
+    dashboard: { ...itDashboard, ...itTrips, ...itProfile, ...itSettings }
+  }
 } as const;
 
 i18n
