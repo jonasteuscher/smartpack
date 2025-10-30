@@ -356,7 +356,7 @@
         "description": "Choisis la langue que tu souhaites utiliser dans l'application.",
         "languageLabel": "Langue de l'interface",
         "options": {
-          "deCH": "Allemand (Suisse)",
+          "deCH": "Allemand",
           "en": "Anglais",
           "frCH": "Français",
           "itCH": "Italien"

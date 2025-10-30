@@ -2,10 +2,12 @@ import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from '
 import { Combobox } from '@headlessui/react';
 import { ArrowPathIcon, ChevronUpDownIcon, InformationCircleIcon } from '@heroicons/react/20/solid';
 import { useTranslation } from 'react-i18next';
+import { useUserSettings } from '@hooks/useUserSettings';
 import { useAuth } from '../context/AuthContext';
 import { useProfile } from '../hooks/useProfile';
 import { removeProfileAvatar, uploadProfileAvatar } from '../services/profileAvatar';
 import { updateRecord } from '../services/supabaseCrud';
+import { formatDateTimeWithPreference } from '@/utils/formatDateTime';
 import type {
   BudgetLevel,
   BudgetBuyPreference,
@@ -1068,6 +1070,7 @@ const activitySelectionsEqual = (a: string[], b: string[]): boolean => {
 
 const ProfilePage = () => {
   const { t, i18n } = useTranslation('dashboard');
+  const { settings } = useUserSettings();
   const { user } = useAuth();
   const {
     profile,
@@ -2349,50 +2352,40 @@ const ProfilePage = () => {
     user?.user_metadata,
   ]);
 
+  const locale = i18n.language;
+  const resolvedTimeFormat = settings?.time_format ?? '24h';
+
+  const formatDateTime = useCallback(
+    (value: string | Date | null | undefined) =>
+      formatDateTimeWithPreference(value, {
+        locale,
+        timeFormat: resolvedTimeFormat,
+      }),
+    [locale, resolvedTimeFormat]
+  );
+
   const memberSince = useMemo(() => {
     if (!profile?.created_at) {
       return null;
     }
-
-    const parsedDate = new Date(profile.created_at);
-    if (Number.isNaN(parsedDate.getTime())) {
+    const date = new Date(profile.created_at);
+    if (Number.isNaN(date.getTime())) {
       return null;
     }
-
     try {
-      return new Intl.DateTimeFormat(i18n.language ?? 'en', {
+      return new Intl.DateTimeFormat(locale || undefined, {
         month: 'long',
         year: 'numeric',
-      }).format(parsedDate);
+      }).format(date);
     } catch {
-      return parsedDate.toLocaleDateString(undefined, {
+      return date.toLocaleDateString(locale || undefined, {
         month: 'long',
         year: 'numeric',
       });
     }
-  }, [i18n.language, profile?.created_at]);
+  }, [locale, profile?.created_at]);
 
-  const lastUpdated = useMemo(() => {
-    if (!profile?.updated_at) {
-      return null;
-    }
-
-    const parsedDate = new Date(profile.updated_at);
-    if (Number.isNaN(parsedDate.getTime())) {
-      return null;
-    }
-
-    try {
-      const monthFormatter = new Intl.DateTimeFormat(i18n.language ?? 'en', { month: 'long' });
-      const month = monthFormatter.format(parsedDate);
-      const day = parsedDate.getDate();
-      const year = parsedDate.getFullYear();
-      return `${day} ${month} ${year}`;
-    } catch {
-      const fallbackMonth = parsedDate.toLocaleString(undefined, { month: 'long' });
-      return `${parsedDate.getDate()} ${fallbackMonth} ${parsedDate.getFullYear()}`;
-    }
-  }, [i18n.language, profile?.updated_at]);
+  const lastUpdated = useMemo(() => formatDateTime(profile?.updated_at), [formatDateTime, profile?.updated_at]);
 
   const secondarySections = useMemo<DetailSection[]>(
     () => [

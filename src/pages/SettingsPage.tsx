@@ -5,6 +5,7 @@ import type { UserSettings } from '@/types/userSettings';
 import { useTheme, type ThemeSetting } from '@context/ThemeContext';
 import type { AppLanguage } from '@/i18n';
 import i18n from '@/i18n';
+import { formatDateTimeWithPreference } from '@/utils/formatDateTime';
 import { Combobox } from '@headlessui/react';
 import { ChevronUpDownIcon } from '@heroicons/react/20/solid';
 
@@ -27,7 +28,7 @@ interface LanguageOption {
 }
 
 const LANGUAGE_OPTIONS: readonly (LanguageOption & { icon: string })[] = [
-  { value: 'de-CH', code: 'de', labelKey: 'settings.sections.language.options.deCH', fallback: 'German (Switzerland)', icon: '🇨🇭' },
+  { value: 'de-CH', code: 'de', labelKey: 'settings.sections.language.options.deCH', fallback: 'German (Switzerland)', icon: '🇩🇪' },
   { value: 'en', code: 'en', labelKey: 'settings.sections.language.options.en', fallback: 'English', icon: '🇬🇧' },
   { value: 'fr-CH', code: 'fr', labelKey: 'settings.sections.language.options.frCH', fallback: 'French', icon: '🇫🇷' },
   { value: 'it-CH', code: 'it', labelKey: 'settings.sections.language.options.itCH', fallback: 'Italian', icon: '🇮🇹' }
@@ -121,26 +122,17 @@ const SettingsPage = () => {
   const [languageComboboxKey, setLanguageComboboxKey] = useState(0);
   const [dateFormatComboboxKey, setDateFormatComboboxKey] = useState(0);
 
-  const formatDateTime = useMemo(() => {
-    const formatter =
-      typeof Intl !== 'undefined'
-        ? new Intl.DateTimeFormat(undefined, {
-            dateStyle: 'medium',
-            timeStyle: 'short',
-          })
-        : null;
+  const locale = i18n.language;
+  const resolvedTimeFormat = settings?.time_format ?? '24h';
 
-    return (value: string | null | undefined) => {
-      if (!value) {
-        return null;
-      }
-      const date = new Date(value);
-      if (Number.isNaN(date.getTime())) {
-        return null;
-      }
-      return formatter ? formatter.format(date) : date.toLocaleString();
-    };
-  }, []);
+  const formatDateTime = useCallback(
+    (value: string | null | undefined) =>
+      formatDateTimeWithPreference(value, {
+        locale,
+        timeFormat: resolvedTimeFormat,
+      }),
+    [locale, resolvedTimeFormat]
+  );
 
   useEffect(() => {
     if (settings?.units) {
@@ -246,8 +238,8 @@ const SettingsPage = () => {
     defaultValue: 'Select date format',
   });
 
-  const createdAt = formatDateTime(settings?.created_at);
-  const updatedAt = formatDateTime(settings?.updated_at);
+  const createdAt = useMemo(() => formatDateTime(settings?.created_at), [formatDateTime, settings?.created_at]);
+  const updatedAt = useMemo(() => formatDateTime(settings?.updated_at), [formatDateTime, settings?.updated_at]);
 
   const statusMessage = useMemo(() => {
     if (updateResult.error) {

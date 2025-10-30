@@ -215,10 +215,6 @@
         "answer": "We blend your inputs on destination, time frame, activities, and travel style with weather data, community knowledge, and expert experience."
       },
       {
-        "question": "Is SmartPack built for teams?",
-        "answer": "Absolutely. Invite travel partners, share categories and tasks, and monitor progress in real time. Ideal for remote teams and group travel."
-      },
-      {
         "question": "Which devices are supported?",
         "answer": "SmartPack is a Progressive Web App. Install it on iOS, Android, macOS, Windows, and Linux – the experience stays consistent everywhere."
       }

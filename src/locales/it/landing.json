@@ -215,10 +215,6 @@
         "answer": "Combiniamo le tue informazioni su destinazione, periodo, attività e stile di viaggio con dati meteo, conoscenza della community e esperienza degli esperti."
       },
       {
-        "question": "SmartPack è adatto ai team?",
-        "answer": "Certamente. Invita i compagni di viaggio, condividi categorie e attività e segui i progressi in tempo reale. Perfetto per team remoti e gruppi."
-      },
-      {
         "question": "Quali dispositivi sono supportati?",
         "answer": "SmartPack è una Progressive Web App. Installala su iOS, Android, macOS, Windows e Linux – l’esperienza rimane coerente ovunque."
       }

@@ -215,10 +215,6 @@
         "answer": "Nous combinons vos informations sur la destination, la période, les activités et votre style avec des données météo, la communauté et nos experts."
       },
       {
-        "question": "SmartPack convient-il aux équipes ?",
-        "answer": "Absolument. Invitez vos co-voyageurs, partagez catégories et tâches et suivez l’avancement en temps réel. Parfait pour les équipes distribuées et les voyages de groupe."
-      },
-      {
         "question": "Quels appareils sont pris en charge ?",
         "answer": "SmartPack est une Progressive Web App. Installez-la sur iOS, Android, macOS, Windows et Linux – l’expérience reste identique partout."
       }
