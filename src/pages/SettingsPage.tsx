@@ -532,7 +532,7 @@ const SettingsPage = () => {
             </Combobox>
           </div>
         </section>
-        <section className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
+        <section className="relative z-30 flex flex-col gap-3 overflow-visible rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
           <div className="flex flex-col gap-1">
             <h2 className="text-lg font-semibold">
               {t('settings.sections.preferences.title', { defaultValue: 'Account preferences' })}
@@ -544,7 +544,7 @@ const SettingsPage = () => {
             </p>
           </div>
 
-          <div className="rounded-xl border border-slate-200/60 bg-white/70 p-4 text-sm shadow-sm dark:border-slate-800/60 dark:bg-slate-900/70">
+          <div className="">
             {loading ? (
               <p className="text-[var(--text-secondary)]">
                 {t('settings.preferences.state.loading', { defaultValue: 'Loading preferences…' })}
@@ -703,7 +703,7 @@ const SettingsPage = () => {
               })}
             </p>
           </div>
-          <div className="rounded-xl border border-slate-200/60 bg-white/70 p-4 text-sm shadow-sm dark:border-slate-800/60 dark:bg-slate-900/70">
+          <div className="">
             {loading ? (
               <p className="text-[var(--text-secondary)]">
                 {t('settings.preferences.state.loading', { defaultValue: 'Loading preferences…' })}
