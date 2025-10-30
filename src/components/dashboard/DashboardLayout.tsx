@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import DashboardNavbar from './DashboardNavbar';
+import FooterSection from '@/components/landing/sections/FooterSection';
 
 const DashboardLayout = () => {
   return (
@@ -8,6 +9,7 @@ const DashboardLayout = () => {
       <main className="container-responsive flex flex-col gap-6 pb-10 pt-8">
         <Outlet />
       </main>
+      <FooterSection />
     </div>
   );
 };
