@@ -17,7 +17,7 @@ const FooterSection = () => {
   const year = new Date().getFullYear();
 
   const handleInternalLinkClick = (href: string) => {
-    if (href === '/team' || href === '/jobs' || href === '/contact') {
+    if (!href.startsWith('#')) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -42,7 +42,7 @@ const FooterSection = () => {
             <p className="max-w-lg text-sm text-slate-500 dark:text-slate-300">{t('footer.description')}</p>
             <p className="text-xs text-slate-400 dark:text-slate-500">{t('footer.copyright', { year })}</p>
           </div>
-          <div className="grid gap-8 sm:grid-cols-3">
+          <div className="grid gap-8 sm:grid-cols-2">
             {columns.map((column) => (
               <div key={column.title} className="space-y-3">
                 <p className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-300">{column.title}</p>

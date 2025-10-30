@@ -10,6 +10,7 @@ import AuthPage from './pages/AuthPage';
 import AuthCallbackPage from './pages/AuthCallbackPage';
 import PrivacyPage from './pages/PrivacyPage';
 import GtcPage from './pages/GtcPage';
+import ImpressumPage from './pages/ImpressumPage';
 import DashboardLayout from './components/dashboard/DashboardLayout';
 import DashboardHomePage from './pages/DashboardHomePage';
 import TripsPage from './pages/TripsPage';
@@ -53,6 +54,7 @@ const App = () => {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/gtc" element={<GtcPage />} />
+        <Route path="/impressum" element={<ImpressumPage />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
         <Route

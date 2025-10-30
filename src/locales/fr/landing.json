@@ -404,40 +404,6 @@
     "copyright": "© {{year}} SmartPack Collective. Tous droits réservés.",
     "columns": [
       {
-        "title": "Produit",
-        "links": [
-          {
-            "label": "Feuille de route",
-            "href": "#roadmap"
-          },
-          {
-            "label": "Sécurité",
-            "href": "#security"
-          },
-          {
-            "label": "Accès anticipé",
-            "href": "#demo"
-          }
-        ]
-      },
-      {
-        "title": "Ressources",
-        "links": [
-          {
-            "label": "Centre d’aide",
-            "href": "#faq"
-          },
-          {
-            "label": "Guides de voyage",
-            "href": "#playbooks"
-          },
-          {
-            "label": "Presse",
-            "href": "#press"
-          }
-        ]
-      },
-      {
         "title": "Entreprise",
         "links": [
           {
@@ -451,6 +417,23 @@
           {
             "label": "Contact",
             "href": "/contact"
+          }
+        ]
+      },
+      {
+        "title": "Juridique",
+        "links": [
+          {
+            "label": "Politique de confidentialité",
+            "href": "/privacy"
+          },
+          {
+            "label": "Conditions générales",
+            "href": "/gtc"
+          },
+          {
+            "label": "Mentions légales",
+            "href": "/impressum"
           }
         ]
       }
@@ -631,6 +614,59 @@
       "email": "privacy@smartpack.app",
       "addressLabel": "Adresse postale",
       "address": "SmartPack GmbH, Bahnhofstrasse 12, 8001 Zurich, Suisse"
+    }
+  },
+  "impressumPage": {
+    "hero": {
+      "badge": "Mentions légales",
+      "title": "Impressum & informations éditeur",
+      "intro": "SmartPack GmbH est l’éditeur responsable de ce service numérique. Les informations ci-dessous répondent aux obligations légales suisses."
+    },
+    "labels": {
+      "registration": "Registre du commerce",
+      "vat": "Numéro de TVA",
+      "representatives": "Représentants habilités",
+      "contact": "Contact"
+    },
+    "company": {
+      "name": "SmartPack GmbH",
+      "addressLines": [
+        "Bahnhofstrasse 12",
+        "8001 Zurich",
+        "Suisse"
+      ],
+      "registration": "CHE-123.456.789 · Registre du commerce du canton de Zurich",
+      "vat": "CHE-123.456.789 TVA"
+    },
+    "representatives": [
+      {
+        "role": "Directeur général",
+        "name": "Jonas Teuscher"
+      },
+      {
+        "role": "Responsable produit",
+        "name": "Simon Rieder"
+      }
+    ],
+    "contact": {
+      "emailLabel": "Demandes générales",
+      "email": "hello@smartpack.app",
+      "phoneLabel": "Téléphone",
+      "phone": "+41 44 111 22 33"
+    },
+    "regulator": {
+      "title": "Autorité de surveillance",
+      "paragraphs": [
+        "SmartPack GmbH est enregistrée auprès de l’Office du registre du commerce du canton de Zurich.",
+        "Adresse de l’autorité : Walchestrasse 2, 8090 Zurich, Suisse."
+      ]
+    },
+    "disclaimer": {
+      "title": "Clause de responsabilité",
+      "paragraphs": [
+        "Malgré un contrôle attentif, nous n’assumons aucune responsabilité quant au contenu des liens externes. Les opérateurs des sites liés sont seuls responsables de leur contenu.",
+        "SmartPack GmbH s’efforce de fournir des informations exactes et à jour. Les obligations légales impératives demeurent inchangées."
+      ]
     }
   },
   "gtcPage": {
