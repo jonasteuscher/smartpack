@@ -16,6 +16,7 @@ interface UpdatePayload {
   language?: string;
   units?: UserSettings['units'];
   time_format?: UserSettings['time_format'];
+  date_format?: UserSettings['date_format'];
 }
 
 export const useUserSettings = () => {

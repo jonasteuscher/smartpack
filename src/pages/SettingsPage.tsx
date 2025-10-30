@@ -1,5 +1,4 @@
 import { useMemo, useCallback, useEffect, useState } from 'react';
-import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUserSettings } from '@hooks/useUserSettings';
 import type { UserSettings } from '@/types/userSettings';
@@ -68,6 +67,23 @@ const TIME_FORMAT_OPTIONS: readonly {
   },
 ];
 
+const DATE_FORMAT_OPTIONS: readonly {
+  value: UserSettings['date_format'];
+  labelKey: string;
+  fallback: string;
+}[] = [
+  {
+    value: 'YYYY-MM-DD',
+    labelKey: 'settings.preferences.values.dateFormat.iso',
+    fallback: 'ISO (YYYY-MM-DD)',
+  },
+  {
+    value: 'DD.MM.YYYY',
+    labelKey: 'settings.preferences.values.dateFormat.dayFirst',
+    fallback: 'Day-first (DD.MM.YYYY)',
+  },
+];
+
 const SettingsPage = () => {
   const { t } = useTranslation('dashboard');
   const { theme, setTheme } = useTheme();
@@ -76,8 +92,13 @@ const SettingsPage = () => {
   const [themeValue, setThemeValue] = useState<ThemeSetting>(resolvedTheme);
   const [themeComboboxKey, setThemeComboboxKey] = useState(0);
   const [unitsValue, setUnitsValue] = useState<UserSettings['units']>(settings?.units ?? 'metric');
+  const [unitsComboboxKey, setUnitsComboboxKey] = useState(0);
   const [timeFormatValue, setTimeFormatValue] = useState<UserSettings['time_format']>(
     settings?.time_format ?? '24h'
+  );
+  const [timeFormatComboboxKey, setTimeFormatComboboxKey] = useState(0);
+  const [dateFormatValue, setDateFormatValue] = useState<UserSettings['date_format']>(
+    settings?.date_format ?? 'YYYY-MM-DD'
   );
   const initialLanguageValue = useMemo(() => {
     const stored =
@@ -98,6 +119,7 @@ const SettingsPage = () => {
   }, [settings?.language]);
   const [languageValue, setLanguageValue] = useState<string>(initialLanguageValue);
   const [languageComboboxKey, setLanguageComboboxKey] = useState(0);
+  const [dateFormatComboboxKey, setDateFormatComboboxKey] = useState(0);
 
   const formatDateTime = useMemo(() => {
     const formatter =
@@ -123,14 +145,22 @@ const SettingsPage = () => {
   useEffect(() => {
     if (settings?.units) {
       setUnitsValue(settings.units);
+      setUnitsComboboxKey((previous) => previous + 1);
     }
   }, [settings?.units]);
 
   useEffect(() => {
     if (settings?.time_format) {
       setTimeFormatValue(settings.time_format);
+      setTimeFormatComboboxKey((previous) => previous + 1);
     }
   }, [settings?.time_format]);
+
+  useEffect(() => {
+    if (settings?.date_format) {
+      setDateFormatValue(settings.date_format);
+    }
+  }, [settings?.date_format]);
 
   useEffect(() => {
     setThemeValue(resolvedTheme);
@@ -164,6 +194,13 @@ const SettingsPage = () => {
   const themePlaceholder = t('settings.sections.appearance.themePlaceholder', {
     defaultValue: 'Select theme mode',
   });
+  const unitsDisplayLabel = useMemo(() => {
+    const option = UNIT_OPTIONS.find(({ value }) => value === unitsValue);
+    if (!option) {
+      return unitsValue;
+    }
+    return t(option.labelKey, { defaultValue: option.fallback });
+  }, [t, unitsValue]);
   const resolveLanguageDisplay = useCallback(
     (value: string | null | undefined) => {
       if (!value) {
@@ -187,13 +224,27 @@ const SettingsPage = () => {
   const languagePlaceholder = t('settings.sections.language.languagePlaceholder', {
     defaultValue: 'Select language',
   });
-
-  const resolveDateFormatLabel = (format: UserSettings['date_format']) => {
-    const key = format === 'YYYY-MM-DD' ? 'iso' : 'dayFirst';
-    return t(`settings.preferences.values.dateFormat.${key}`, {
-      defaultValue: format,
-    });
-  };
+  const resolveDateFormatDisplay = useCallback(
+    (value: UserSettings['date_format'] | null | undefined) => {
+      if (!value) {
+        return null;
+      }
+      const option = DATE_FORMAT_OPTIONS.find(({ value: optionValue }) => optionValue === value);
+      if (!option) {
+        return {
+          label: value,
+        };
+      }
+      return {
+        label: t(option.labelKey, { defaultValue: option.fallback }),
+      };
+    },
+    [t]
+  );
+  const dateFormatDisplay = resolveDateFormatDisplay(dateFormatValue);
+  const dateFormatPlaceholder = t('settings.preferences.labels.dateFormatPlaceholder', {
+    defaultValue: 'Select date format',
+  });
 
   const createdAt = formatDateTime(settings?.created_at);
   const updatedAt = formatDateTime(settings?.updated_at);
@@ -240,37 +291,60 @@ const SettingsPage = () => {
   );
 
   const handleUnitsChange = useCallback(
-    async (event: ChangeEvent<HTMLSelectElement>) => {
-      const nextUnits = event.target.value as UserSettings['units'];
-      if (nextUnits === unitsValue) {
+    (nextUnits: UserSettings['units'] | null) => {
+      setUnitsComboboxKey((previous) => previous + 1);
+      if (!nextUnits || nextUnits === unitsValue) {
         return;
       }
       const previousUnits = unitsValue;
 
       setUnitsValue(nextUnits);
-      const success = await updateSettings({ units: nextUnits });
-      if (!success) {
-        setUnitsValue(previousUnits);
-      }
+      void (async () => {
+        const success = await updateSettings({ units: nextUnits });
+        if (!success) {
+          setUnitsValue(previousUnits);
+        }
+      })();
     },
     [unitsValue, updateSettings]
   );
 
   const handleTimeFormatChange = useCallback(
-    async (event: ChangeEvent<HTMLSelectElement>) => {
-      const nextTimeFormat = event.target.value as UserSettings['time_format'];
-      if (nextTimeFormat === timeFormatValue) {
+    (nextTimeFormat: UserSettings['time_format'] | null) => {
+      setTimeFormatComboboxKey((previous) => previous + 1);
+      if (!nextTimeFormat || nextTimeFormat === timeFormatValue) {
         return;
       }
       const previousTimeFormat = timeFormatValue;
 
       setTimeFormatValue(nextTimeFormat);
-      const success = await updateSettings({ time_format: nextTimeFormat });
-      if (!success) {
-        setTimeFormatValue(previousTimeFormat);
-      }
+      void (async () => {
+        const success = await updateSettings({ time_format: nextTimeFormat });
+        if (!success) {
+          setTimeFormatValue(previousTimeFormat);
+        }
+      })();
     },
     [timeFormatValue, updateSettings]
+  );
+
+  const handleDateFormatChange = useCallback(
+    (nextDateFormat: UserSettings['date_format'] | null) => {
+      setDateFormatComboboxKey((previous) => previous + 1);
+      if (!nextDateFormat || nextDateFormat === dateFormatValue) {
+        return;
+      }
+      const previousDateFormat = dateFormatValue;
+
+      setDateFormatValue(nextDateFormat);
+      void (async () => {
+        const success = await updateSettings({ date_format: nextDateFormat });
+        if (!success) {
+          setDateFormatValue(previousDateFormat);
+        }
+      })();
+    },
+    [dateFormatValue, updateSettings]
   );
 
   const handleLanguageChange = useCallback(
@@ -487,51 +561,126 @@ const SettingsPage = () => {
                   <label className="text-sm font-medium text-[var(--text-secondary)]" htmlFor="units-setting">
                     {t('settings.preferences.labels.units', { defaultValue: 'Units' })}
                   </label>
-                  <div className="relative w-64">
-                    <select
-                      id="units-setting"
-                      value={unitsValue}
-                      onChange={handleUnitsChange}
-                      disabled={loading || isUpdating}
-                      className="flex w-full appearance-none items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 pr-10 text-left text-sm text-[var(--text-primary)] shadow-sm transition focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-70 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
-                    >
-                      {UNIT_OPTIONS.map(({ value, labelKey, fallback }) => (
-                        <option key={value} value={value}>
-                          {t(labelKey, { defaultValue: fallback })}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronUpDownIcon
-                      className="pointer-events-none absolute inset-y-0 right-3 h-5 w-5 text-slate-500"
-                      aria-hidden="true"
-                    />
-                  </div>
+                  <Combobox
+                    key={unitsComboboxKey}
+                    value={unitsValue}
+                    onChange={handleUnitsChange}
+                    disabled={loading || isUpdating}
+                  >
+                    <div className="relative w-64">
+                      <Combobox.Button
+                        id="units-setting"
+                        className="flex w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-[var(--text-primary)] shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                      >
+                        <span className="flex-1 text-left">{unitsDisplayLabel}</span>
+                        <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                      </Combobox.Button>
+                      <Combobox.Options className="absolute z-40 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                        {UNIT_OPTIONS.map(({ value, labelKey, fallback }) => (
+                          <Combobox.Option
+                            key={value}
+                            value={value}
+                            className={({ active }) =>
+                              `cursor-pointer px-3 py-2 ${
+                                active
+                                  ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                  : 'text-[var(--text-primary)]'
+                              }`
+                            }
+                          >
+                            {t(labelKey, { defaultValue: fallback })}
+                          </Combobox.Option>
+                        ))}
+                      </Combobox.Options>
+                    </div>
+                  </Combobox>
                 </li>
                 <li className="flex items-center justify-between gap-3 py-2">
                   <span className="text-[var(--text-secondary)]">
                     {t('settings.preferences.labels.timeFormat', { defaultValue: 'Time format' })}
                   </span>
-                  <select
-                    id="time-format-setting"
+                  <Combobox
+                    key={timeFormatComboboxKey}
                     value={timeFormatValue}
                     onChange={handleTimeFormatChange}
                     disabled={loading || isUpdating}
-                    className="w-full max-w-xs rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-[var(--text-primary)] shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-70 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                   >
-                    {TIME_FORMAT_OPTIONS.map(({ value, labelKey, fallback }) => (
-                      <option key={value} value={value}>
-                        {t(labelKey, { defaultValue: fallback })}
-                      </option>
-                    ))}
-                  </select>
+                    <div className="relative w-64">
+                      <Combobox.Button
+                        id="time-format-setting"
+                        className="flex w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-[var(--text-primary)] shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                      >
+                        <span className="flex-1 text-left">
+                          {t(`settings.preferences.values.timeFormat.${timeFormatValue}`, {
+                            defaultValue:
+                              TIME_FORMAT_OPTIONS.find(({ value }) => value === timeFormatValue)?.fallback ?? timeFormatValue,
+                          })}
+                        </span>
+                        <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                      </Combobox.Button>
+                      <Combobox.Options className="absolute z-40 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                        {TIME_FORMAT_OPTIONS.map(({ value, labelKey, fallback }) => (
+                          <Combobox.Option
+                            key={value}
+                            value={value}
+                            className={({ active }) =>
+                              `cursor-pointer px-3 py-2 ${
+                                active
+                                  ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                  : 'text-[var(--text-primary)]'
+                              }`
+                            }
+                          >
+                            {t(labelKey, { defaultValue: fallback })}
+                          </Combobox.Option>
+                        ))}
+                      </Combobox.Options>
+                    </div>
+                  </Combobox>
                 </li>
-                <li className="flex items-center justify-between py-2">
+                <li className="flex items-center justify-between gap-3 py-2">
                   <span className="text-[var(--text-secondary)]">
                     {t('settings.preferences.labels.dateFormat', { defaultValue: 'Date format' })}
                   </span>
-                  <span className="font-medium text-[var(--text-primary)]">
-                    {resolveDateFormatLabel(settings.date_format)}
-                  </span>
+                  <Combobox
+                    key={dateFormatComboboxKey}
+                    value={dateFormatValue}
+                    onChange={handleDateFormatChange}
+                    disabled={loading || isUpdating}
+                  >
+                    <div className="relative w-64">
+                      <Combobox.Button
+                        id="date-format-setting"
+                        className="flex w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-[var(--text-primary)] shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                      >
+                        <span
+                          className={`flex flex-1 items-center ${
+                            dateFormatDisplay ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)] dark:text-slate-400'
+                          }`}
+                        >
+                          {dateFormatDisplay ? dateFormatDisplay.label : dateFormatPlaceholder}
+                        </span>
+                        <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                      </Combobox.Button>
+                      <Combobox.Options className="absolute z-50 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                        {DATE_FORMAT_OPTIONS.map(({ value, labelKey, fallback }) => (
+                          <Combobox.Option
+                            key={value}
+                            value={value}
+                            className={({ active }) =>
+                              `cursor-pointer px-3 py-2 ${
+                                active
+                                  ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                                  : 'text-[var(--text-primary)]'
+                              }`
+                            }
+                          >
+                            {t(labelKey, { defaultValue: fallback })}
+                          </Combobox.Option>
+                        ))}
+                      </Combobox.Options>
+                    </div>
+                  </Combobox>
                 </li>
               </ul>
             ) : (
