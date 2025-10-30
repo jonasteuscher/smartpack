@@ -8,6 +8,8 @@ import JobsPage from './pages/JobsPage';
 import ContactPage from './pages/ContactPage';
 import AuthPage from './pages/AuthPage';
 import AuthCallbackPage from './pages/AuthCallbackPage';
+import PrivacyPage from './pages/PrivacyPage';
+import GtcPage from './pages/GtcPage';
 import DashboardLayout from './components/dashboard/DashboardLayout';
 import DashboardHomePage from './pages/DashboardHomePage';
 import TripsPage from './pages/TripsPage';
@@ -49,6 +51,8 @@ const App = () => {
         <Route path="/team" element={<TeamPage />} />
         <Route path="/jobs" element={<JobsPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/gtc" element={<GtcPage />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
         <Route

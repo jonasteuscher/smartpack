@@ -522,5 +522,219 @@
         }
       ]
     }
+  },
+  "privacyPage": {
+    "hero": {
+      "badge": "Datenschutz",
+      "title": "Wie SmartPack deine Daten schützt",
+      "intro": "Wir entwickeln Pack-Tools, die deine Privatsphäre respektieren. Diese Richtlinie erklärt, welche Daten wir sammeln, wie wir sie nutzen und welche Schutzmaßnahmen für Reisende und Teams gelten.",
+      "location": "SmartPack wird aus der Schweiz betrieben und erfüllt die Anforderungen der DSGVO an den Datenschutz.",
+      "updated": "Zuletzt aktualisiert: 30. Oktober 2025"
+    },
+    "aiNotice": "SmartPack nutzt KI auf unserer eigenen Infrastruktur, um Packlisten zu erstellen. Deine personenbezogenen Informationen verlassen SmartPack oder unsere Server nie, werden für die Verarbeitung anonymisiert und nicht mit Drittsystemen geteilt.",
+    "summary": {
+      "title": "Kurzfassung",
+      "items": [
+        "Wir sammeln nur die Daten, die nötig sind, um SmartPack bereitzustellen und Packempfehlungen anzupassen.",
+        "Du behältst die Kontrolle: Exportiere oder lösche Profil und Reisen jederzeit in den Einstellungen.",
+        "Wir verkaufen deine personenbezogenen Daten nie und teilen sie nur mit vertrauenswürdigen Unterauftragsverarbeitern, die den Dienst ermöglichen."
+      ]
+    },
+    "sections": [
+      {
+        "title": "Welche Daten wir erheben",
+        "description": "Wir verarbeiten Informationen, die du mit uns teilst, damit SmartPack dein Erlebnis personalisieren kann.",
+        "items": [
+          {
+            "label": "Kontodaten",
+            "text": "E-Mail-Adresse, Name, bevorzugte Sprache sowie Authentifizierungskennungen deines gewählten Login-Anbieters."
+          },
+          {
+            "label": "Reisedaten",
+            "text": "Reiserouten, Ziele, Mitreisende, Packvorlieben und alle individuellen Items, die du in SmartPack speicherst."
+          },
+          {
+            "label": "Nutzungs-Insights",
+            "text": "Gerätetyp, App-Interaktionen und Diagnoseereignisse, die uns helfen Leistungsprobleme zu verstehen und Funktionen zu verbessern."
+          }
+        ]
+      },
+      {
+        "title": "Wie wir deine Daten nutzen",
+        "description": "Wir verarbeiten deine Informationen, um SmartPack zu betreiben und relevante Pack-Unterstützung bereitzustellen.",
+        "items": [
+          {
+            "label": "Service bereitstellen",
+            "text": "Dich anmelden, Reisen synchronisieren und Packlisten geräteübergreifend verfügbar halten."
+          },
+          {
+            "label": "SmartPack verbessern",
+            "text": "Aggregierte Produktnutzung analysieren, um Funktionen zu priorisieren, Fehler zu beheben und Empfehlungen zu verfeinern."
+          },
+          {
+            "label": "KI-gestützte Packvorschläge",
+            "text": "Packtipps mit SmartPack-KI-Modellen erstellen, die anonymisierte Eingaben auf unserer eigenen Infrastruktur verarbeiten; personenbezogene Daten verlassen SmartPack nicht und gelangen nicht an Drittsysteme."
+          },
+          {
+            "label": "Support und Kommunikation",
+            "text": "Auf deine Anfragen antworten, wichtige Betriebs-Mails senden und optionale Produktupdates teilen, die du jederzeit abbestellen kannst."
+          }
+        ]
+      },
+      {
+        "title": "Unterauftragsverarbeiter und Weitergabe",
+        "description": "Wir arbeiten mit wenigen Partnern für Hosting, Analysen oder Support-Tools. Jeder Partner unterliegt strikten Datenschutzvereinbarungen.",
+        "items": [
+          {
+            "label": "Infrastruktur",
+            "text": "Cloud-Hosting, Speicher und Content-Delivery-Anbieter, die SmartPack schnell und zuverlässig halten."
+          },
+          {
+            "label": "Analytik",
+            "text": "Produktanalysen, mit denen wir Nutzungstrends messen, ohne personenbezogene Daten zu verkaufen oder zu vermieten."
+          },
+          {
+            "label": "Support-Tools",
+            "text": "Helpdesk- und Messaging-Lösungen, mit denen wir deine Fragen beantworten."
+          }
+        ],
+        "footnote": "Eine aktuelle Liste der Unterauftragsverarbeiter senden wir dir auf Anfrage an privacy@smartpack.app."
+      },
+      {
+        "title": "Aufbewahrung und Löschung",
+        "description": "Wir speichern deine Informationen nur so lange, wie du ein SmartPack-Konto hast oder rechtliche Vorgaben dies verlangen.",
+        "paragraphs": [
+          "Lösche eine Reise oder dein gesamtes Konto in den Einstellungen, um die zugehörigen Daten aus unseren aktiven Systemen zu entfernen.",
+          "Backups werden rollierend gelöscht. Wenn du dein Konto kündigst, anonymisieren oder löschen wir verbleibende Daten innerhalb von 60 Tagen."
+        ]
+      },
+      {
+        "title": "Internationale Übermittlungen",
+        "description": "SmartPack wird aus der Schweiz betrieben und unterliegt der DSGVO. Für Datenübermittlungen in andere Jurisdiktionen nutzen wir Standardvertragsklauseln oder gleichwertige Schutzmechanismen."
+      }
+    ],
+    "rights": {
+      "title": "Deine Datenschutzrechte",
+      "intro": "Da SmartPack aus der Schweiz betrieben wird und der DSGVO unterliegt, hast du je nach Wohnort das Recht, auf deine personenbezogenen Daten zuzugreifen, sie zu korrigieren, löschen zu lassen oder die Verarbeitung einzuschränken.",
+      "items": [
+        "Zugang anfordern und eine Kopie der personenbezogenen Daten erhalten, die wir über dich speichern.",
+        "Unrichtige Informationen berichtigen oder unvollständige Angaben ergänzen.",
+        "Die Löschung deines Kontos verlangen oder einschränken, wie wir deine Daten nutzen.",
+        "Eine Einwilligung widerrufen oder der Verarbeitung widersprechen, etwa beim Erhalt von Marketing-Mitteilungen."
+      ],
+      "howTo": "Du kannst diese Rechte in der App unter Einstellungen > Datenschutz ausüben oder uns unter privacy@smartpack.app schreiben."
+    },
+    "contact": {
+      "title": "Fragen oder Anliegen?",
+      "description": "Kontaktiere das SmartPack-Datenschutzteam direkt – wir melden uns innerhalb von zwei Werktagen.",
+      "emailLabel": "Datenschutzanfragen",
+      "email": "privacy@smartpack.app",
+      "addressLabel": "Postanschrift",
+      "address": "SmartPack GmbH, Bahnhofstrasse 12, 8001 Zürich, Schweiz"
+    }
+  },
+  "gtcPage": {
+    "hero": {
+      "badge": "Allgemeine Geschäftsbedingungen",
+      "title": "Allgemeine Geschäftsbedingungen für SmartPack",
+      "intro": "Diese Bedingungen regeln das Vertragsverhältnis zwischen dir und der SmartPack GmbH, sobald du unseren Packassistenten nutzt.",
+      "effective": "Gültig ab: 30. Oktober 2025",
+      "jurisdiction": "Gerichtsstand: Zürich, Schweiz. Es gilt materielles Schweizer Recht."
+    },
+    "summary": {
+      "title": "Bevor du SmartPack nutzt",
+      "items": [
+        "Diese Bedingungen gelten für jedes SmartPack-Konto, egal ob Einzelabo oder Team-Workspace.",
+        "Bestimmte Funktionen setzen ein kostenpflichtiges Abo voraus; die Gebühren richten sich nach dem von dir gewählten Plan.",
+        "Bei Verstößen gegen diese Bedingungen können wir dein Konto sperren oder kündigen, um andere Reisende und unseren Dienst zu schützen."
+      ]
+    },
+    "sections": [
+      {
+        "title": "1. Parteien und Geltungsbereich",
+        "description": "Die SmartPack GmbH stellt die SmartPack-Anwendung sowie die auf smartpack.app beschriebenen Dienste bereit.",
+        "paragraphs": [
+          "Mit der Erstellung eines Kontos oder der Nutzung von SmartPack akzeptierst du diese Bedingungen als Privatperson oder im Namen der Organisation, die du vertrittst.",
+          "Wenn du SmartPack für ein Unternehmen oder Team nutzt, bestätigst du, dass du berechtigt bist, diese Organisation an den Vertrag zu binden."
+        ]
+      },
+      {
+        "title": "2. Konten und Berechtigung",
+        "description": "Damit SmartPack sicher bleibt, benötigen wir korrekte Angaben und einen verantwortungsvollen Umgang mit jedem Konto.",
+        "items": [
+          {
+            "label": "Mindestalter",
+            "text": "Du musst mindestens 16 Jahre alt sein oder das in deinem Land geltende Mindestalter für digitale Dienste erreicht haben, um ein SmartPack-Konto anzulegen."
+          },
+          {
+            "label": "Aktuelles Profil",
+            "text": "Hinterlege richtige Kontakt- und Rechnungsdaten und aktualisiere sie bei Änderungen, damit wir den Dienst bereitstellen können."
+          },
+          {
+            "label": "Team-Workspaces",
+            "text": "Eigentümer:innen und Administrator:innen verwalten Einladungen und Zugriffsrechte und stellen sicher, dass alle Mitglieder diese Bedingungen einhalten."
+          }
+        ]
+      },
+      {
+        "title": "3. Abonnements und Abrechnung",
+        "description": "Bestimmte SmartPack-Funktionen werden im Rahmen kostenpflichtiger Abos angeboten.",
+        "items": [
+          {
+            "label": "Gebühren",
+            "text": "Preise und enthaltene Leistungen deines Plans werden beim Checkout oder in der jeweiligen Bestellung angezeigt und können mit angemessener Vorankündigung angepasst werden."
+          },
+          {
+            "label": "Verlängerung",
+            "text": "Sofern nicht anders angegeben, verlängern sich Abos automatisch um denselben Zeitraum, wenn du nicht vor Ende der aktuellen Laufzeit kündigst."
+          },
+          {
+            "label": "Rückerstattungen",
+            "text": "Soweit gesetzlich zulässig, sind bereits gezahlte Gebühren nicht erstattbar und bleiben bis zum Ende des Abrechnungszeitraums fällig."
+          }
+        ],
+        "note": "Zwingende Verbraucherschutzrechte bleiben von den Regelungen in diesem Abschnitt unberührt."
+      },
+      {
+        "title": "4. Zulässige Nutzung",
+        "description": "SmartPack dient dazu, Reisen zu planen und Packlisten zu koordinieren. Du verpflichtest dich zu einem fairen und rechtmäßigen Gebrauch.",
+        "paragraphs": [
+          "Greife nicht auf Konten oder Daten zu, die dir nicht gehören, und versuche nicht, SmartPack zurückzuentwickeln, zu testen oder zu stören.",
+          "Lade keine rechtswidrigen, verletzenden oder schädlichen Inhalte hoch und nutze SmartPack nicht für Spam oder Belästigung anderer Nutzer:innen."
+        ]
+      },
+      {
+        "title": "5. Geistiges Eigentum",
+        "description": "Wir schützen unsere Marke und Technologie und respektieren gleichzeitig die Inhalte, die du in SmartPack speicherst.",
+        "paragraphs": [
+          "SmartPack, einschließlich Software, Design und Marken, bleibt alleiniges Eigentum der SmartPack GmbH oder ihrer Lizenzgeber.",
+          "Du behältst die Rechte an deinen Inhalten und gewährst SmartPack eine eingeschränkte Lizenz, diese Inhalte zu hosten, zu verarbeiten und anzuzeigen, um den Dienst bereitzustellen und zu verbessern."
+        ]
+      },
+      {
+        "title": "6. Gewährleistungsausschluss und Haftungsbegrenzung",
+        "description": "Wir entwickeln SmartPack sorgfältig, können aber nicht jede Situation kontrollieren.",
+        "paragraphs": [
+          "SmartPack wird ohne Gewährleistung „wie besehen“ und „wie verfügbar“ bereitgestellt, ohne Zusicherungen zur Marktgängigkeit, Eignung für einen bestimmten Zweck oder Nichtverletzung von Rechten.",
+          "Soweit gesetzlich zulässig haftet die SmartPack GmbH nicht für indirekte, zufällige oder Folgeschäden. Unsere Gesamthaftung ist auf die Gebühren begrenzt, die du in den zwölf Monaten vor dem betreffenden Ereignis gezahlt hast."
+        ]
+      },
+      {
+        "title": "7. Beendigung und Änderungen",
+        "description": "Sowohl du als auch SmartPack können das Vertragsverhältnis bei Bedarf beenden.",
+        "paragraphs": [
+          "Du kannst dein Konto jederzeit in den Einstellungen kündigen. Wenn dein Plan nichts anderes vorsieht, wird die Kündigung zum Ende des laufenden Abrechnungszeitraums wirksam.",
+          "Wir können den Zugriff sperren oder beenden, wenn du gegen diese Bedingungen verstößt, gesetzliche Pflichten dies verlangen oder der Dienst geschützt werden muss. Wesentliche Änderungen dieser Bedingungen kündigen wir mindestens 30 Tage im Voraus in der App oder per E-Mail an."
+        ]
+      }
+    ],
+    "contact": {
+      "title": "Benötigst du eine unterschriebene Vereinbarung?",
+      "description": "Sprich mit unserem Rechtsteam, um eine unterschriebene Version, Auftragsverarbeitungsverträge oder individuelle Regelungen zu erhalten.",
+      "emailLabel": "Rechtsanfragen",
+      "email": "legal@smartpack.app",
+      "addressLabel": "Geschäftssitz",
+      "address": "SmartPack GmbH, Bahnhofstrasse 12, 8001 Zürich, Schweiz"
+    }
   }
 }
