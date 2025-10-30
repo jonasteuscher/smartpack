@@ -15,13 +15,7 @@ const USER_SETTINGS_TABLE = 'user_settings';
 const ensureUserSettingsForUser = async (userId: string) => {
   const { error } = await supabase
     .from(USER_SETTINGS_TABLE)
-    .upsert(
-      { user_id: userId },
-      {
-        onConflict: 'user_id',
-        returning: 'minimal',
-      }
-    );
+    .upsert({ user_id: userId }, { onConflict: 'user_id' });
 
   if (error && error.code !== '23505') {
     throw error;

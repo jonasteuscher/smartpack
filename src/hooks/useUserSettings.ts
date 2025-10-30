@@ -14,6 +14,8 @@ interface UpdateResult {
 interface UpdatePayload {
   theme?: ThemeSetting;
   language?: string;
+  units?: UserSettings['units'];
+  time_format?: UserSettings['time_format'];
 }
 
 export const useUserSettings = () => {

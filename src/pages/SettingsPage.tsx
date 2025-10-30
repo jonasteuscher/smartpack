@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useEffect, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUserSettings } from '@hooks/useUserSettings';
@@ -6,6 +6,8 @@ import type { UserSettings } from '@/types/userSettings';
 import { useTheme, type ThemeSetting } from '@context/ThemeContext';
 import type { AppLanguage } from '@/i18n';
 import i18n from '@/i18n';
+import { Combobox } from '@headlessui/react';
+import { ChevronUpDownIcon } from '@heroicons/react/20/solid';
 
 const THEME_OPTIONS: readonly {
   value: ThemeSetting;
@@ -32,10 +34,70 @@ const LANGUAGE_OPTIONS: readonly (LanguageOption & { icon: string })[] = [
   { value: 'it-CH', code: 'it', labelKey: 'settings.sections.language.options.itCH', fallback: 'Italian', icon: '🇮🇹' }
 ];
 
+const UNIT_OPTIONS: readonly {
+  value: UserSettings['units'];
+  labelKey: string;
+  fallback: string;
+}[] = [
+  {
+    value: 'metric',
+    labelKey: 'settings.preferences.values.units.metric',
+    fallback: 'Metric',
+  },
+  {
+    value: 'imperial',
+    labelKey: 'settings.preferences.values.units.imperial',
+    fallback: 'Imperial',
+  },
+];
+
+const TIME_FORMAT_OPTIONS: readonly {
+  value: UserSettings['time_format'];
+  labelKey: string;
+  fallback: string;
+}[] = [
+  {
+    value: '24h',
+    labelKey: 'settings.preferences.values.timeFormat.24h',
+    fallback: '24h',
+  },
+  {
+    value: '12h',
+    labelKey: 'settings.preferences.values.timeFormat.12h',
+    fallback: '12h',
+  },
+];
+
 const SettingsPage = () => {
   const { t } = useTranslation('dashboard');
   const { theme, setTheme } = useTheme();
   const { settings, loading, error, updateSettings, updateResult, isUpdating } = useUserSettings();
+  const resolvedTheme = (settings?.theme ?? theme ?? 'system') as ThemeSetting;
+  const [themeValue, setThemeValue] = useState<ThemeSetting>(resolvedTheme);
+  const [themeComboboxKey, setThemeComboboxKey] = useState(0);
+  const [unitsValue, setUnitsValue] = useState<UserSettings['units']>(settings?.units ?? 'metric');
+  const [timeFormatValue, setTimeFormatValue] = useState<UserSettings['time_format']>(
+    settings?.time_format ?? '24h'
+  );
+  const initialLanguageValue = useMemo(() => {
+    const stored =
+      settings?.language ??
+      (typeof window !== 'undefined' ? window.localStorage.getItem('smartpack-language') : null) ??
+      i18n.language;
+
+    if (typeof stored === 'string') {
+      const normalized = LANGUAGE_OPTIONS.find(
+        ({ value, code }) => value === stored || code === (stored.split('-')[0] as AppLanguage)
+      );
+      if (normalized) {
+        return normalized.value;
+      }
+    }
+
+    return LANGUAGE_OPTIONS[0]?.value ?? 'en';
+  }, [settings?.language]);
+  const [languageValue, setLanguageValue] = useState<string>(initialLanguageValue);
+  const [languageComboboxKey, setLanguageComboboxKey] = useState(0);
 
   const formatDateTime = useMemo(() => {
     const formatter =
@@ -58,11 +120,73 @@ const SettingsPage = () => {
     };
   }, []);
 
-  const resolveUnitsLabel = (units: UserSettings['units']) =>
-    t(`settings.preferences.values.units.${units}`, { defaultValue: units });
+  useEffect(() => {
+    if (settings?.units) {
+      setUnitsValue(settings.units);
+    }
+  }, [settings?.units]);
 
-  const resolveTimeFormatLabel = (format: UserSettings['time_format']) =>
-    t(`settings.preferences.values.timeFormat.${format}`, { defaultValue: format });
+  useEffect(() => {
+    if (settings?.time_format) {
+      setTimeFormatValue(settings.time_format);
+    }
+  }, [settings?.time_format]);
+
+  useEffect(() => {
+    setThemeValue(resolvedTheme);
+  }, [resolvedTheme]);
+
+  useEffect(() => {
+    setLanguageValue(initialLanguageValue);
+  }, [initialLanguageValue]);
+
+  const resolveThemeDisplay = useCallback(
+    (value: ThemeSetting | null | undefined) => {
+      if (!value) {
+        return null;
+      }
+      const option = THEME_OPTIONS.find(({ value: optionValue }) => optionValue === value);
+      if (!option) {
+        return {
+          icon: '',
+          label: value,
+        };
+      }
+      return {
+        icon: option.icon,
+        label: t(option.labelKey, { defaultValue: option.fallback }),
+      };
+    },
+    [t]
+  );
+
+  const themeDisplay = resolveThemeDisplay(themeValue);
+  const themePlaceholder = t('settings.sections.appearance.themePlaceholder', {
+    defaultValue: 'Select theme mode',
+  });
+  const resolveLanguageDisplay = useCallback(
+    (value: string | null | undefined) => {
+      if (!value) {
+        return null;
+      }
+      const option = LANGUAGE_OPTIONS.find(({ value: optionValue }) => optionValue === value);
+      if (!option) {
+        return {
+          icon: '',
+          label: value,
+        };
+      }
+      return {
+        icon: option.icon,
+        label: t(option.labelKey, { defaultValue: option.fallback }),
+      };
+    },
+    [t]
+  );
+  const languageDisplay = resolveLanguageDisplay(languageValue);
+  const languagePlaceholder = t('settings.sections.language.languagePlaceholder', {
+    defaultValue: 'Select language',
+  });
 
   const resolveDateFormatLabel = (format: UserSettings['date_format']) => {
     const key = format === 'YYYY-MM-DD' ? 'iso' : 'dayFirst';
@@ -73,26 +197,6 @@ const SettingsPage = () => {
 
   const createdAt = formatDateTime(settings?.created_at);
   const updatedAt = formatDateTime(settings?.updated_at);
-
-  const activeTheme = (settings?.theme ?? theme ?? 'system') as ThemeSetting;
-
-  const activeLanguageValue = (() => {
-    const stored =
-      settings?.language ??
-      (typeof window !== 'undefined' ? window.localStorage.getItem('smartpack-language') : null) ??
-      i18n.language;
-
-    if (typeof stored === 'string') {
-      const normalized = LANGUAGE_OPTIONS.find(
-        ({ value, code }) => value === stored || code === (stored.split('-')[0] as AppLanguage)
-      );
-      if (normalized) {
-        return normalized.value;
-      }
-    }
-
-    return LANGUAGE_OPTIONS[0]?.value ?? 'en';
-  })();
 
   const statusMessage = useMemo(() => {
     if (updateResult.error) {
@@ -115,52 +219,95 @@ const SettingsPage = () => {
   }, [t, updateResult.error, updateResult.success]);
 
   const handleThemeChange = useCallback(
-    async (event: ChangeEvent<HTMLSelectElement>) => {
-      const nextTheme = event.target.value as ThemeSetting;
-      if (nextTheme === activeTheme) {
+    (nextTheme: ThemeSetting | null) => {
+      setThemeComboboxKey((previous) => previous + 1);
+      if (!nextTheme || nextTheme === themeValue) {
         return;
       }
-      const previousTheme = activeTheme;
+      const previousTheme = themeValue;
 
+      setThemeValue(nextTheme);
       setTheme(nextTheme);
-      const success = await updateSettings({ theme: nextTheme });
+      void (async () => {
+        const success = await updateSettings({ theme: nextTheme });
+        if (!success) {
+          setThemeValue(previousTheme);
+          setTheme(previousTheme);
+        }
+      })();
+    },
+    [themeValue, setTheme, updateSettings]
+  );
+
+  const handleUnitsChange = useCallback(
+    async (event: ChangeEvent<HTMLSelectElement>) => {
+      const nextUnits = event.target.value as UserSettings['units'];
+      if (nextUnits === unitsValue) {
+        return;
+      }
+      const previousUnits = unitsValue;
+
+      setUnitsValue(nextUnits);
+      const success = await updateSettings({ units: nextUnits });
       if (!success) {
-        setTheme(previousTheme);
+        setUnitsValue(previousUnits);
       }
     },
-    [activeTheme, setTheme, updateSettings]
+    [unitsValue, updateSettings]
+  );
+
+  const handleTimeFormatChange = useCallback(
+    async (event: ChangeEvent<HTMLSelectElement>) => {
+      const nextTimeFormat = event.target.value as UserSettings['time_format'];
+      if (nextTimeFormat === timeFormatValue) {
+        return;
+      }
+      const previousTimeFormat = timeFormatValue;
+
+      setTimeFormatValue(nextTimeFormat);
+      const success = await updateSettings({ time_format: nextTimeFormat });
+      if (!success) {
+        setTimeFormatValue(previousTimeFormat);
+      }
+    },
+    [timeFormatValue, updateSettings]
   );
 
   const handleLanguageChange = useCallback(
-    async (event: ChangeEvent<HTMLSelectElement>) => {
-      const nextLanguage = event.target.value;
-      if (nextLanguage === activeLanguageValue) {
+    (nextLanguage: string | null) => {
+      setLanguageComboboxKey((previous) => previous + 1);
+      if (!nextLanguage || nextLanguage === languageValue) {
         return;
       }
       const normalized = nextLanguage.split('-')[0] as AppLanguage;
-      const previousLanguageValue = activeLanguageValue;
+      const previousLanguageValue = languageValue;
       const previousNormalized = previousLanguageValue.split('-')[0] as AppLanguage;
+
+      setLanguageValue(nextLanguage);
 
       if (typeof window !== 'undefined') {
         window.localStorage.setItem('smartpack-language', nextLanguage);
       }
 
-      if (i18n.language !== normalized) {
-        await i18n.changeLanguage(normalized);
-      }
-
-      const success = await updateSettings({ language: nextLanguage });
-
-      if (!success) {
-        if (typeof window !== 'undefined') {
-          window.localStorage.setItem('smartpack-language', previousLanguageValue);
+      void (async () => {
+        if (i18n.language !== normalized) {
+          await i18n.changeLanguage(normalized);
         }
-        if (i18n.language !== previousNormalized) {
-          await i18n.changeLanguage(previousNormalized);
+
+        const success = await updateSettings({ language: nextLanguage });
+
+        if (!success) {
+          setLanguageValue(previousLanguageValue);
+          if (typeof window !== 'undefined') {
+            window.localStorage.setItem('smartpack-language', previousLanguageValue);
+          }
+          if (i18n.language !== previousNormalized) {
+            await i18n.changeLanguage(previousNormalized);
+          }
         }
-      }
+      })();
     },
-    [activeLanguageValue, updateSettings]
+    [languageValue, updateSettings]
   );
 
   return (
@@ -185,7 +332,7 @@ const SettingsPage = () => {
       )}
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
+        <section className="relative z-30 flex flex-col gap-3 overflow-visible rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
           <div className="flex flex-col gap-1">
             <h2 className="text-lg font-semibold">{t('settings.sections.appearance.title', { defaultValue: 'Appearance' })}</h2>
             <p className="text-sm text-[var(--text-secondary)]">
@@ -196,22 +343,60 @@ const SettingsPage = () => {
             <label className="text-sm font-medium text-[var(--text-secondary)]" htmlFor="theme-setting">
               {t('settings.sections.appearance.themeLabel', { defaultValue: 'Theme mode' })}
             </label>
-            <select
-              id="theme-setting"
-              value={activeTheme}
+            <Combobox
+              key={themeComboboxKey}
+              value={themeValue}
               onChange={handleThemeChange}
               disabled={loading || isUpdating}
-              className="w-full max-w-xs rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-[var(--text-primary)] shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-70 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
             >
-              {THEME_OPTIONS.map(({ value, labelKey, fallback, icon }) => (
-                <option key={value} value={value}>
-                  {`${icon} ${t(labelKey, { defaultValue: fallback })}`}
-                </option>
-              ))}
-            </select>
+              <div className="relative z-40 w-64 max-w-full">
+                <Combobox.Button
+                  id="theme-setting"
+                  className="flex w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-[var(--text-primary)] shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                >
+                  <span
+                    className={`flex flex-1 items-center gap-2 ${
+                      themeDisplay ? '' : 'text-[var(--text-secondary)] dark:text-slate-400'
+                    }`}
+                  >
+                    {themeDisplay ? (
+                      <>
+                        {themeDisplay.icon ? (
+                          <span className="text-lg leading-none">{themeDisplay.icon}</span>
+                        ) : null}
+                        <span className="flex-1 text-left">{themeDisplay.label}</span>
+                      </>
+                    ) : (
+                      <span className="flex-1 text-left">
+                        {themePlaceholder}
+                      </span>
+                    )}
+                  </span>
+                  <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                </Combobox.Button>
+                <Combobox.Options className="absolute z-50 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                  {THEME_OPTIONS.map(({ value, labelKey, fallback, icon }) => (
+                    <Combobox.Option
+                      key={value}
+                      value={value}
+                      className={({ active }) =>
+                        `flex cursor-pointer items-center gap-2 px-3 py-2 ${
+                          active
+                            ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                            : 'text-[var(--text-primary)]'
+                        }`
+                      }
+                    >
+                      <span className="text-lg leading-none">{icon}</span>
+                      <span className="flex-1 text-left">{t(labelKey, { defaultValue: fallback })}</span>
+                    </Combobox.Option>
+                  ))}
+                </Combobox.Options>
+              </div>
+            </Combobox>
           </div>
         </section>
-        <section className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
+        <section className="relative z-30 flex flex-col gap-3 overflow-visible rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
           <div className="flex flex-col gap-1">
             <h2 className="text-lg font-semibold">{t('settings.sections.language.title', { defaultValue: 'Language' })}</h2>
             <p className="text-sm text-[var(--text-secondary)]">
@@ -222,19 +407,55 @@ const SettingsPage = () => {
             <label className="text-sm font-medium text-[var(--text-secondary)]" htmlFor="language-setting">
               {t('settings.sections.language.languageLabel', { defaultValue: 'Interface language' })}
             </label>
-            <select
-              id="language-setting"
-              value={activeLanguageValue}
+            <Combobox
+              key={languageComboboxKey}
+              value={languageValue}
               onChange={handleLanguageChange}
               disabled={loading || isUpdating}
-              className="w-full max-w-xs rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-[var(--text-primary)] shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-70 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
             >
-              {LANGUAGE_OPTIONS.map(({ value, labelKey, fallback, icon }) => (
-                <option key={value} value={value}>
-                  {`${icon} ${t(labelKey, { defaultValue: fallback })}`}
-                </option>
-              ))}
-            </select>
+              <div className="relative z-30 w-64 max-w-full">
+                <Combobox.Button
+                  id="language-setting"
+                  className="flex w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-[var(--text-primary)] shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                >
+                  <span
+                    className={`flex flex-1 items-center gap-2 ${
+                      languageDisplay ? '' : 'text-[var(--text-secondary)] dark:text-slate-400'
+                    }`}
+                  >
+                    {languageDisplay ? (
+                      <>
+                        {languageDisplay.icon ? (
+                          <span className="text-lg leading-none">{languageDisplay.icon}</span>
+                        ) : null}
+                        <span className="flex-1 text-left">{languageDisplay.label}</span>
+                      </>
+                    ) : (
+                      <span className="flex-1 text-left">{languagePlaceholder}</span>
+                    )}
+                  </span>
+                  <ChevronUpDownIcon className="h-5 w-5 text-slate-500" aria-hidden="true" />
+                </Combobox.Button>
+                <Combobox.Options className="absolute z-50 mt-2 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-900">
+                  {LANGUAGE_OPTIONS.map(({ value, labelKey, fallback, icon }) => (
+                    <Combobox.Option
+                      key={value}
+                      value={value}
+                      className={({ active }) =>
+                        `flex cursor-pointer items-center gap-2 px-3 py-2 ${
+                          active
+                            ? 'bg-brand-secondary/10 text-brand-secondary dark:bg-brand-secondary/20 dark:text-brand-secondary'
+                            : 'text-[var(--text-primary)]'
+                        }`
+                      }
+                    >
+                      <span className="text-lg leading-none">{icon}</span>
+                      <span className="flex-1 text-left">{t(labelKey, { defaultValue: fallback })}</span>
+                    </Combobox.Option>
+                  ))}
+                </Combobox.Options>
+              </div>
+            </Combobox>
           </div>
         </section>
         <section className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
@@ -262,21 +483,47 @@ const SettingsPage = () => {
               </p>
             ) : settings ? (
               <ul className="flex flex-col divide-y divide-slate-200/70 dark:divide-slate-800/70">
-                <li className="flex items-center justify-between py-2">
-                  <span className="text-[var(--text-secondary)]">
+                <li className="flex items-center justify-between gap-3 py-2">
+                  <label className="text-sm font-medium text-[var(--text-secondary)]" htmlFor="units-setting">
                     {t('settings.preferences.labels.units', { defaultValue: 'Units' })}
-                  </span>
-                  <span className="font-medium text-[var(--text-primary)]">
-                    {resolveUnitsLabel(settings.units)}
-                  </span>
+                  </label>
+                  <div className="relative w-64">
+                    <select
+                      id="units-setting"
+                      value={unitsValue}
+                      onChange={handleUnitsChange}
+                      disabled={loading || isUpdating}
+                      className="flex w-full appearance-none items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 pr-10 text-left text-sm text-[var(--text-primary)] shadow-sm transition focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-70 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                    >
+                      {UNIT_OPTIONS.map(({ value, labelKey, fallback }) => (
+                        <option key={value} value={value}>
+                          {t(labelKey, { defaultValue: fallback })}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronUpDownIcon
+                      className="pointer-events-none absolute inset-y-0 right-3 h-5 w-5 text-slate-500"
+                      aria-hidden="true"
+                    />
+                  </div>
                 </li>
-                <li className="flex items-center justify-between py-2">
+                <li className="flex items-center justify-between gap-3 py-2">
                   <span className="text-[var(--text-secondary)]">
                     {t('settings.preferences.labels.timeFormat', { defaultValue: 'Time format' })}
                   </span>
-                  <span className="font-medium text-[var(--text-primary)]">
-                    {resolveTimeFormatLabel(settings.time_format)}
-                  </span>
+                  <select
+                    id="time-format-setting"
+                    value={timeFormatValue}
+                    onChange={handleTimeFormatChange}
+                    disabled={loading || isUpdating}
+                    className="w-full max-w-xs rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-[var(--text-primary)] shadow-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-70 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                  >
+                    {TIME_FORMAT_OPTIONS.map(({ value, labelKey, fallback }) => (
+                      <option key={value} value={value}>
+                        {t(labelKey, { defaultValue: fallback })}
+                      </option>
+                    ))}
+                  </select>
                 </li>
                 <li className="flex items-center justify-between py-2">
                   <span className="text-[var(--text-secondary)]">
