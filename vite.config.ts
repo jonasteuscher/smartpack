@@ -19,7 +19,7 @@ export default defineConfig({
         'img/logo/Logo_500x350_Emblem.PNG'
       ],
       devOptions: {
-        enabled: true,
+        enabled: false,
         type: 'module'
       },
       strategies: 'generateSW',
