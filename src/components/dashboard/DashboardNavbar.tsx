@@ -87,8 +87,8 @@ const DashboardNavbar = ({
               className="h-10 w-auto select-none"
               loading="lazy"
             />
-            <span className="hidden text-sm font-semibold uppercase tracking-[0.3em] text-slate-600 sm:block dark:text-slate-300">
-              SmartPack
+            <span className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-600 dark:text-slate-300">
+              {t('header.brand.title', { defaultValue: 'SmartPack' })}
             </span>
           </Link>
 
