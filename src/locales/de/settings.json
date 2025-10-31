@@ -61,9 +61,9 @@
         }
       },
       "state": {
-        "loading": "Präferenzen werden geladen…",
-        "error": "Deine gespeicherten Präferenzen konnten nicht geladen werden.",
-        "empty": "Keine Präferenzen gespeichert."
+        "loading": "Einstellungen werden geladen…",
+        "error": "Deine gespeicherten Einstellungen konnten nicht geladen werden.",
+        "empty": "Keine Einstellungen gespeichert."
       }
     },
     "accountInformation": {
@@ -91,8 +91,8 @@
       "error": "Dein Konto konnte nicht gelöscht werden. Bitte versuche es erneut."
     },
     "messages": {
-      "saved": "Präferenzen gespeichert.",
-      "saveFailed": "Präferenzen konnten nicht gespeichert werden."
+      "saved": "Einstellung gespeichert.",
+      "saveFailed": "Einstellungen konnten nicht gespeichert werden."
     }
   }
 }
