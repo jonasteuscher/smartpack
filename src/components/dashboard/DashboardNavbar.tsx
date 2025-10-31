@@ -76,7 +76,7 @@ const DashboardNavbar = ({
   return (
     <header className="pointer-events-auto sticky top-0 z-40">
       <div className="container-responsive py-4">
-        <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/70 px-6 py-4 shadow-sm backdrop-blur-md transition supports-[backdrop-filter]:bg-white/60 dark:border-slate-800/70 dark:bg-slate-900/60">
+        <div className="relative flex items-center gap-4 justify-between rounded-2xl border border-white/10 bg-white/70 px-6 py-4 shadow-sm backdrop-blur-md transition supports-[backdrop-filter]:bg-white/60 dark:border-slate-800/70 dark:bg-slate-900/60 md:justify-start">
           <Link
             to="/app/dashboard"
             className="flex items-center gap-3 font-semibold text-slate-900 transition hover:text-brand-secondary dark:text-white"
@@ -92,7 +92,7 @@ const DashboardNavbar = ({
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex dark:text-slate-200">
+          <nav className="hidden items-center gap-6 text-sm font-medium text-slate-600 md:absolute md:left-1/2 md:top-1/2 md:flex md:-translate-x-1/2 md:-translate-y-1/2 dark:text-slate-200">
             {desktopNavItems.map(({ to, key, end }) => (
               <NavLink
                 key={to}
@@ -107,7 +107,7 @@ const DashboardNavbar = ({
             ))}
           </nav>
 
-          <div className="hidden items-center gap-3 md:flex">
+          <div className="ml-auto hidden items-center gap-3 md:flex">
             <Menu as="div" className="relative">
               <Menu.Button
                 className="flex items-center rounded-full border border-slate-200 bg-white p-0.5 text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
@@ -197,7 +197,7 @@ const DashboardNavbar = ({
           <button
             type="button"
             onClick={() => setIsOpen(true)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg md:hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+            className="ml-auto inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg md:hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
             aria-label={t('nav.openMenu')}
           >
             <Bars3Icon className="h-6 w-6" />

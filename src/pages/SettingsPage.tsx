@@ -470,7 +470,7 @@ const SettingsPage = () => {
         )}
 
         <div className="grid gap-4 lg:grid-cols-2">
-        <section className="relative z-40 flex min-w-0 flex-col gap-3 overflow-visible rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
+        <section className="relative z-40 flex min-w-0 flex-col gap-3 overflow-visible rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur focus-within:z-[60] dark:border-slate-800/60 dark:bg-slate-900/60">
           <div className="flex flex-col gap-1">
             <h2 className="text-lg font-semibold">{t('settings.sections.appearance.title', { defaultValue: 'Appearance' })}</h2>
             <p className="text-sm text-[var(--text-secondary)]">
@@ -487,7 +487,7 @@ const SettingsPage = () => {
               onChange={handleThemeChange}
               disabled={loading || isUpdating}
             >
-              <div className="relative z-40 w-full max-w-full sm:w-64">
+              <div className="relative w-full max-w-full sm:w-64">
                 <Combobox.Button
                   id="theme-setting"
                   className="flex w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-[var(--text-primary)] shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
@@ -534,7 +534,7 @@ const SettingsPage = () => {
             </Combobox>
           </div>
         </section>
-        <section className="relative z-50 flex min-w-0 flex-col gap-3 overflow-visible rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
+        <section className="relative z-30 flex min-w-0 flex-col gap-3 overflow-visible rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur focus-within:z-[60] dark:border-slate-800/60 dark:bg-slate-900/60">
           <div className="flex flex-col gap-1">
             <h2 className="text-lg font-semibold">{t('settings.sections.language.title', { defaultValue: 'Language' })}</h2>
             <p className="text-sm text-[var(--text-secondary)]">
@@ -551,7 +551,7 @@ const SettingsPage = () => {
               onChange={handleLanguageChange}
               disabled={loading || isUpdating}
             >
-              <div className="relative z-40 w-full max-w-full sm:w-64">
+              <div className="relative w-full max-w-full sm:w-64">
                 <Combobox.Button
                   id="language-setting"
                   className="flex w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-[var(--text-primary)] shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
@@ -596,7 +596,7 @@ const SettingsPage = () => {
             </Combobox>
           </div>
         </section>
-        <section className="relative z-20 flex min-w-0 flex-col gap-3 overflow-visible rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
+        <section className="relative z-20 flex min-w-0 flex-col gap-3 overflow-visible rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur focus-within:z-[60] dark:border-slate-800/60 dark:bg-slate-900/60">
           <div className="flex flex-col gap-1">
             <h2 className="text-lg font-semibold">
               {t('settings.sections.preferences.title', { defaultValue: 'Account preferences' })}
@@ -756,7 +756,7 @@ const SettingsPage = () => {
             )}
           </div>
         </section>
-        <section className="relative z-10 flex min-w-0 flex-col gap-3 rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/60">
+        <section className="relative z-10 flex min-w-0 flex-col gap-3 rounded-2xl border border-white/10 bg-white/60 p-6 shadow-sm backdrop-blur focus-within:z-[60] dark:border-slate-800/60 dark:bg-slate-900/60">
           <div className="flex flex-col gap-1">
             <h2 className="text-lg font-semibold">
               {t('settings.sections.accountInformation.title', { defaultValue: 'Account information' })}

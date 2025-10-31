@@ -48,8 +48,12 @@ const Header = ({ showNavigation = true, showUtilities = false }: HeaderProps) =
   return (
     <header className="pointer-events-auto">
       <div className="container-responsive">
-        <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/80 px-6 py-4 shadow-sm backdrop-blur-md transition dark:border-slate-800/80 dark:bg-slate-900/60">
-          <Link to="/" className="flex items-center gap-3 font-semibold text-slate-900 dark:text-white" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+        <div className="relative flex items-center gap-4 justify-between rounded-2xl border border-white/10 bg-white/80 px-6 py-4 shadow-sm backdrop-blur-md transition dark:border-slate-800/80 dark:bg-slate-900/60 md:justify-start">
+          <Link
+            to="/"
+            className="flex items-center gap-3 font-semibold text-slate-900 dark:text-white"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          >
             <img
               src="/img/logo/Logo_500x350_Emblem.PNG"
               alt="SmartPack Logo"
@@ -63,7 +67,7 @@ const Header = ({ showNavigation = true, showUtilities = false }: HeaderProps) =
           </Link>
 
           {showNavigation ? (
-            <nav className="hidden items-center gap-10 text-sm font-medium text-slate-600 md:flex dark:text-slate-200">
+            <nav className="hidden items-center gap-10 text-sm font-medium text-slate-600 md:absolute md:left-1/2 md:top-1/2 md:flex md:-translate-x-1/2 md:-translate-y-1/2 dark:text-slate-200">
               {NAV_ITEMS.map(({ key, href }) => (
                 <a
                   key={key}
@@ -76,36 +80,36 @@ const Header = ({ showNavigation = true, showUtilities = false }: HeaderProps) =
               ))}
             </nav>
           ) : (
-            <span className="hidden text-sm font-medium text-slate-400 md:block dark:text-slate-500">
+            <span className="hidden text-sm font-medium text-slate-400 md:absolute md:left-1/2 md:top-1/2 md:flex md:-translate-x-1/2 md:-translate-y-1/2 dark:text-slate-500">
               {t('header.brand.tagline')}
             </span>
           )}
 
-          <div className="hidden items-center gap-3 md:flex">
+          <div className="ml-auto flex items-center gap-3">
             {showUtilities && (
-              <>
+              <div className="hidden items-center gap-3 md:flex">
                 <LanguageSwitcher />
                 <ThemeToggle />
-              </>
+              </div>
             )}
             <Link
               to="/app/dashboard"
-              className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-secondary/30 transition hover:-translate-y-0.5 hover:bg-brand-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary dark:bg-white dark:text-slate-900"
+              className="hidden rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-secondary/30 transition hover:-translate-y-0.5 hover:bg-brand-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary md:inline-flex dark:bg-white dark:text-slate-900"
             >
               {t('header.cta')}
             </Link>
-          </div>
 
-          {showNavigation && (
-            <button
-              type="button"
-              onClick={() => setIsOpen(true)}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg md:hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
-              aria-label={t('header.menu.open')}
-            >
-              <Bars3Icon className="h-6 w-6" />
-            </button>
-          )}
+            {showNavigation && (
+              <button
+                type="button"
+                onClick={() => setIsOpen(true)}
+                className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg md:hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                aria-label={t('header.menu.open')}
+              >
+                <Bars3Icon className="h-6 w-6" />
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
